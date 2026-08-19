@@ -1,0 +1,15 @@
+astral>=3.2
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+smbus2>=0.4.3
+RPi.GPIO>=0.7.1
+pyserial>=3.5
+python-gphoto2>=2.2.0
+google-api-python-client>=2.0
+google-auth>=2.0
+google-auth-oauthlib>=1.0
+google-auth-httplib2>=0.2
+requests>=2.28
+# Pi Camera (picamera2) and webcam (cv2) support come from apt, not pip:
+#   sudo apt install python3-picamera2 libcamera-apps python3-opencv
+# (install.sh handles this). pip wheels for these are broken/heavy on Pi OS.
