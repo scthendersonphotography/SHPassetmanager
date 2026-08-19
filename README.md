@@ -251,7 +251,7 @@ auto-refreshed; you only need to authorize once.
 The Pi TX source is in the `pi-tx/` directory of the SHP Asset Manager
 repository:
 
-<https://github.com/scthendersonphotography/SHPassetmanager/tree/main/pi-tx>
+<https://github.com/scthendersonphotography/SHPassetmanager/tree/main>
 
 If the Pi TX changes are still on the release branch, clone that branch
 instead:
@@ -259,14 +259,14 @@ instead:
 ```bash
 git clone --branch scthendersonphotography-release/pi-tx-initial \
   https://github.com/scthendersonphotography/SHPassetmanager.git
-cd SHPassetmanager/pi-tx
+cd SHPassetmanager
 ```
 
 After the branch is merged into `main`, use:
 
 ```bash
 git clone https://github.com/scthendersonphotography/SHPassetmanager.git
-cd SHPassetmanager/pi-tx
+cd SHPassetmanager
 ```
 
 If you received the standalone `pi-tx.zip` package, extract it and enter the
