@@ -1,13 +1,14 @@
 #!/usr/bin/env bash
 # Pi TX install script
-# Run once on the Raspberry Pi after cloning the repo:
-#   cd artifacts/pi-tx && sudo ./install.sh
+# Run once on the Raspberry Pi from the directory containing this file:
+#   sudo ./install.sh
 #
 # What it does:
-#   1. Installs system packages (Python 3.11+, pigpio, avahi-daemon)
+#   1. Installs system packages (Python 3.11+, NetworkManager, avahi-daemon)
 #   2. Installs Python dependencies via pip
-#   3. Enables I²C and disables serial console (for UART bridge, task #433)
-#   4. Installs and enables the pi-tx systemd service
+#   3. Enables I²C and disables the serial console for the UART bridge
+#   4. Creates the always-available PI_TX local WiFi network
+#   5. Installs and enables the pi-tx systemd service
 #
 # Tested on: Raspberry Pi OS Lite (Bookworm, 64-bit), Pi 3B+ / 4 / 5
 
@@ -26,6 +27,7 @@ apt-get install -y --no-install-recommends \
     python3 python3-pip python3-dev \
     i2c-tools \
     avahi-daemon \
+    network-manager \
     nodejs npm \
     libgphoto2-dev \
     python3-picamera2 libcamera-apps \
@@ -59,7 +61,136 @@ systemctl enable --now avahi-daemon
 hostnamectl set-hostname pi-tx
 echo "  Hostname set to pi-tx  (access via http://pi-tx.local)"
 
-# ── 6. Build the browser control panel (web UI) ──────────────────────────────
+# ── 6. Configure the always-available local-control hotspot ─────────────────
+echo ""
+echo "→ Configuring the Pi TX local WiFi network…"
+
+HOTSPOT_ENV="/etc/pi-tx-hotspot.env"
+HOTSPOT_RUNTIME_ENV="/etc/pi-tx-network.env"
+HOTSPOT_IFACE="${PI_TX_WIFI_INTERFACE:-wlan0}"
+
+if [[ ! -d "/sys/class/net/$HOTSPOT_IFACE/wireless" ]]; then
+    HOTSPOT_IFACE=""
+    for iface_path in /sys/class/net/*/wireless; do
+        if [[ -d "$iface_path" ]]; then
+            HOTSPOT_IFACE="$(basename "$(dirname "$iface_path")")"
+            break
+        fi
+    done
+fi
+
+if [[ -z "$HOTSPOT_IFACE" ]]; then
+    echo "ERROR: No WiFi interface was found. Pi TX local control requires WiFi."
+    echo "  Set PI_TX_WIFI_INTERFACE before running the installer if the interface is not wlan0."
+    exit 1
+fi
+
+# Command-line environment values take priority; otherwise preserve credentials
+# from a previous install so rerunning the installer never locks out saved phones.
+REQUESTED_SSID="${PI_TX_HOTSPOT_SSID:-}"
+REQUESTED_PASSWORD="${PI_TX_HOTSPOT_PASSWORD:-}"
+if [[ -r "$HOTSPOT_ENV" ]]; then
+    # shellcheck disable=SC1090
+    source "$HOTSPOT_ENV"
+fi
+
+if [[ -n "$REQUESTED_SSID" ]]; then
+    PI_TX_HOTSPOT_SSID="$REQUESTED_SSID"
+fi
+if [[ -n "$REQUESTED_PASSWORD" ]]; then
+    PI_TX_HOTSPOT_PASSWORD="$REQUESTED_PASSWORD"
+fi
+
+if [[ -z "${PI_TX_HOTSPOT_SSID:-}" ]]; then
+    PI_SERIAL="$(tr -d '\0' </proc/device-tree/serial-number 2>/dev/null || true)"
+    PI_SUFFIX="${PI_SERIAL: -4}"
+    [[ -n "$PI_SUFFIX" ]] || PI_SUFFIX="$(hostname | tr -cd 'A-Za-z0-9' | tail -c 4)"
+    [[ -n "$PI_SUFFIX" ]] || PI_SUFFIX="LOCAL"
+    PI_TX_HOTSPOT_SSID="PI_TX_${PI_SUFFIX^^}"
+fi
+
+if [[ -z "${PI_TX_HOTSPOT_PASSWORD:-}" ]]; then
+    PI_TX_HOTSPOT_PASSWORD="$(python3 - <<'PY'
+import secrets
+print(secrets.token_urlsafe(12).replace("-", "A").replace("_", "B"))
+PY
+)"
+fi
+
+if [[ ! "$PI_TX_HOTSPOT_SSID" =~ ^[A-Za-z0-9._-]{1,32}$ ]]; then
+    echo "ERROR: PI_TX_HOTSPOT_SSID must be 1-32 letters, numbers, dots, underscores, or hyphens."
+    exit 1
+fi
+if [[ ! "$PI_TX_HOTSPOT_PASSWORD" =~ ^[A-Za-z0-9._-]{8,63}$ ]]; then
+    echo "ERROR: PI_TX_HOTSPOT_PASSWORD must be 8-63 letters, numbers, dots, underscores, or hyphens."
+    exit 1
+fi
+
+cat > "$HOTSPOT_ENV" <<EOF
+PI_TX_HOTSPOT_SSID=$PI_TX_HOTSPOT_SSID
+PI_TX_HOTSPOT_PASSWORD=$PI_TX_HOTSPOT_PASSWORD
+PI_TX_HOTSPOT_IP=10.42.0.1
+PI_TX_WIFI_INTERFACE=$HOTSPOT_IFACE
+EOF
+chmod 600 "$HOTSPOT_ENV"
+
+# The daemon only needs non-secret network metadata. Do not expose the WPA
+# password in the service process environment.
+cat > "$HOTSPOT_RUNTIME_ENV" <<EOF
+PI_TX_HOTSPOT_SSID=$PI_TX_HOTSPOT_SSID
+PI_TX_HOTSPOT_IP=10.42.0.1
+PI_TX_WIFI_INTERFACE=$HOTSPOT_IFACE
+EOF
+chmod 644 "$HOTSPOT_RUNTIME_ENV"
+
+NM_PROFILE="/etc/NetworkManager/system-connections/pi-tx-hotspot.nmconnection"
+NM_UUID="$(sed -n 's/^uuid=//p' "$NM_PROFILE" 2>/dev/null | head -n 1)"
+[[ -n "$NM_UUID" ]] || NM_UUID="$(cat /proc/sys/kernel/random/uuid)"
+
+cat > "$NM_PROFILE" <<EOF
+[connection]
+id=pi-tx-hotspot
+uuid=$NM_UUID
+type=wifi
+interface-name=$HOTSPOT_IFACE
+autoconnect=true
+autoconnect-priority=100
+
+[wifi]
+mode=ap
+ssid=$PI_TX_HOTSPOT_SSID
+band=bg
+channel=6
+
+[wifi-security]
+key-mgmt=wpa-psk
+psk=$PI_TX_HOTSPOT_PASSWORD
+
+[ipv4]
+method=shared
+addresses=10.42.0.1/24
+never-default=true
+
+[ipv6]
+method=disabled
+EOF
+chmod 600 "$NM_PROFILE"
+
+# Raspberry Pi OS Bookworm uses NetworkManager. Avoid a second DHCP manager
+# claiming wlan0 on reboot, but do not stop the current service mid-install.
+systemctl enable NetworkManager
+systemctl disable dhcpcd 2>/dev/null || true
+if systemctl is-active --quiet NetworkManager; then
+    nmcli connection reload
+fi
+
+echo "  Local network: $PI_TX_HOTSPOT_SSID"
+echo "  Password:      $PI_TX_HOTSPOT_PASSWORD"
+echo "  Pi address:    10.42.0.1"
+echo "  Save these credentials — they are also stored root-only in $HOTSPOT_ENV"
+echo "  Optional internet can be supplied through Ethernet or a second WiFi adapter."
+
+# ── 7. Build the browser control panel (web UI) ──────────────────────────────
 echo ""
 echo "→ Building web control panel (served at http://pi-tx.local)…"
 (
@@ -69,7 +200,7 @@ echo "→ Building web control panel (served at http://pi-tx.local)…"
 )
 echo "  Web UI built → $SCRIPT_DIR/static"
 
-# ── 7. Install systemd service ────────────────────────────────────────────────
+# ── 8. Install systemd service ────────────────────────────────────────────────
 echo ""
 echo "→ Installing pi-tx systemd service…"
 
@@ -104,8 +235,10 @@ echo "  Live logs:       journalctl -u pi-tx -f"
 echo "  Settings file:   ~/.pi-tx/settings.json"
 echo ""
 echo "  Connect the phone app:"
-echo "    WiFi Direct → enter the Pi's IP address, or"
-echo "    use pi-tx.local once mDNS resolves on your network."
+echo "    1. Join $PI_TX_HOTSPOT_SSID in phone WiFi settings."
+echo "    2. Open the Pi TX tab and connect to 10.42.0.1."
+echo "    Local camera control does not require internet."
+echo "    On an upstream LAN, pi-tx.local remains available through mDNS."
 echo ""
 echo "  Hardware wiring (BCM pin numbers):"
 echo "    TF-Luna SDA → Pin 3  (GPIO 2)"

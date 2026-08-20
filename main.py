@@ -127,6 +127,8 @@ async def lifespan(app: FastAPI):
     camera.start()         # starts USB hot-plug thread — no-op if gphoto2 absent
     camera_pi.start()      # no-op (CSI cameras probed on connect)
     camera_webcam.start()  # starts webcam hot-plug thread — no-op if cv2 absent
+    # Protocol compatibility: existing app builds validate this INFO name.
+    # Pi-specific behavior is identified by PLATFORM,PI / X-Platform instead.
     name = settings.get("name", "LASER_EYE_V2")
     port = int(os.environ.get("PORT", 80))
     print(f"[Pi TX] {name} ready on port {port}")
@@ -157,7 +159,11 @@ async def get_data() -> Response:
     queued = drain_outbox()
     if queued:
         body += queued
-    return Response(content=body, media_type="text/plain")
+    return Response(
+        content=body,
+        media_type="text/plain",
+        headers={"X-Platform": "PI"},
+    )
 
 
 @app.post("/cmd")
@@ -208,6 +214,44 @@ async def get_telemetry() -> JSONResponse:
     """
     return JSONResponse(
         {"distance": lidar.distance, "flux": lidar.flux, "temp": lidar.temp}
+    )
+
+
+def _upstream_interface() -> str | None:
+    """Return the current default-route interface, excluding the Pi hotspot."""
+    hotspot_iface = os.environ.get("PI_TX_WIFI_INTERFACE", "wlan0")
+    try:
+        with open("/proc/net/route", "r", encoding="utf-8") as route_file:
+            for line in route_file.readlines()[1:]:
+                fields = line.split()
+                if len(fields) < 4:
+                    continue
+                iface, destination, _, flags = fields[:4]
+                if (
+                    destination == "00000000"
+                    and int(flags, 16) & 0x2
+                    and iface != hotspot_iface
+                ):
+                    return iface
+    except (OSError, ValueError):
+        pass
+    return None
+
+
+@app.get("/network")
+async def get_network() -> JSONResponse:
+    """Describe local control and optional upstream connectivity."""
+    upstream = _upstream_interface()
+    return JSONResponse(
+        {
+            "platform": "PI",
+            "localControl": True,
+            "hotspotSsid": os.environ.get("PI_TX_HOTSPOT_SSID", "PI_TX"),
+            "hotspotAddress": os.environ.get("PI_TX_HOTSPOT_IP", "10.42.0.1"),
+            "upstreamAvailable": upstream is not None,
+            "upstreamInterface": upstream,
+        },
+        headers={"Cache-Control": "no-store"},
     )
 
 

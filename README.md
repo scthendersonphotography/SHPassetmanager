@@ -1,8 +1,9 @@
 # Pi TX — Raspberry Pi Camera Trigger Daemon
 
-A Python service that turns any Raspberry Pi 3+ into a Laser Eye TX-compatible
-camera trigger. The phone app connects to it over WiFi exactly the same way it
-connects to the ESP32 Laser Eye TX — no app changes required.
+A Python service that turns any Raspberry Pi 3+ into a camera trigger. Pi TX
+provides its own local WiFi network, so the phone app can control it in the
+field without internet access. Optional upstream internet is only needed for
+features such as Google Drive uploads and software updates.
 
 ## Features
 
@@ -16,6 +17,8 @@ connects to the ESP32 Laser Eye TX — no app changes required.
 | Settings persistence (JSON) | ✅ |
 | mDNS / `pi-tx.local` auto-discovery | ✅ |
 | systemd auto-start + watchdog | ✅ |
+| Offline local-control hotspot (`10.42.0.1`) | ✅ |
+| Optional upstream internet through Ethernet or second WiFi adapter | ✅ |
 | ESP-NOW bridge (wireless RX modules) | ✅ Implemented; requires the separate ESP32 bridge hardware and firmware |
 | USB camera control (gPhoto2) | ✅ Implemented; requires a supported USB camera and gPhoto2 |
 | Google Drive image upload | ✅ Implemented; requires Google Drive API OAuth credentials |
@@ -36,6 +39,35 @@ The Pi serves a full control panel to any browser on the same network:
   `sudo systemctl restart pi-tx`.
 - The web UI uses the same `GET /data` / `POST /cmd` protocol as the phone
   app, plus a small `GET /telemetry` JSON endpoint for flux/temp.
+
+## Local-first networking
+
+`install.sh` creates a secured WiFi network named `PI_TX_<device>` and assigns
+the Pi the fixed address `10.42.0.1`. The generated password is printed during
+installation and stored in `/etc/pi-tx-hotspot.env` with root-only permissions.
+
+The hotspot is the primary control path and works without internet. NetworkManager
+uses shared mode, so optional upstream internet can be passed through from:
+
+- Ethernet connected to a router
+- A second USB WiFi adapter configured as a client
+
+The built-in WiFi interface remains dedicated to the Pi TX hotspot so local
+control is not lost when an external network disappears. To select custom
+credentials during installation:
+
+```bash
+sudo PI_TX_HOTSPOT_SSID=PI_TX_FIELD \
+  PI_TX_HOTSPOT_PASSWORD='choose-a-strong-password' \
+  ./install.sh
+```
+
+SSID and password values may contain letters, numbers, dots, underscores, and
+hyphens. Passwords must be 8–63 characters. Rerunning the installer preserves
+the current credentials unless replacements are supplied.
+
+The daemon exposes `GET /network` so clients can distinguish always-available
+local control from an optional upstream route.
 
 ## Hardware wiring
 
@@ -248,21 +280,11 @@ auto-refreshed; you only need to authorize once.
 
 ### Get the Pi TX files
 
-The Pi TX source is in the `pi-tx/` directory of the SHP Asset Manager
-repository:
+The Pi TX installer is at the root of the SHP Asset Manager repository:
 
-<https://github.com/scthendersonphotography/SHPassetmanager/tree/main>
-
-If the Pi TX changes are still on the release branch, clone that branch
-instead:
-
-```bash
-git clone --branch scthendersonphotography-release/pi-tx-initial \
-  https://github.com/scthendersonphotography/SHPassetmanager.git
-cd SHPassetmanager
-```
-
-After the branch is merged into `main`, use:
+The published GitHub repository is the standalone Pi TX package, so its layout
+is intentionally different from the app-development workspace where these
+sources live under `artifacts/pi-tx`.
 
 ```bash
 git clone https://github.com/scthendersonphotography/SHPassetmanager.git
@@ -277,8 +299,8 @@ unzip pi-tx.zip
 cd pi-tx
 ```
 
-Do not use a nested `pi-tx/pi-tx` directory. `install.sh`, `main.py`, and
-`requirements.txt` must be in the directory from which you run the installer.
+Run the installer from the directory that contains `install.sh`, `main.py`,
+and `requirements.txt`.
 
 ```bash
 chmod +x install.sh
@@ -295,12 +317,19 @@ journalctl -u pi-tx -f
 
 ## Connecting the phone app
 
-1. Ensure the Pi and phone are on the same WiFi network (home router,
-   phone hotspot, or dedicated field router).
-2. In the Laser Eye app: tap the WiFi icon → enter `pi-tx.local`
-   (or the Pi's IP address if mDNS is unavailable on your network).
-3. The app connects identically to an ESP32 TX. Pi-specific UI sections
-   appear automatically once the app detects `PLATFORM,PI`.
+1. Power on the Pi and wait for the `PI_TX_<device>` WiFi network to appear.
+2. Join that network on the phone using the password printed by `install.sh`.
+3. In the SHP Asset Manager app, open the **PI TX** tab and tap **CONNECT PI TX**.
+4. The app discovers the fixed local address `10.42.0.1`. If the Pi is also
+   reachable through an upstream LAN, `pi-tx.local` or its LAN IP can be used.
+
+The phone may report that the Pi TX WiFi network has no internet. That is
+expected: remain connected to it for local camera control.
+
+Normal-LAN control is kept for discovery and manual-IP fallback. Use that mode
+only on a trusted private network: the current control protocol does not
+authenticate general camera commands on the LAN. The secured Pi TX hotspot is
+the recommended field-control path.
 
 ## Settings file
 
@@ -329,7 +358,8 @@ Restart the service after editing: `sudo systemctl restart pi-tx`
 | `fastapi`, `uvicorn` (pip) | HTTP server |
 | `i2c-tools` | I²C bus inspection (`i2cdetect`) |
 | `avahi-daemon` | mDNS / `pi-tx.local` |
-| `libgphoto2-dev` | USB camera (task #434, installed now) |
+| `network-manager` | Persistent hotspot, DHCP, and optional upstream sharing |
+| `libgphoto2-dev` | USB camera support |
 
 ## Running without a Pi (development / CI)
 

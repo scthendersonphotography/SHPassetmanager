@@ -1,13 +1,14 @@
 [Unit]
 Description=Pi TX — Laser Eye camera trigger daemon
-After=network.target
-Wants=network.target
+After=NetworkManager.service network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
 User=__SERVICE_USER__
 WorkingDirectory=__INSTALL_DIR__
 EnvironmentFile=-/etc/pi-tx.conf
+EnvironmentFile=-/etc/pi-tx-network.env
 ExecStart=/usr/bin/python3 __INSTALL_DIR__/main.py
 Restart=always
 RestartSec=5

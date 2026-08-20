@@ -14,6 +14,8 @@ SETTINGS_PATH = Path.home() / ".pi-tx" / "settings.json"
 # Keys and defaults mirror the ESP32 NVS schema exactly
 DEFAULTS: dict[str, Any] = {
     # Device identity
+    # Keep the protocol identity expected by existing app builds. Pi-specific
+    # capabilities are advertised separately with PLATFORM,PI.
     "name": "LASER_EYE_V2",
     # LiDAR trigger settings  (S,… command fields)
     "minDist": 0,
