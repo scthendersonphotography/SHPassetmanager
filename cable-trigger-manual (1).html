@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cable Trigger — User Manual</title>
+<style>
+  :root {
+    --orange: #F27D26;
+    --bg: #0d0d0d;
+    --card: #161616;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #888;
+    --faint: #444;
+    --mono: "Courier New", Courier, monospace;
+    --radius: 6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: var(--mono); background: var(--bg); color: var(--text); line-height: 1.7; }
+  .page-wrap { max-width: 820px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  .cover { text-align: center; padding: 60px 0 50px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .cover-eyebrow { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 18px; }
+  .cover-title { font-size: 38px; font-weight: 700; letter-spacing: 3px; color: var(--orange); line-height: 1.1; margin-bottom: 10px; text-transform: uppercase; }
+  .cover-sub { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+  .cover-divider { width: 60px; height: 2px; background: var(--orange); margin: 28px auto; }
+  .cover-meta { font-size: 10px; color: var(--faint); letter-spacing: 1px; }
+
+  .toc { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 48px; }
+  .toc-title { font-size: 9px; letter-spacing: 2.5px; color: var(--orange); text-transform: uppercase; margin-bottom: 20px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .toc-list li { border-top: 1px solid var(--border); padding: 9px 0; }
+  .toc-list li:nth-child(odd) { padding-right: 24px; }
+  .toc-list a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.4px; }
+  .toc-list a:hover { color: var(--orange); }
+  .toc-num { color: var(--orange); margin-right: 6px; font-size: 10px; }
+
+  .section { margin-bottom: 56px; }
+  .section-anchor { display: block; height: 0; }
+  .section-label { font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin: 28px 0 12px; }
+  p { font-size: 13px; color: var(--text); margin-bottom: 14px; line-height: 1.75; }
+  p.note { font-size: 11px; color: var(--muted); background: var(--card); border-left: 3px solid var(--orange); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 14px; }
+  p.warn { font-size: 11px; color: #e0a030; background: rgba(224,160,48,0.08); border: 1px solid rgba(224,160,48,0.25); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px; }
+
+  ol.steps { list-style: none; counter-reset: step; margin-bottom: 16px; }
+  ol.steps li { counter-increment: step; display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.65; }
+  ol.steps li::before { content: counter(step); min-width: 24px; height: 24px; line-height: 24px; text-align: center; background: var(--orange); color: #000; font-size: 11px; font-weight: 700; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+  ul.bullets { list-style: none; margin-bottom: 16px; }
+  ul.bullets li { padding: 5px 0 5px 18px; font-size: 13px; color: var(--text); position: relative; line-height: 1.65; }
+  ul.bullets li::before { content: "›"; color: var(--orange); position: absolute; left: 0; font-size: 16px; line-height: 1.4; }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { background: var(--card); color: var(--orange); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.6; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  code { background: #1e1e1e; border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-family: var(--mono); font-size: 11px; color: var(--orange); }
+
+  .setting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .setting-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .setting-card-name { font-size: 9px; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px; }
+  .setting-card-range { font-size: 10px; color: var(--faint); margin-bottom: 8px; }
+  .setting-card-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .screenshot-wrap { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 24px 0; }
+  .screenshot-item { display: flex; flex-direction: column; align-items: center; }
+  .screenshot-wrap img { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .screenshot-caption { text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; margin-top: 8px; }
+  .screenshot-placeholder { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px dashed var(--border); background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; gap: 10px; }
+  .screenshot-placeholder-label { font-size: 10px; color: var(--faint); text-align: center; letter-spacing: 0.5px; }
+
+  .trouble-row { display: grid; grid-template-columns: 1fr 1.5fr; gap: 0; border-bottom: 1px solid var(--border); padding: 14px 0; align-items: start; }
+  .trouble-row:last-child { border-bottom: none; }
+  .trouble-symptom { font-size: 12px; color: #cc7733; padding-right: 20px; line-height: 1.6; }
+  .trouble-fix { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; line-height: 2; }
+
+  @media print {
+    :root { --bg: #fff; --card: #f8f8f8; --border: #d0d0d0; --text: #111; --muted: #555; --faint: #888; }
+    body { background: #fff; color: #111; font-size: 12px; }
+    .page-wrap { padding: 20px 24px 40px; max-width: 100%; }
+    .cover { padding: 30px 0; page-break-after: always; }
+    .cover-title { font-size: 28px; color: #F27D26; }
+    .toc { page-break-after: always; }
+    .toc-list a::after { content: " (" attr(href) ")"; font-size: 9px; color: #888; }
+    .section { page-break-before: always; }
+    h2 { color: #111; font-size: 16px; border-bottom-color: #d0d0d0; }
+    h3 { color: #F27D26; font-size: 11px; }
+    code { background: #eee; border-color: #ccc; color: #c44a00; }
+    .setting-card { background: #f8f8f8; border-color: #d0d0d0; }
+    .setting-card-name { color: #F27D26; }
+    .setting-card-desc, .setting-card-range { color: #555; }
+    thead th { background: #f0f0f0; color: #F27D26; border-color: #ccc; }
+    tbody td { color: #333; border-color: #ddd; }
+    p.note { background: #f5f5f5; border-color: #F27D26; color: #555; }
+    p.warn { background: #fff8ee; color: #7a5000; }
+    .screenshot-wrap img { max-width: 240px; box-shadow: none; border-color: #ccc; }
+    .screenshot-placeholder { border-color: #ccc; background: #f5f5f5; }
+    .screenshot-placeholder-label { color: #888; }
+    .trouble-symptom { color: #c44a00; }
+    .trouble-fix { color: #555; }
+    ol.steps li::before { background: #F27D26; }
+    .toc-num, .section-label { color: #F27D26; }
+    .footer { color: #888; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="cover">
+    <div class="cover-eyebrow">SHP Asset Manager</div>
+    <div class="cover-title">Cable Trigger</div>
+    <div class="cover-sub">User Manual</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated August 2026</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol class="toc-list">
+      <li><a href="#section-1"><span class="toc-num">01</span> Hardware Overview</a></li>
+      <li><a href="#section-2"><span class="toc-num">02</span> Connecting to the App</a></li>
+      <li><a href="#section-3"><span class="toc-num">03</span> Configuration Settings</a></li>
+      <li><a href="#section-4"><span class="toc-num">04</span> Trigger Engagement Amount</a></li>
+      <li><a href="#section-5"><span class="toc-num">05</span> Presets</a></li>
+      <li><a href="#section-6"><span class="toc-num">06</span> Shutter Calibration</a></li>
+      <li><a href="#section-7"><span class="toc-num">07</span> Remote Trigger Mode</a></li>
+      <li><a href="#section-8"><span class="toc-num">08</span> Longevity Test</a></li>
+      <li><a href="#section-9"><span class="toc-num">09</span> Linking to a Lazer Eye</a></li>
+      <li><a href="#section-10"><span class="toc-num">10</span> Troubleshooting</a></li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 01 -->
+  <div class="section">
+    <span id="section-1" class="section-anchor"></span>
+    <div class="section-label">Section 01</div>
+    <h2>Hardware Overview</h2>
+    <p>The <strong>Cable Trigger</strong> is a servo-driven shutter release that physically actuates your camera's cable-release port. A small servo arm presses the plunger to a position you dial in through the app — no radio frequency tricks, no electronic handshakes — just a mechanical press of the cable release your camera already knows and trusts.</p>
+    <p>Because it works at the mechanical level it is compatible with cameras that do not expose an electronic remote-trigger port, and it produces the same signal your camera's built-in shutter button produces.</p>
+
+    <h3>What the app controls</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Parameter</th><th>What it sets</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Pre-Trigger Delay</strong></td>
+            <td>Time between the app sending the trigger command and the servo moving. Use to give yourself time to step away before the shot fires, or to synchronise with another event.</td>
+          </tr>
+          <tr>
+            <td><strong>Exposure Time</strong></td>
+            <td>How long the servo holds the cable release depressed. Match this to your camera's bulb-exposure requirement, or the minimum dwell time the shutter needs to register a press.</td>
+          </tr>
+          <tr>
+            <td><strong>Trigger Engagement Amount</strong></td>
+            <td>The servo angle (expressed as a percentage of its full range) used during each trigger. Each camera and cable-release combination has a different sweet spot — this dials it in precisely.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Connectivity</h3>
+    <p>The Cable Trigger communicates with the SHP Asset Manager app over <strong>Bluetooth Low Energy (BLE)</strong> and over a <strong>WiFi hotspot</strong> it creates itself. Both modes provide full, real-time control of all settings.</p>
+
+    <h3>System status</h3>
+    <p>The large status display at the top of the Cable Trigger tab shows the current state of the device and a COUNTDOWN timer. States you will see:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>State</th><th>What the device is doing</th></tr></thead>
+        <tbody>
+          <tr><td><strong>IDLE</strong></td><td>Ready and waiting. Tap TRIGGER SEQUENCE to fire.</td></tr>
+          <tr><td><strong>DELAYING</strong></td><td>Pre-trigger delay is counting down before the servo moves.</td></tr>
+          <tr><td><strong>MOVING OUT</strong></td><td>Servo is travelling to the engagement position.</td></tr>
+          <tr><td><strong>HOLDING</strong></td><td>Servo is holding the cable release depressed for the Exposure Time duration.</td></tr>
+          <tr><td><strong>RETURNING</strong></td><td>Servo is returning to the home position after the exposure.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>The arc gauge below the status display animates in real time, sweeping from 0% (home) to the set engagement amount as the servo travels.</p>
+
+    <h3>Status light</h3>
+    <p>The Cable Trigger has a small status LED on the board. It tells you at a glance what the device is doing — useful the moment you power on and before the app has connected.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>LED pattern</th><th>What it means</th></tr></thead>
+        <tbody>
+          <tr><td>Two quick flashes at boot</td><td>Firmware is running — the board powered up correctly.</td></tr>
+          <tr><td>Slow pulse (brief flash every ~2 s)</td><td>Advertising over BLE — waiting for the app to connect.</td></tr>
+          <tr><td>Steady on</td><td>Connected and idle — ready to trigger.</td></tr>
+          <tr><td>Fast blink (on/off every 125 ms)</td><td>Trigger active — servo is moving or holding the cable release.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">If the LED is off entirely, the device is in deep sleep. Wake it by pressing its power or wake button, or cycling power.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 02 -->
+  <div class="section">
+    <span id="section-2" class="section-anchor"></span>
+    <div class="section-label">Section 02</div>
+    <h2>Connecting to the App</h2>
+    <p>The SHP Asset Manager app controls all Cable Trigger settings in real time. Connect via <strong>Bluetooth</strong> or <strong>WiFi</strong> &mdash; both give full control. WiFi is recommended for firmware updates due to significantly faster transfer speeds.</p>
+
+    <h3>Bluetooth</h3>
+    <ol class="steps">
+      <li>Power on the Cable Trigger.</li>
+      <li>Ensure Bluetooth is enabled on your phone.</li>
+      <li>Open the app and tap the <strong>CABLE TRIGGER</strong> tab at the bottom of the screen.</li>
+      <li>Tap <strong>&#9889; CONNECT DEVICE</strong> in the header and select your device from the scan list.</li>
+      <li>Settings sync automatically. The dot in the header turns orange when connected.</li>
+    </ol>
+    <p class="note">The app remembers your device. On subsequent launches it reconnects silently if the Cable Trigger is in range. Tapping CONNECT DEVICE when a device is already saved gives you the option to reconnect to it, scan for a new device, or connect via WiFi.</p>
+
+    <h3>WiFi</h3>
+    <p>The Cable Trigger creates its own WiFi hotspot. WiFi is recommended when installing firmware updates &mdash; it is significantly faster than Bluetooth.</p>
+    <ol class="steps">
+      <li>Power on the Cable Trigger.</li>
+      <li>On your phone, join the Cable Trigger's network in your OS WiFi settings. If you have set a Security PIN of 8 or more characters in the app, that PIN is also the hotspot password.</li>
+      <li>Return to the app. Tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
+      <li>Enter IP <strong>192.168.4.1</strong> and port <strong>80</strong>, then tap CONNECT.</li>
+      <li>Settings sync automatically once connected.</li>
+    </ol>
+
+    <h3>Pi TX control</h3>
+      <p>If you use a <strong>Pi TX</strong> (Raspberry Pi transmitter), the Cable Trigger can also be controlled from the Pi TX browser panel. For local field use, join the secured WiFi network whose name begins with <code>PI_TX_</code> and open <code>http://10.42.0.1</code>; no internet is required. If the Pi is on a trusted upstream LAN, <code>http://pi-tx.local</code> or its LAN IP can be used instead. The Pi TX browser panel mirrors the app&apos;s Cable Trigger controls, so you can trigger, adjust settings, and run a longevity test without the phone present. See the <a href="lazer-eye-manual.html">Lazer Eye manual</a> for Pi TX setup details.</p>
+
+    <h3>Settings</h3>
+    <p>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings. From here you can check for firmware updates, change the device name, set a security PIN, and adjust app preferences.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 03 -->
+  <div class="section">
+    <span id="section-3" class="section-anchor"></span>
+    <div class="section-label">Section 03</div>
+    <h2>Configuration Settings</h2>
+    <p>The <strong>CONFIGURATION</strong> card is the main control panel for the Cable Trigger. Tap its header to expand or collapse it. All values are written to the device immediately when changed and are retained after power-off.</p>
+
+    <div class="setting-grid">
+      <div class="setting-card">
+        <div class="setting-card-name">Pre-Trigger Delay</div>
+        <div class="setting-card-range">0 s to 18,000 s</div>
+        <div class="setting-card-desc">Time between the trigger command leaving the app and the servo starting to move. Increase to give yourself time to step back from the camera. Small values step in 1-second increments; above 60 s they step in 1-minute increments; above 1 hour they step in 10-minute increments.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Exposure Time</div>
+        <div class="setting-card-range">0 s to 18,000 s</div>
+        <div class="setting-card-desc">How long the servo holds the cable release depressed. For a standard shot, set this slightly longer than your camera's minimum registration time. For bulb exposures, set it to the full exposure length. Follows the same step increments as Pre-Trigger Delay. Setting this to 0 still sends a brief minimum pulse to the firmware so the servo completes a full actuation cycle.</div>
+      </div>
+    </div>
+
+    <p>The compact summary line at the top of the collapsed CONFIGURATION card shows current values at a glance: <code>DELAY · EXP · ENG</code>.</p>
+
+    <h3>Triggering</h3>
+    <p>Tap the <strong>TRIGGER SEQUENCE</strong> button at the bottom of the status card to fire the shutter immediately. The button is only active when the device is IDLE and connected (or in simulation mode).</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 04 -->
+  <div class="section">
+    <span id="section-4" class="section-anchor"></span>
+    <div class="section-label">Section 04</div>
+    <h2>Trigger Engagement Amount</h2>
+    <p>Every cable release has a pre-travel zone — a short distance the plunger moves before it actually trips the shutter. <strong>Trigger Engagement Amount</strong> sets how far the servo travels (as a percentage of its full range) to engage the release. This is the single control that determines servo rotation depth.</p>
+    <p>Tap the <strong>TRIGGER ENGAGEMENT AMOUNT</strong> row inside the CONFIGURATION card to expand it. A <code>ParamControl</code> slider with +/&minus; buttons lets you set the value from <strong>1% to 100%</strong>.</p>
+    <p>The arc gauge in the status card animates in real time as you adjust the value, giving live visual feedback of where the servo will travel to.</p>
+
+    <h3>Finding the right engagement amount</h3>
+    <ol class="steps">
+      <li>Attach the cable release to your camera and mount the Cable Trigger.</li>
+      <li>Set Pre-Trigger Delay to <code>0 s</code> and Exposure Time to a comfortable value (e.g. <code>0.5 s</code>).</li>
+      <li>Start with a low Trigger Engagement Amount (e.g. 20%) and tap <strong>TRIGGER SEQUENCE</strong>.</li>
+      <li>Gradually increase the percentage until the shutter fires reliably on every press.</li>
+      <li>Find the minimum % that fires reliably &mdash; this avoids over-stressing the release mechanism.</li>
+    </ol>
+    <p class="warn">Do not set Trigger Engagement Amount higher than needed. Over-driving a cable release can stress the mechanism and damage the camera's shutter port.</p>
+    <p class="note">All settings are written to the device immediately when changed and survive power cycles.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 05 -->
+  <div class="section">
+    <span id="section-5" class="section-anchor"></span>
+    <div class="section-label">Section 05</div>
+    <h2>Presets</h2>
+    <p>Presets save a complete trigger configuration &mdash; Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount &mdash; under a name you choose. Up to <strong>five presets</strong> can be stored. They are saved on your phone and are not affected by device connections or firmware updates.</p>
+    <p>The PRESETS row appears at the top of the expanded CONFIGURATION card.</p>
+
+    <h3>Saving a preset</h3>
+    <ol class="steps">
+      <li>Dial in your settings (Pre-Trigger Delay, Exposure Time, Trigger Engagement Amount) for a particular camera or shooting scenario.</li>
+      <li>In the PRESETS row, tap the dashed <strong>SAVE CURRENT AS PRESET</strong> button, or the <strong>+ SAVE</strong> button if presets already exist.</li>
+      <li>Type a name (up to 16 characters) and tap the <strong>&#10003;</strong> confirm button or press Return.</li>
+    </ol>
+
+    <h3>Loading a preset</h3>
+    <p>Tap a preset chip in the horizontal PRESETS list to load it instantly. All three values (Pre-Trigger Delay, Exposure Time, Trigger Engagement Amount) are applied immediately and synced to the device if connected.</p>
+
+    <h3>Deleting a preset</h3>
+    <p>Tap the <strong>&times;</strong> button on the right side of any preset chip to delete it. The slot is freed and a new one can be saved in its place.</p>
+
+    <p class="note">Each preset chip shows a compact summary: <code>D:</code> = Pre-Trigger Delay, <code>E:</code> = Exposure Time, <code>R:</code> = Trigger Engagement Amount %.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 06 -->
+  <div class="section">
+    <span id="section-6" class="section-anchor"></span>
+    <div class="section-label">Section 06</div>
+    <h2>Shutter Calibration</h2>
+    <p><strong>Shutter Calibration</strong> uses your phone's microphone to listen to the actual shutter click and measure exactly when it opens and closes. It calculates the offset between what the firmware held and how long the shutter was actually open, so you can apply a correction to Exposure Time for your specific camera body.</p>
+    <p>The SHUTTER CALIBRATION card is a separate collapsible section below the CONFIGURATION card. Tap its header to expand it.</p>
+
+    <h3>Running a calibration test</h3>
+    <ol class="steps">
+      <li>Dial in Trigger Engagement Amount first &mdash; the test fires a real shot, so the servo must already be reaching the shutter.</li>
+      <li>Enter a name for this calibration (e.g. your camera body or lens) in the <strong>LENS / SHUTTER NAME</strong> field at the top of the section.</li>
+      <li>Hold your phone close to the camera (within 15&ndash;20 cm), microphone facing the camera body where the shutter sound is loudest.</li>
+      <li>Make sure the area is quiet &mdash; ambient noise reduces detection accuracy.</li>
+      <li>Tap <strong>TEST SHUTTER</strong>. The app counts down, fires one shot, and records audio during the cycle.</li>
+      <li>After a brief analysis phase, the EXPECTED / DETECTED / OFFSET metrics appear, with a waveform showing the open and close click peaks.</li>
+      <li>Review the offset. A positive offset means the firmware held longer than the shutter was open; a negative offset means it closed before the hold ended.</li>
+      <li>Tap <strong>SAVE PROFILE</strong> to store the result under the name you entered.</li>
+    </ol>
+
+    <h3>Applying a saved profile</h3>
+    <p>Saved profiles appear in the <strong>SAVED PROFILES</strong> list at the bottom of the Shutter Calibration section. Each row shows the profile name, the date it was tested, and its offset in milliseconds.</p>
+    <p>Tap <strong>APPLY</strong> on any profile to adjust the firmware's Exposure Time for the current session. The app calculates the corrected hold time (current Exposure Time + offset) and sends it to the device. Confirm in the dialog that appears.</p>
+    <p class="note">Applied calibration lasts for the current connection session. If you disconnect and reconnect, the original Exposure Time is restored. Apply the profile again each time you connect if your shooting consistently requires the correction.</p>
+    <p class="warn">Grant microphone permission when prompted. Without it the app cannot record audio and TEST SHUTTER will fail with a permission error.</p>
+
+    <h3>When to recalibrate</h3>
+    <ul class="bullets">
+      <li>When you switch to a different camera body.</li>
+      <li>When you change the cable release mechanism.</li>
+      <li>When you find the shutter is consistently held too short or too long after a firmware update.</li>
+      <li>When shooting in new temperature conditions (thermal expansion can shift the actuation point slightly).</li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 07 -->
+  <div class="section">
+    <span id="section-7" class="section-anchor"></span>
+    <div class="section-label">Section 07</div>
+    <h2>Remote Trigger Mode</h2>
+    <p><strong>Remote Trigger Mode</strong> lets you fire the camera without tapping the on-screen TRIGGER SEQUENCE button. The toggle is at the bottom of the CONFIGURATION card, below the Longevity Test row.</p>
+    <p class="note">The screen stays on automatically while Remote Trigger Mode is active, so the phone does not sleep between shots. All shot settings (Pre-Trigger Delay, Exposure Time, Trigger Engagement Amount) still apply when firing remotely.</p>
+
+    <h3>Android &mdash; volume buttons</h3>
+    <p>While Remote Trigger Mode is on, pressing the physical <strong>Volume Up</strong> or <strong>Volume Down</strong> buttons on your Android phone fires the shutter. This lets you hold the phone in one hand and trigger with a thumb, keeping your other hand free to steady the camera.</p>
+
+    <h3>iOS &mdash; Bluetooth clicker</h3>
+    <p>On iOS, pair a Bluetooth shutter remote (a BLE clicker, such as the kind sold for selfies or remote presentations) with your phone. While Remote Trigger Mode is on, pressing the clicker fires the Cable Trigger. The clicker can be held in one hand or placed on a surface nearby.</p>
+
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Platform</th><th>Remote input</th><th>How to activate</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Android</strong></td>
+            <td>Volume Up or Volume Down (hardware buttons)</td>
+            <td>Enable the Remote Trigger Mode toggle inside the CONFIGURATION card. No additional hardware required.</td>
+          </tr>
+          <tr>
+            <td><strong>iOS</strong></td>
+            <td>BLE shutter clicker (paired in iOS Bluetooth settings)</td>
+            <td>Pair the clicker via iOS Settings &rarr; Bluetooth, then enable the Remote Trigger Mode toggle in the app.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Disable Remote Trigger Mode when you're done shooting to restore normal volume-button behaviour on Android.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 08 -->
+  <div class="section">
+    <span id="section-8" class="section-anchor"></span>
+    <div class="section-label">Section 08</div>
+    <h2>Longevity Test</h2>
+    <p>The <strong>LONGEVITY TEST</strong> runs the Cable Trigger through a set number of actuation cycles autonomously, using your current Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount settings. Use it to burn in a new cable release mechanism, verify reliability under repeated use, or simulate a long shoot.</p>
+    <p>Expand the LONGEVITY TEST row inside the CONFIGURATION card.</p>
+
+    <h3>Running a longevity test</h3>
+    <ol class="steps">
+      <li>Set the number of <strong>CYCLES</strong> using the +/&minus; buttons or type directly into the counter field (1 to 9999 cycles).</li>
+      <li>Tap <strong>START TEST</strong>. The device begins firing immediately, repeating the full trigger sequence for the requested number of cycles.</li>
+      <li>The progress display shows cycles remaining. The test continues even if you disconnect the phone.</li>
+      <li>Tap <strong>STOP TEST</strong> at any time to abort.</li>
+    </ol>
+    <p class="note">The longevity test runs autonomously on the device — it is safe to disconnect the phone once it has started. The test uses your current delay, exposure, and engagement settings, so dial those in before starting.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 09 -->
+  <div class="section">
+    <span id="section-9" class="section-anchor"></span>
+    <div class="section-label">Section 09</div>
+    <h2>Linking to a Lazer Eye</h2>
+    <p>The Cable Trigger can be triggered automatically by a <strong>Lazer Eye</strong> LiDAR sensor in two ways. Both are configured from the <strong>LAZER EYE tab</strong> of the SHP Asset Manager app.</p>
+
+    <h3>Direct ESP-NOW Cross-Link</h3>
+    <p>The Lazer Eye sends a wireless trigger packet directly to the Cable Trigger over <strong>ESP-NOW</strong> every time the LiDAR detects a subject. Once paired, this link operates autonomously &mdash; no phone needs to be connected after setup. The Cable Trigger fires using whatever Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount settings are currently stored on it.</p>
+    <p class="note">Lazer Eye firmware <strong>v2.9.4 or later</strong> is required for confirmed-delivery status. Older firmware sends the packet but cannot confirm the Cable Trigger received it.</p>
+
+    <ol class="steps">
+      <li>Connect the <strong>Cable Trigger</strong> to the app via BLE (the orange dot in the Cable Trigger tab header confirms the connection).</li>
+      <li>Open the <strong>LAZER EYE tab</strong> and connect the Lazer Eye (WiFi, BLE, or Pi TX).</li>
+      <li>Expand the <strong>DIRECT CABLE TRIGGER LINK</strong> section. Tap <strong>GET MAC</strong> — the app reads the Cable Trigger's ESP radio MAC address over BLE and displays it.</li>
+      <li>Tap <strong>PAIR</strong>. The Lazer Eye stores the Cable Trigger's MAC address and begins firing it on every accepted LiDAR detection.</li>
+      <li>Tap <strong>TEST LINK</strong> to send a test packet. Listen for a shutter click from the Cable Trigger. If delivery is confirmed you will see a green "Delivery confirmed" message; on older Lazer Eye firmware you will see a yellow "Sent (delivery not confirmed)" message.</li>
+    </ol>
+
+    <p>Both devices remember the pairing after power cycling — you only need to pair once. To remove the link, expand DIRECT CABLE TRIGGER LINK and tap <strong>UNPAIR</strong>.</p>
+
+    <h3>BLE-Mediated Link</h3>
+    <p>While both the Cable Trigger and Lazer Eye are connected to the app simultaneously, you can enable the <strong>FIRE CABLE TRIGGER ON LIDAR EVENT</strong> toggle in the <strong>CABLE TRIGGER LINK</strong> section of the Lazer Eye tab. When enabled, the app relays each accepted LiDAR trigger to the Cable Trigger over BLE in real time.</p>
+    <ul class="bullets">
+      <li>Each relay fires using the Cable Trigger's own <strong>shots-per-trigger</strong> setting.</li>
+      <li>If the Cable Trigger is mid-sequence when an event arrives, that event is <strong>skipped</strong> — events are not queued.</li>
+      <li>The link stops automatically if either device disconnects. No pairing is stored; the toggle must be re-enabled each session.</li>
+    </ul>
+
+    <h3>Choosing the right approach</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Scenario</th><th>Recommended link</th></tr></thead>
+        <tbody>
+          <tr>
+            <td>Unattended setup — phone pocketed or left behind</td>
+            <td><strong>Direct ESP-NOW Cross-Link</strong> — operates without a phone after pairing.</td>
+          </tr>
+          <tr>
+            <td>Phone already monitoring both devices simultaneously</td>
+            <td><strong>BLE-Mediated Link</strong> — no extra pairing required; toggle on when needed.</td>
+          </tr>
+          <tr>
+            <td>Maximum reliability &amp; confirmed delivery</td>
+            <td><strong>Direct ESP-NOW Cross-Link</strong> with Lazer Eye firmware v2.9.4+.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 10 -->
+  <div class="section">
+    <span id="section-10" class="section-anchor"></span>
+    <div class="section-label">Section 10</div>
+    <h2>Troubleshooting</h2>
+
+    <div class="trouble-row">
+      <div class="trouble-symptom">Camera doesn't fire when TRIGGER SEQUENCE is tapped</div>
+      <div class="trouble-fix">Increase <strong>Trigger Engagement Amount</strong> — the servo may not be travelling far enough to press the plunger. Increase gradually and test until the shutter fires reliably. Also confirm the cable release is securely attached to the camera port.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Camera fires inconsistently</div>
+      <div class="trouble-fix">Increase <strong>Exposure Time</strong> — the servo may not be pressing the release long enough for the camera to register the signal. Run <strong>Shutter Calibration</strong> (TEST SHUTTER) to measure the gap and apply a correction automatically.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Servo strains or over-drives the cable release</div>
+      <div class="trouble-fix">Lower <strong>Trigger Engagement Amount</strong>. Find the minimum percentage that reliably fires the shutter — this reduces mechanical stress on the release and the camera's shutter port.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">TEST SHUTTER shows no detection result or an error</div>
+      <div class="trouble-fix">Hold your phone closer to the camera (within 15 cm) with the microphone facing the shutter. Ensure the room is quiet. Check that microphone permission is granted for the SHP Asset Manager app in Settings &rarr; Privacy &rarr; Microphone. Also confirm Trigger Engagement Amount is already set high enough that the shutter actually fires during the test.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Applying a calibration profile has no visible effect</div>
+      <div class="trouble-fix">The APPLY action sends a corrected Exposure Time for the current session only. Disconnect and reconnect to restore the original value, then APPLY again. If the correction is consistently needed, manually adjust <strong>Exposure Time</strong> in the CONFIGURATION card to match the corrected value.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Volume buttons don't trigger on Android</div>
+      <div class="trouble-fix">Confirm <strong>Remote Trigger Mode</strong> is toggled on (label turns orange and the toggle is highlighted). The app must be in the foreground. If another app has captured the hardware button events, close it and try again.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">BLE clicker doesn't fire on iOS</div>
+      <div class="trouble-fix">Confirm the clicker is paired in iOS Settings &rarr; Bluetooth and shows as connected. Then confirm <strong>Remote Trigger Mode</strong> is on in the app. The app must be in the foreground to receive clicker events.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Can't connect via Bluetooth</div>
+      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Cable Trigger. On iOS: Settings &rarr; Privacy &rarr; Bluetooth &rarr; confirm the SHP Asset Manager app has permission. The Cable Trigger appears in the scan list by the name set in Hardware Settings (the default name is shown on the device label).</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Settings revert after reconnecting</div>
+      <div class="trouble-fix">Settings are written to the device immediately while connected. Ensure the device is connected (orange dot in header) when you make changes. The Shutter Calibration APPLY correction is session-only and must be re-applied each connection if needed permanently.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">A firmware update is slow or failing</div>
+      <div class="trouble-fix">Switch to a WiFi connection — updates over WiFi are dramatically faster than Bluetooth. Open Settings &rarr; Hardware Settings &rarr; CHECK FOR UPDATES, then connect via WiFi first if needed.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Direct link shows "sent (delivery not confirmed)" instead of "delivery confirmed"</div>
+      <div class="trouble-fix">Confirmed delivery requires <strong>Lazer Eye firmware v2.9.4 or later</strong>. Update the Lazer Eye via the Lazer Eye tab &rarr; Settings &rarr; CHECK FOR UPDATES. After updating, re-pair (UNPAIR then repeat the GET MAC &rarr; PAIR steps) and TEST LINK again.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Direct ESP-NOW link set up but Cable Trigger doesn't fire</div>
+      <div class="trouble-fix">Confirm ESP-NOW is enabled on the Lazer Eye (check the ESP-NOW section of the Lazer Eye tab). Keep both devices within range during initial testing. If TEST LINK shows an error, UNPAIR and redo the pairing — the Cable Trigger BLE connection must be active during GET MAC. After re-pairing, range of up to ~100 m line-of-sight is typical.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">BLE-mediated link fires inconsistently or skips events</div>
+      <div class="trouble-fix">Both the Cable Trigger and Lazer Eye must remain connected to the app throughout the session — the link stops if either disconnects. Events are <strong>not queued</strong>: if the Cable Trigger is mid-sequence when a LiDAR event arrives, that event is skipped. Reduce your LiDAR sensitivity or increase inter-detection interval to lower the event rate relative to the Cable Trigger's cycle time.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Direct link stops working after powering both devices off and back on</div>
+      <div class="trouble-fix">Pairing is retained in flash memory on both devices and should survive power cycles. If the link stops: open the Lazer Eye tab, expand DIRECT CABLE TRIGGER LINK, and confirm it still shows PAIRED. If it shows NOT PAIRED, the Lazer Eye flash was cleared (e.g. by a firmware reflash) — redo the GET MAC &rarr; PAIR steps. Also confirm ESP-NOW is still enabled on the Lazer Eye.</div>
+    </div>
+
+    <h3>Updating firmware</h3>
+    <ol class="steps">
+      <li>Connect to the Cable Trigger in the app.</li>
+      <li>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings.</li>
+      <li>Scroll to <strong>Hardware Settings</strong> and tap <strong>CHECK FOR UPDATES</strong>.</li>
+      <li>If an update is available, tap <strong>INSTALL UPDATE</strong>. The device reboots and the app reconnects automatically.</li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    <div>SHP Asset Manager &nbsp;&middot;&nbsp; Cable Trigger User Manual</div>
+    <div style="margin-top:8px;">
+      <a href="build-guide.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
+      &nbsp;&middot;&nbsp;
+      <a href="install-guide.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
+      &nbsp;&middot;&nbsp;
+      <a href="lazer-eye-manual.html" style="color:#F27D26;text-decoration:none;">Lazer Eye Manual</a>
+    </div>
+    <div><a href="https://scotthendersonphotography.net" style="color:#F27D26;text-decoration:none;">scotthendersonphotography.net</a></div>
+  </div>
+
+</div>
+</body>
+</html>

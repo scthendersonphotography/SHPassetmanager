@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHP Asset Manager — Hardware Build Guide</title>
+<style>
+  :root {
+    --orange: #F27D26;
+    --bg: #0d0d0d;
+    --card: #161616;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #888;
+    --faint: #444;
+    --mono: "Courier New", Courier, monospace;
+    --radius: 6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: var(--mono); background: var(--bg); color: var(--text); line-height: 1.7; }
+  .page-wrap { max-width: 820px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  .cover { text-align: center; padding: 60px 0 50px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .cover-eyebrow { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 18px; }
+  .cover-title { font-size: 38px; font-weight: 700; letter-spacing: 3px; color: var(--orange); line-height: 1.1; margin-bottom: 10px; text-transform: uppercase; }
+  .cover-sub { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+  .cover-divider { width: 60px; height: 2px; background: var(--orange); margin: 28px auto; }
+  .cover-meta { font-size: 10px; color: var(--faint); letter-spacing: 1px; }
+
+  .toc { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 48px; }
+  .toc-title { font-size: 9px; letter-spacing: 2.5px; color: var(--orange); text-transform: uppercase; margin-bottom: 20px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .toc-list li { border-top: 1px solid var(--border); padding: 9px 0; }
+  .toc-list li:nth-child(odd) { padding-right: 24px; }
+  .toc-list a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.4px; }
+  .toc-list a:hover { color: var(--orange); }
+  .toc-num { color: var(--orange); margin-right: 6px; font-size: 10px; }
+
+  .section { margin-bottom: 56px; }
+  .section-anchor { display: block; height: 0; }
+  .section-label { font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin: 28px 0 12px; }
+  p { font-size: 13px; color: var(--text); margin-bottom: 14px; line-height: 1.75; }
+  p.note { font-size: 11px; color: var(--muted); background: var(--card); border-left: 3px solid var(--orange); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 14px; }
+  p.warn { font-size: 11px; color: #e0a030; background: rgba(224,160,48,0.08); border: 1px solid rgba(224,160,48,0.25); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px; }
+
+  ol.steps { list-style: none; counter-reset: step; margin-bottom: 16px; }
+  ol.steps li { counter-increment: step; display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.65; }
+  ol.steps li::before { content: counter(step); min-width: 24px; height: 24px; line-height: 24px; text-align: center; background: var(--orange); color: #000; font-size: 11px; font-weight: 700; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+  ul.bullets { list-style: none; margin-bottom: 16px; }
+  ul.bullets li { padding: 5px 0 5px 18px; font-size: 13px; color: var(--text); position: relative; line-height: 1.65; }
+  ul.bullets li::before { content: "›"; color: var(--orange); position: absolute; left: 0; font-size: 16px; line-height: 1.4; }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { background: var(--card); color: var(--orange); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.6; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  code { background: #1e1e1e; border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-family: var(--mono); font-size: 11px; color: var(--orange); }
+
+  .setting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .setting-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .setting-card-name { font-size: 9px; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px; }
+  .setting-card-range { font-size: 10px; color: var(--faint); margin-bottom: 8px; }
+  .setting-card-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .screenshot-wrap { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 24px 0; }
+  .screenshot-item { display: flex; flex-direction: column; align-items: center; }
+  .screenshot-wrap img { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .screenshot-caption { text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; margin-top: 8px; }
+  .screenshot-placeholder { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px dashed var(--border); background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; gap: 10px; }
+  .screenshot-placeholder-label { font-size: 10px; color: var(--faint); text-align: center; letter-spacing: 0.5px; }
+
+  .trouble-row { display: grid; grid-template-columns: 1fr 1.5fr; gap: 0; border-bottom: 1px solid var(--border); padding: 14px 0; align-items: start; }
+  .trouble-row:last-child { border-bottom: none; }
+  .trouble-symptom { font-size: 12px; color: #cc7733; padding-right: 20px; line-height: 1.6; }
+  .trouble-fix { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .v2-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #000; background: var(--orange); border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+  .pi-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #000; background: #5b9bd5; border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+  .hw-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #fff; background: #2a7a2a; border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+
+  .doc-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+  .doc-link { display: inline-block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); border: 1px solid var(--orange); border-radius: var(--radius); padding: 6px 14px; text-decoration: none; }
+  .doc-link:hover { background: var(--orange); color: #000; }
+
+  .diagram-wrap { overflow-x: auto; margin-bottom: 24px; }
+  .diagram-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px 20px 16px; }
+  .diagram-title { font-size: 9px; letter-spacing: 2.5px; color: var(--orange); text-transform: uppercase; margin-bottom: 16px; font-family: var(--mono); }
+
+  .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; line-height: 2; }
+
+  @media print {
+    :root { --bg: #fff; --card: #f8f8f8; --border: #d0d0d0; --text: #111; --muted: #555; --faint: #888; }
+    body { background: #fff; color: #111; font-size: 12px; }
+    .page-wrap { padding: 20px 24px 40px; max-width: 100%; }
+    .cover { padding: 30px 0; page-break-after: always; }
+    .cover-title { font-size: 28px; color: #F27D26; }
+    .toc { page-break-after: always; }
+    .toc-list a::after { content: " (" attr(href) ")"; font-size: 9px; color: #888; }
+    .section { page-break-before: always; }
+    h2 { color: #111; font-size: 16px; border-bottom-color: #d0d0d0; }
+    h3 { color: #F27D26; font-size: 11px; }
+    code { background: #eee; border-color: #ccc; color: #c44a00; }
+    .setting-card { background: #f8f8f8; border-color: #d0d0d0; }
+    .setting-card-name { color: #F27D26; }
+    .setting-card-desc, .setting-card-range { color: #555; }
+    thead th { background: #f0f0f0; color: #F27D26; border-color: #ccc; }
+    tbody td { color: #333; border-color: #ddd; }
+    p.note { background: #f5f5f5; border-color: #F27D26; color: #555; }
+    p.warn { background: #fff8ee; color: #7a5000; }
+    .screenshot-wrap img { max-width: 240px; box-shadow: none; border-color: #ccc; }
+    .screenshot-placeholder { border-color: #ccc; background: #f5f5f5; }
+    .screenshot-placeholder-label { color: #888; }
+    .trouble-symptom { color: #c44a00; }
+    .trouble-fix { color: #555; }
+    ol.steps li::before { background: #F27D26; }
+    .toc-num, .section-label { color: #F27D26; }
+    .v2-badge { background: #F27D26; color: #000; }
+    .pi-badge { background: #5b9bd5; color: #000; }
+    .hw-badge { background: #2a7a2a; color: #fff; }
+    .footer { color: #888; }
+    .doc-links { display: none; }
+
+    /* ── SVG diagram print overrides ──────────────────────────────────────
+       SVG presentation attributes can be overridden by CSS rules.
+       Convert dark component boxes to a light fill with a visible stroke,
+       and darken light-on-dark text and wire colours so they read on paper.
+    ─────────────────────────────────────────────────────────────────────── */
+    .diagram-card { background: #fff; border-color: #bbb; }
+    .diagram-title { color: #c44a00; }
+
+    /* Component boxes: dark fill → light fill */
+    .diagram-card svg rect[fill="#1e1e1e"],
+    .diagram-card svg rect[fill="#1a1a1a"] { fill: #f0f0f0; stroke: #555; }
+
+    /* Text that was light (readable on dark) → dark (readable on white) */
+    .diagram-card svg text[fill="#e8e8e8"] { fill: #111; }
+
+    /* Mid-grey text and labels → dark enough to read */
+    .diagram-card svg text[fill="#888"] { fill: #555; }
+    .diagram-card svg text[fill="#555"] { fill: #444; }
+    .diagram-card svg text[fill="#444"] { fill: #555; }
+
+    /* Wire lines, GND symbol lines */
+    .diagram-card svg line[stroke="#888"] { stroke: #444; }
+
+    /* Junction dots and arrow polygons */
+    .diagram-card svg circle[fill="#888"] { fill: #444; }
+    .diagram-card svg polygon[fill="#888"] { fill: #444; }
+
+    /* Dashed camera-port border: was near-invisible #333, make it visible */
+    .diagram-card svg rect[stroke="#333"] { stroke: #777; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-eyebrow">SHP Asset Manager</div>
+    <div class="cover-title">Hardware<br>Build Guide</div>
+    <div class="cover-divider"></div>
+    <div class="cover-sub">Laser Eye V2 TX &nbsp;·&nbsp; Cable Trigger &nbsp;·&nbsp; Mini RX V2 &nbsp;·&nbsp; Full ESP32 RX V2 &nbsp;·&nbsp; Pi TX &nbsp;·&nbsp; ESP-NOW Bridge</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">Assembly &amp; wiring reference for all supported hardware</div>
+  </div>
+
+  <!-- RELATED DOCS -->
+  <div class="doc-links">
+    <a class="doc-link" href="install-guide.html">→ Firmware &amp; Software Install</a>
+    <a class="doc-link" href="lazer-eye-manual.html">Lazer Eye User Manual</a>
+    <a class="doc-link" href="cable-trigger-manual.html">Cable Trigger Manual</a>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#overview"><span class="toc-num">01</span>Overview</a></li>
+      <li><a href="#laser-eye-tx"><span class="toc-num">02</span>Laser Eye V2 TX</a></li>
+      <li><a href="#cable-trigger"><span class="toc-num">03</span>Cable Trigger</a></li>
+      <li><a href="#mini-rx"><span class="toc-num">04</span>Mini RX V2</a></li>
+      <li><a href="#full-rx"><span class="toc-num">05</span>Full ESP32 RX V2</a></li>
+      <li><a href="#pi-tx"><span class="toc-num">06</span>Pi TX</a></li>
+      <li><a href="#bridge"><span class="toc-num">07</span>ESP-NOW UART Bridge</a></li>
+      <li><a href="#troubleshooting"><span class="toc-num">08</span>Troubleshooting</a></li>
+    </ul>
+  </div>
+
+  <!-- §1 OVERVIEW -->
+  <div class="section">
+    <span id="overview" class="section-anchor"></span>
+    <div class="section-label">Section 01</div>
+    <h2>Overview</h2>
+    <p>The SHP Asset Manager system is built around several complementary hardware units. You only need to build the devices that apply to your workflow — most users build one transmitter and one or two receivers.</p>
+    <div class="setting-grid">
+      <div class="setting-card">
+        <div class="setting-card-name">Laser Eye V2 TX <span class="v2-badge">V2</span></div>
+        <div class="setting-card-desc">ESP32-based LiDAR transmitter. Detects subject distance and fires camera triggers over BLE or ESP-NOW. The primary triggering device for wildlife and nature photography.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Cable Trigger</div>
+        <div class="setting-card-desc">ESP32-based servo controller for physical cable release operation. Used when a wired shutter connection is needed. Pairs with the Cable Trigger tab in the app.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Mini RX V2 <span class="v2-badge">V2</span></div>
+        <div class="setting-card-desc">Compact ESP32 receiver. Accepts ESP-NOW trigger packets from the Laser Eye V2 TX and drives a camera shutter output. Mounts close to the camera.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Full ESP32 RX V2 <span class="v2-badge">V2</span></div>
+        <div class="setting-card-desc">Full-size ESP32 dev-board receiver. Functionally identical to the Mini RX V2 — use this if you prefer a standard 38-pin form factor.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Pi TX <span class="pi-badge">PI</span></div>
+        <div class="setting-card-desc">Raspberry Pi–based transmitter. Supports TF-Luna LiDAR, Pi Camera, USB webcam, DSLR via gPhoto2, Google Drive upload, time-lapse, astronomy, and live preview. Control it from the native PI TX app tab or the browser panel.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">ESP-NOW UART Bridge</div>
+        <div class="setting-card-desc">Attaches to the Pi TX's UART port and relays ESP-NOW trigger packets to Mini RX / Full RX receivers in the field — extends Pi TX range wirelessly.</div>
+      </div>
+    </div>
+    <h3>What each hardware unit can do</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Hardware</th><th>Capabilities</th><th>Works by itself?</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Laser Eye V2 TX</strong></td>
+            <td>Measures subject distance with TF-Luna LiDAR; fires its wired shutter and wake/AF outputs; drives the alignment laser; applies distance limits, smoothing, flux filtering, shot delay, cooldown, and shots-per-trigger; runs daily trigger windows; reports battery and sensor status; connects over BLE or its WiFi hotspot; pairs with up to four V2 receivers; can cross-link directly to a Cable Trigger; and supports OTA firmware updates.</td>
+            <td>Yes — it can trigger a camera through its wired output. Receivers and Cable Trigger links are optional.</td>
+          </tr>
+          <tr>
+            <td><strong>Cable Trigger</strong></td>
+            <td>Physically presses a camera's cable release with its servo; controls delay, hold/exposure time, and engagement amount; stores presets; calibrates shutter timing with the phone microphone; accepts Android volume-button or iOS BLE-clicker remote firing; runs an autonomous longevity test; connects over BLE or WiFi; and can be triggered directly by a paired Laser Eye over ESP-NOW.</td>
+            <td>Yes — it can mechanically trigger a compatible cable release without a Laser Eye. The app is needed for setup and control.</td>
+          </tr>
+          <tr>
+            <td><strong>Mini RX V2</strong></td>
+            <td>Receives Laser Eye ESP-NOW trigger, wake/AF, and burst packets; drives an isolated camera shutter and wake/focus output; stores its pairing; reports battery, receiver type, and firmware; supports configurable wake polarity, AF pre-pulse, and LED behavior; and acknowledges received triggers.</td>
+            <td>No — it is a wireless camera-end receiver and needs a paired transmitter.</td>
+          </tr>
+          <tr>
+            <td><strong>Full ESP32 RX V2</strong></td>
+            <td>Provides the same wireless camera-end functions as the Mini RX V2 in a full-size ESP32 development-board format, with wired trigger/wake outputs, battery monitoring, pairing storage, configurable wake/AF behavior, status LEDs, and trigger acknowledgements.</td>
+            <td>No — it is a wireless camera-end receiver and needs a paired transmitter.</td>
+          </tr>
+          <tr>
+            <td><strong>Pi TX</strong> <span class="pi-badge">PI</span></td>
+            <td>Measures distance with TF-Luna LiDAR; drives shutter and wake/AF GPIO outputs (use the documented external isolation circuit for camera wiring); triggers DSLR/mirrorless cameras over USB with gPhoto2; captures from CSI Pi Cameras and UVC webcams; provides Pi Camera 3 focus, exposure, gain, and white-balance controls; serves a browser panel; runs time-lapses and astronomical schedules; stages and uploads photos to Google Drive; provides live preview; and can relay triggers to ESP-NOW receivers through the UART Bridge. Its secured <code>PI_TX_…</code> hotspot provides local control at <code>10.42.0.1</code> without internet.</td>
+            <td>Yes — LiDAR, camera, schedules, and local browser/phone control run locally. Internet is only needed for installation, Google Drive authorization/uploads, or updates.</td>
+          </tr>
+          <tr>
+            <td><strong>ESP-NOW UART Bridge</strong></td>
+            <td>Connects to a Pi TX over UART; pairs with and manages Mini RX / Full RX receivers; relays trigger, wake, burst, battery, receiver-info, and configuration packets; keeps receiver pairing in its own memory; and supports secured OTA firmware updates through the Pi TX and app.</td>
+            <td>No — it is a Pi TX expansion and needs a Pi TX plus receiver hardware.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The SHP Asset Manager mobile app is the control surface for the ESP32 units and Pi TX. It is software rather than a hardware unit, so its controls are described in the user manuals.</p>
+    <p class="note">This guide covers assembly and wiring only. For firmware flashing and software installation see the <a href="install-guide.html" style="color:var(--orange)">Firmware &amp; Software Install Guide</a>. For app usage see the <a href="lazer-eye-manual.html" style="color:var(--orange)">Lazer Eye User Manual</a>.</p>
+  </div>
+
+  <!-- §2 LASER EYE V2 TX -->
+  <div class="section">
+    <span id="laser-eye-tx" class="section-anchor"></span>
+    <div class="section-label">Section 02</div>
+    <h2>Laser Eye V2 TX <span class="v2-badge">V2</span></h2>
+    <p>The Laser Eye V2 TX runs on any standard ESP32 dev board (38-pin NodeMCU-32S or equivalent). It reads distance from a TF-Luna LiDAR sensor over I²C and fires a trigger output when a subject enters the configured range.</p>
+
+    <h3>Parts List</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Spec / Notes</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32 dev board</td><td>38-pin, NodeMCU-32S or equivalent. Must expose GPIO 2, 4, 5, 12, 18, 21, 22, 34.</td><td>1</td></tr>
+          <tr><td>TF-Luna LiDAR</td><td>I²C interface. Operates on 3.3 V or 5 V.</td><td>1</td></tr>
+          <tr><td>LiPo battery</td><td>3.7 V single cell. Capacity to suit your session length.</td><td>1</td></tr>
+          <tr><td>LiPo charge/protect board</td><td>TP4056 or equivalent with protection circuit.</td><td>1</td></tr>
+          <tr><td>Voltage divider resistors</td><td>R1 = 47 kΩ, R2 = 100 kΩ (for battery ADC).</td><td>2</td></tr>
+          <tr><td>Power LED</td><td>Any standard LED. Colour of your choice.</td><td>1</td></tr>
+          <tr><td>Power LED resistor</td><td>330 Ω.</td><td>1</td></tr>
+          <tr><td>Laser module (optional)</td><td>5 mW dot laser for alignment. Any 3.3 V-compatible module.</td><td>1</td></tr>
+          <tr><td>2N3904 NPN transistor or PC817 optocoupler</td><td>For isolated trigger output. See wiring notes below.</td><td>1</td></tr>
+          <tr><td>1 kΩ base resistor</td><td>For transistor-based trigger isolation.</td><td>1</td></tr>
+          <tr><td>Camera shutter cable</td><td>2.5 mm TRS or 3.5 mm TRRS to suit your camera.</td><td>1</td></tr>
+          <tr><td>Enclosure / case</td><td>3D-printed or off-the-shelf weatherproof box.</td><td>1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>GPIO Pinout</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>GPIO</th><th>Signal</th><th>Connects To</th></tr></thead>
+        <tbody>
+          <tr><td><code>GPIO 2</code></td><td>STATUS_LED</td><td>Onboard LED (active HIGH). No external wiring needed.</td></tr>
+          <tr><td><code>GPIO 4</code></td><td>TRIGGER_OUT</td><td>Isolation circuit → camera shutter (tip/ring).</td></tr>
+          <tr><td><code>GPIO 5</code></td><td>LASER</td><td>Laser module anode (via 33 Ω if module lacks its own resistor).</td></tr>
+          <tr><td><code>GPIO 12</code></td><td>WAKE_OUT</td><td>Isolation circuit → camera wake/AF (ring). GPIO 16 fires identically as an alternate.</td></tr>
+          <tr><td><code>GPIO 18</code></td><td>POWER_LED</td><td>LED anode → 330 Ω → GPIO 18. Cathode → GND.</td></tr>
+          <tr><td><code>GPIO 21</code></td><td>SDA</td><td>TF-Luna SDA pin.</td></tr>
+          <tr><td><code>GPIO 22</code></td><td>SCL</td><td>TF-Luna SCL pin.</td></tr>
+          <tr><td><code>GPIO 34</code></td><td>BATT_ADC</td><td>Battery voltage divider midpoint. Input-only; no pull-up.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>TF-Luna LiDAR Wiring (I²C)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>TF-Luna Pin</th><th>ESP32 Pin</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>VCC</td><td>3.3 V or 5 V</td><td>TF-Luna tolerates either; use 5 V for full rated range.</td></tr>
+          <tr><td>GND</td><td>GND</td><td></td></tr>
+          <tr><td>SDA</td><td>GPIO 21</td><td>ESP32 internal pull-ups are sufficient.</td></tr>
+          <tr><td>SCL</td><td>GPIO 22</td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The TF-Luna must be in I²C mode. If your unit shipped in UART mode, short its UART/I²C mode pad or use the TF-Luna config tool to switch it before assembly.</p>
+
+    <h3>Battery ADC Voltage Divider</h3>
+    <p>Wire a resistor divider between battery positive and GND. Tap the midpoint into GPIO 34.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Node</th><th>Connection</th></tr></thead>
+        <tbody>
+          <tr><td>Battery +</td><td>R1 top (R1 = 47 kΩ)</td></tr>
+          <tr><td>R1 bottom / R2 top</td><td>GPIO 34</td></tr>
+          <tr><td>R2 bottom (R2 = 100 kΩ)</td><td>GND</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">This divider gives Vpin = Vbat × 100 / 147. At a full 4.2 V cell that is ~2.86 V — safely inside the ESP32's 3.3 V ADC range.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-card">
+        <div class="diagram-title">Battery Voltage Divider — Laser Eye TX / Full RX V2</div>
+        <svg viewBox="0 0 480 268" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:400px;display:block;margin:0 auto;" aria-label="Battery voltage divider resistor circuit diagram">
+          <!-- BATT+ label -->
+          <text x="148" y="15" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700" text-anchor="middle">BATT +</text>
+          <!-- Wire top -->
+          <line x1="148" y1="18" x2="148" y2="54" stroke="#888" stroke-width="1.5"/>
+          <!-- R1 box -->
+          <rect x="118" y="54" width="60" height="22" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="148" y="69" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">R1 · 47 kΩ</text>
+          <!-- Wire R1 → junction -->
+          <line x1="148" y1="76" x2="148" y2="122" stroke="#888" stroke-width="1.5"/>
+          <!-- Junction dot -->
+          <circle cx="148" cy="122" r="3.5" fill="#888"/>
+          <!-- Tap arrow →  GPIO -->
+          <line x1="152" y1="122" x2="264" y2="122" stroke="#888" stroke-width="1.5"/>
+          <polygon points="258,118 266,122 258,126" fill="#888"/>
+          <!-- GPIO 34 labels -->
+          <text x="272" y="119" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700">GPIO 34</text>
+          <text x="272" y="132" fill="#888" font-family="Courier New,monospace" font-size="9">BATT_ADC (input-only)</text>
+          <!-- Wire junction → R2 -->
+          <line x1="148" y1="122" x2="148" y2="156" stroke="#888" stroke-width="1.5"/>
+          <!-- R2 box -->
+          <rect x="118" y="156" width="60" height="22" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="148" y="171" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">R2 · 100 kΩ</text>
+          <!-- Wire R2 → GND -->
+          <line x1="148" y1="178" x2="148" y2="216" stroke="#888" stroke-width="1.5"/>
+          <!-- GND symbol -->
+          <line x1="120" y1="216" x2="176" y2="216" stroke="#888" stroke-width="2"/>
+          <line x1="128" y1="223" x2="168" y2="223" stroke="#888" stroke-width="1.5"/>
+          <line x1="136" y1="230" x2="160" y2="230" stroke="#888" stroke-width="1.5"/>
+          <text x="148" y="246" fill="#888" font-family="Courier New,monospace" font-size="10" text-anchor="middle">GND</text>
+          <!-- Formula note -->
+          <text x="272" y="158" fill="#555" font-family="Courier New,monospace" font-size="9">Vpin = Vbat × 100 / 147</text>
+          <text x="272" y="172" fill="#555" font-family="Courier New,monospace" font-size="9">≈ 2.86 V at 4.2 V (safe)</text>
+          <text x="272" y="196" fill="#444" font-family="Courier New,monospace" font-size="9">Full RX V2 single-LiPo:</text>
+          <text x="272" y="209" fill="#444" font-family="Courier New,monospace" font-size="9">use R1=R2=100 kΩ instead</text>
+          <text x="272" y="222" fill="#444" font-family="Courier New,monospace" font-size="9">and set BATT_SCALE=2.0</text>
+        </svg>
+      </div>
+    </div>
+
+    <h3>Trigger Output — Isolation Circuit</h3>
+    <p class="warn">Never connect GPIO directly to your camera's shutter port without isolation. A wiring mistake could damage the camera. Use Option A only for quick bench testing.</p>
+
+    <p><strong>Option A — Direct (bench testing only):</strong> GPIO 4 → camera shutter tip. ESP32 GND → camera sleeve (GND). GPIO 4 pulls LOW to trigger, short-circuiting the tip to GND. Set <code>invertTrig = 0</code> in firmware.</p>
+
+    <p><strong>Option B — NPN transistor (recommended):</strong></p>
+    <ul class="bullets">
+      <li>GPIO 4 → 1 kΩ → Base of 2N3904</li>
+      <li>Collector → camera shutter tip</li>
+      <li>Emitter → camera shutter GND (sleeve)</li>
+      <li>Camera GND and ESP32 GND must share a common reference</li>
+      <li>Set <code>invertTrig = 1</code> in the app (trigger fires LOW)</li>
+    </ul>
+
+    <div class="diagram-wrap">
+      <div class="diagram-card">
+        <div class="diagram-title">Option B — NPN Transistor Isolation Circuit (GPIO 4 → Camera)</div>
+        <svg viewBox="0 0 560 205" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;margin:0 auto;" aria-label="NPN transistor trigger isolation circuit for Laser Eye TX">
+          <!-- GPIO 4 source -->
+          <text x="4" y="100" fill="#F27D26" font-family="Courier New,monospace" font-size="12" font-weight="700">GPIO 4</text>
+          <!-- Wire to resistor -->
+          <line x1="62" y1="96" x2="100" y2="96" stroke="#888" stroke-width="1.5"/>
+          <!-- 1 kΩ resistor box -->
+          <rect x="100" y="87" width="58" height="18" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="129" y="100" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">1 kΩ</text>
+          <!-- Wire resistor → Base -->
+          <line x1="158" y1="96" x2="213" y2="96" stroke="#888" stroke-width="1.5"/>
+          <text x="196" y="92" fill="#F27D26" font-family="Courier New,monospace" font-size="9">B</text>
+          <!-- Transistor body -->
+          <rect x="213" y="64" width="84" height="66" rx="3" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
+          <text x="255" y="88" fill="#888" font-family="Courier New,monospace" font-size="9" text-anchor="middle">NPN</text>
+          <text x="255" y="102" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">2N3904</text>
+          <!-- C terminal top -->
+          <line x1="255" y1="64" x2="255" y2="36" stroke="#888" stroke-width="1.5"/>
+          <text x="261" y="57" fill="#F27D26" font-family="Courier New,monospace" font-size="9">C</text>
+          <!-- E terminal bottom -->
+          <line x1="255" y1="130" x2="255" y2="160" stroke="#888" stroke-width="1.5"/>
+          <text x="261" y="150" fill="#F27D26" font-family="Courier New,monospace" font-size="9">E</text>
+          <!-- Collector → camera tip (horizontal) -->
+          <line x1="255" y1="36" x2="382" y2="36" stroke="#888" stroke-width="1.5"/>
+          <!-- Emitter / shared GND rail -->
+          <line x1="255" y1="160" x2="382" y2="160" stroke="#888" stroke-width="1.5"/>
+          <circle cx="255" cy="160" r="3" fill="#888"/>
+          <!-- Camera port dashed border -->
+          <rect x="380" y="22" width="174" height="150" rx="3" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="5,3"/>
+          <text x="467" y="16" fill="#555" font-family="Courier New,monospace" font-size="8" text-anchor="middle" letter-spacing="1.5">CAMERA PORT</text>
+          <!-- Tip label -->
+          <text x="390" y="40" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10">Tip  (Shutter)</text>
+          <!-- Sleeve label -->
+          <text x="390" y="164" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10">Sleeve  (GND)</text>
+          <!-- ESP32 GND source (dashed line = shared reference) -->
+          <text x="4" y="175" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700">ESP32 GND</text>
+          <line x1="86" y1="171" x2="255" y2="171" stroke="#888" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="255" y1="160" x2="255" y2="171" stroke="#888" stroke-width="1.5"/>
+          <text x="168" y="188" fill="#555" font-family="Courier New,monospace" font-size="8" text-anchor="middle">shared ground — must be connected</text>
+          <!-- invertTrig note -->
+          <text x="4" y="200" fill="#555" font-family="Courier New,monospace" font-size="8">Set invertTrig = 1 in app.  Wire WAKE_OUT (GPIO 12) identically for AF/focus.</text>
+        </svg>
+      </div>
+    </div>
+
+    <p><strong>Option C — PC817 optocoupler (full isolation):</strong></p>
+    <ul class="bullets">
+      <li>GPIO 4 → 330 Ω → PC817 anode (pin 1)</li>
+      <li>PC817 cathode (pin 2) → GND</li>
+      <li>PC817 collector (pin 4) → camera shutter tip</li>
+      <li>PC817 emitter (pin 3) → camera shutter GND</li>
+      <li>Camera side is fully isolated — no shared ground required</li>
+      <li>Set <code>invertTrig = 1</code> in the app</li>
+    </ul>
+    <p>Wire the WAKE_OUT (GPIO 12 or GPIO 16) to the camera's AF / focus ring using the same circuit.</p>
+  </div>
+
+  <!-- §3 CABLE TRIGGER -->
+  <div class="section">
+    <span id="cable-trigger" class="section-anchor"></span>
+    <div class="section-label">Section 03</div>
+    <h2>Cable Trigger</h2>
+    <p>The Cable Trigger drives an FS90MR continuous-rotation micro servo that physically actuates a cable release. It includes a TM1637 LED display and up to six tactile buttons for manual operation.</p>
+
+    <h3>Parts List</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Spec / Notes</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32 dev board</td><td>Any standard 30- or 38-pin ESP32. Must expose GPIO 18, 19, 22, 23, 25, 26, 27, 32, 33.</td><td>1</td></tr>
+          <tr><td>FS90MR servo</td><td>Continuous-rotation micro servo. Signal on GPIO 18.</td><td>1</td></tr>
+          <tr><td>5 V power supply</td><td>Capable of at least 500 mA for the servo. USB power bank or regulated 5 V.</td><td>1</td></tr>
+          <tr><td>TM1637 4-digit display</td><td>Common-cathode, 0.36" or 0.56" digit. CLK = GPIO 27, DIO = GPIO 32. Required — the firmware unconditionally drives it.</td><td>1</td></tr>
+          <tr><td>Tactile push buttons</td><td>Standard 6×6 mm or 12×12 mm. Up to 6 buttons.</td><td>1–6</td></tr>
+          <tr><td>10 kΩ pull-up resistors</td><td>One per button if not using internal pull-ups.</td><td>1–6</td></tr>
+          <tr><td>Cable release</td><td>Mechanical cable release with locking ring, to suit your lens or camera body.</td><td>1</td></tr>
+          <tr><td>Enclosure</td><td>3D-printed or off-the-shelf box.</td><td>1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>GPIO Pinout</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>GPIO</th><th>Signal</th><th>Connects To</th></tr></thead>
+        <tbody>
+          <tr><td><code>GPIO 2</code></td><td>STATUS_LED</td><td>Onboard LED (active HIGH). Optionally wire an external LED: anode → 330 Ω → GPIO 2, cathode → GND. See LED behaviour below.</td></tr>
+          <tr><td><code>GPIO 18</code></td><td>SERVO_SIGNAL</td><td>FS90MR signal wire (usually orange or white).</td></tr>
+          <tr><td><code>GPIO 19</code></td><td>BUTTON_1</td><td>Tactile button → GND. Internal pull-up enabled in firmware.</td></tr>
+          <tr><td><code>GPIO 22</code></td><td>BUTTON_3</td><td>Tactile button → GND.</td></tr>
+          <tr><td><code>GPIO 23</code></td><td>BUTTON_4</td><td>Tactile button → GND.</td></tr>
+          <tr><td><code>GPIO 25</code></td><td>BUTTON_5</td><td>Tactile button → GND.</td></tr>
+          <tr><td><code>GPIO 26</code></td><td>BUTTON_6</td><td>Tactile button → GND.</td></tr>
+          <tr><td><code>GPIO 27</code></td><td>TM1637_CLK</td><td>TM1637 display CLK pin.</td></tr>
+          <tr><td><code>GPIO 32</code></td><td>TM1637_DIO</td><td>TM1637 display DIO pin.</td></tr>
+          <tr><td><code>GPIO 33</code></td><td>BUTTON_2</td><td>Tactile button → GND.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Status LED Behaviour</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>LED Pattern</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td>Two quick flashes at boot</td><td>Firmware running — confirms the board powered up correctly.</td></tr>
+          <tr><td>Slow heartbeat (100 ms on / 1.9 s off)</td><td>Advertising over BLE — waiting for the app to connect.</td></tr>
+          <tr><td>Steady on</td><td>BLE connected and idle — ready to trigger.</td></tr>
+          <tr><td>Fast blink (125 ms on / 125 ms off)</td><td>Trigger active — servo is moving or holding.</td></tr>
+          <tr><td>Off</td><td>Deep sleep.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">GPIO 2 drives the onboard LED directly. To add an external indicator LED, wire it anode → 330 Ω resistor → GPIO 2, cathode → GND. Both the onboard and external LED will light simultaneously.</p>
+
+    <h3>Servo Power Wiring</h3>
+    <p class="warn">The FS90MR draws up to 300 mA under load. Do not power it from the ESP32's 3.3 V regulator. Use a separate 5 V supply or the raw USB/VIN rail.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Servo Wire</th><th>Connects To</th></tr></thead>
+        <tbody>
+          <tr><td>Signal (orange/white)</td><td>GPIO 18</td></tr>
+          <tr><td>Power (red)</td><td>External 5 V supply positive</td></tr>
+          <tr><td>GND (brown/black)</td><td>External 5 V supply GND <em>and</em> ESP32 GND (shared ground required)</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>TM1637 Display</h3>
+    <p>The TM1637 display is a required hardware component. The firmware unconditionally initialises and writes to it — the sketch will not compile without the TM1637 library, and the display must be wired for correct operation.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Display Pin</th><th>ESP32 Pin</th></tr></thead>
+        <tbody>
+          <tr><td>CLK</td><td>GPIO 27</td></tr>
+          <tr><td>DIO</td><td>GPIO 32</td></tr>
+          <tr><td>VCC</td><td>3.3 V or 5 V (module dependent)</td></tr>
+          <tr><td>GND</td><td>GND</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Button Wiring</h3>
+    <p>Each button wires between its assigned GPIO and GND. The firmware enables the ESP32's internal pull-up resistors, so no external resistors are required.</p>
+    <p class="note">Unused button GPIOs do not need to be connected to anything — they are ignored by the firmware when no button is detected.</p>
+  </div>
+
+  <!-- §4 MINI RX V2 -->
+  <div class="section">
+    <span id="mini-rx" class="section-anchor"></span>
+    <div class="section-label">Section 04</div>
+    <h2>Mini RX V2 <span class="v2-badge">V2</span></h2>
+    <p>The Mini RX V2 runs on a compact ESP32 module and listens for ESP-NOW trigger packets from the Laser Eye V2 TX. It drives camera shutter and wake outputs through a transistor or optocoupler isolation circuit.</p>
+    <p>The firmware supports both original ESP32 DevKit Mini (non-S2) and ESP32-S2 Mini boards. The S2 variant uses a different battery ADC pin and exposes alternate output pins on the odd-column header for a cleaner single-connector build.</p>
+
+    <h3>Parts List</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Spec / Notes</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32 Mini dev board</td><td>Original ESP32 DevKit Mini <em>or</em> ESP32-S2 Mini. See pin differences below.</td><td>1</td></tr>
+          <tr><td>LiPo battery</td><td>3.7 V single cell.</td><td>1</td></tr>
+          <tr><td>LiPo charge board</td><td>TP4056 or equivalent with protection.</td><td>1</td></tr>
+          <tr><td>2N3904 or 2N2222 NPN transistor (×2)</td><td>One each for TRIGGER_OUT and WAKE_OUT.</td><td>2</td></tr>
+          <tr><td>1 kΩ base resistors</td><td>One per transistor.</td><td>2</td></tr>
+          <tr><td>Power LED + 330 Ω resistor</td><td></td><td>1 each</td></tr>
+          <tr><td>Camera shutter cable</td><td>2.5 mm TRS or 3.5 mm TRRS to suit your camera.</td><td>1</td></tr>
+          <tr><td>Battery voltage divider (non-S2 only)</td><td>R1 = 47 kΩ, R2 = 100 kΩ.</td><td>2</td></tr>
+          <tr><td>2N3904 switched divider (S2 only)</td><td>R1 = 47 kΩ (collector load), R2 = 100 kΩ (emitter to GPIO 9), base resistor = 10 kΩ to GPIO 12.</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>GPIO Pinout — Original ESP32 Mini (Primary Pins)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>GPIO</th><th>Signal</th><th>Connects To</th></tr></thead>
+        <tbody>
+          <tr><td><code>GPIO 0</code></td><td>PAIR_CLR_PIN</td><td>Boot button (already on board). Hold LOW for 3 s on power-on to clear pairing.</td></tr>
+          <tr><td><code>GPIO 2</code></td><td>STATUS_LED</td><td>Onboard LED (active HIGH). No external wiring needed.</td></tr>
+          <tr><td><code>GPIO 4</code></td><td>TRIGGER_OUT</td><td>Transistor/opto isolation circuit → camera shutter tip.</td></tr>
+          <tr><td><code>GPIO 5</code></td><td>WAKE_OUT</td><td>Transistor/opto isolation circuit → camera wake/AF ring.</td></tr>
+          <tr><td><code>GPIO 18</code></td><td>POWER_LED</td><td>LED anode → 330 Ω → GPIO 18. Cathode → GND.</td></tr>
+          <tr><td><code>GPIO 34</code></td><td>BATT_ADC (non-S2)</td><td>Midpoint of R1/R2 voltage divider. Input-only.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>GPIO Pinout — ESP32-S2 Mini (Alt Connector Pins)</h3>
+    <p>The S2 Mini's odd-column header exposes GPIOs 3, 5, 7, and 11 in a single row. Using these alternate pins lets you route all camera signals through one connector.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>GPIO</th><th>Signal</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code>GPIO 3</code></td><td>STATUS_LED_ALT</td><td>Fires simultaneously with GPIO 2. Use either or both.</td></tr>
+          <tr><td><code>GPIO 7</code></td><td>TRIGGER_OUT_ALT</td><td>Fires simultaneously with GPIO 4. Use either or both.</td></tr>
+          <tr><td><code>GPIO 11</code></td><td>POWER_LED_ALT</td><td>Fires simultaneously with GPIO 18. Use either or both.</td></tr>
+          <tr><td><code>GPIO 9</code></td><td>BATT_ADC (S2 only)</td><td>ADC1_CH8. Emitter of 2N3904 switched divider. Use instead of GPIO 34 on S2.</td></tr>
+          <tr><td><code>GPIO 12</code></td><td>BATT_EN_PIN (S2 only)</td><td>2N3904 base drive via 10 kΩ. HIGH enables the divider for a reading.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Battery ADC — S2 Pin Assignments</h3>
+    <p>The S2 Mini lacks ADC on GPIO 34. The firmware routes the battery sense signal through GPIO 9 (ADC1_CH8) and uses GPIO 12 to gate the measurement circuit on only when a reading is needed. The exact resistor-and-transistor circuit is documented in the firmware header comment at the top of <code>firmware/lr-mini-rx-v2/lr_mini_rx_v2_firmware.ino</code> — build the circuit exactly as shown there, including component values and topology.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-card">
+        <div class="diagram-title">S2 Mini Switched ADC — Battery Voltage Sense Circuit</div>
+        <svg viewBox="0 0 520 332" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:480px;display:block;margin:0 auto;" aria-label="ESP32-S2 Mini switched battery ADC circuit diagram">
+          <!-- BATT+ -->
+          <text x="230" y="15" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700" text-anchor="middle">BATT +</text>
+          <!-- Wire: BATT+ → R1 top -->
+          <line x1="230" y1="18" x2="230" y2="54" stroke="#888" stroke-width="1.5"/>
+          <!-- R1 box (collector load) -->
+          <rect x="200" y="54" width="60" height="22" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="230" y="69" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">R1 · 47 kΩ</text>
+          <text x="266" y="60" fill="#555" font-family="Courier New,monospace" font-size="8">(collector</text>
+          <text x="266" y="71" fill="#555" font-family="Courier New,monospace" font-size="8"> load)</text>
+          <!-- Wire: R1 bottom → Collector -->
+          <line x1="230" y1="76" x2="230" y2="116" stroke="#888" stroke-width="1.5"/>
+          <text x="236" y="110" fill="#F27D26" font-family="Courier New,monospace" font-size="9">C</text>
+          <!-- Transistor body -->
+          <rect x="200" y="116" width="60" height="80" rx="3" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
+          <text x="230" y="150" fill="#888" font-family="Courier New,monospace" font-size="9" text-anchor="middle">NPN</text>
+          <text x="230" y="164" fill="#e8e8e8" font-family="Courier New,monospace" font-size="9" text-anchor="middle">2N3904</text>
+          <!-- B terminal (left) -->
+          <line x1="200" y1="156" x2="162" y2="156" stroke="#888" stroke-width="1.5"/>
+          <text x="198" y="152" fill="#F27D26" font-family="Courier New,monospace" font-size="9" text-anchor="end">B</text>
+          <!-- E terminal (bottom) -->
+          <line x1="230" y1="196" x2="230" y2="240" stroke="#888" stroke-width="1.5"/>
+          <text x="236" y="210" fill="#F27D26" font-family="Courier New,monospace" font-size="9">E</text>
+          <!-- 10 kΩ base resistor -->
+          <rect x="102" y="147" width="60" height="18" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="132" y="160" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">10 kΩ</text>
+          <!-- Wire 10kΩ → Base -->
+          <line x1="162" y1="156" x2="163" y2="156" stroke="#888" stroke-width="1.5"/>
+          <!-- Wire GPIO 12 → 10kΩ -->
+          <line x1="50" y1="156" x2="102" y2="156" stroke="#888" stroke-width="1.5"/>
+          <text x="4" y="160" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700">GPIO 12</text>
+          <text x="4" y="172" fill="#555" font-family="Courier New,monospace" font-size="8">BATT_EN_PIN</text>
+          <text x="4" y="182" fill="#555" font-family="Courier New,monospace" font-size="8">HIGH = measure</text>
+          <!-- Junction at emitter (230, 240) -->
+          <circle cx="230" cy="240" r="3.5" fill="#888"/>
+          <!-- Tap right → GPIO 9 -->
+          <line x1="234" y1="240" x2="330" y2="240" stroke="#888" stroke-width="1.5"/>
+          <polygon points="324,236 332,240 324,244" fill="#888"/>
+          <text x="338" y="237" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700">GPIO 9</text>
+          <text x="338" y="249" fill="#888" font-family="Courier New,monospace" font-size="9">ADC1_CH8 · BATT_ADC</text>
+          <!-- Wire emitter → R2 -->
+          <line x1="230" y1="240" x2="230" y2="268" stroke="#888" stroke-width="1.5"/>
+          <!-- R2 box -->
+          <rect x="200" y="268" width="60" height="22" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="230" y="283" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">R2 · 100 kΩ</text>
+          <!-- Wire R2 → GND -->
+          <line x1="230" y1="290" x2="230" y2="308" stroke="#888" stroke-width="1.5"/>
+          <!-- GND symbol -->
+          <line x1="202" y1="308" x2="258" y2="308" stroke="#888" stroke-width="2"/>
+          <line x1="210" y1="315" x2="250" y2="315" stroke="#888" stroke-width="1.5"/>
+          <line x1="218" y1="322" x2="242" y2="322" stroke="#888" stroke-width="1.5"/>
+          <text x="230" y="332" fill="#888" font-family="Courier New,monospace" font-size="9" text-anchor="middle">GND</text>
+        </svg>
+      </div>
+    </div>
+
+    <h3>Trigger and Wake Output Wiring</h3>
+    <p>Use a transistor isolation circuit for each camera output (same as Laser Eye V2 TX — see <a href="#laser-eye-tx" style="color:var(--orange)">Section 02</a>). GPIO 4 drives the shutter (TRIGGER_OUT) and GPIO 5 drives wake/AF (WAKE_OUT).</p>
+    <p class="note">The Mini RX V2 firmware identifies itself to the Laser Eye V2 app as "MINI RX V2". On first pairing, it sends its device type back over ESP-NOW so the app can display it correctly.</p>
+  </div>
+
+  <!-- §5 FULL ESP32 RX V2 -->
+  <div class="section">
+    <span id="full-rx" class="section-anchor"></span>
+    <div class="section-label">Section 05</div>
+    <h2>Full ESP32 RX V2 <span class="v2-badge">V2</span></h2>
+    <p>The Full ESP32 RX V2 uses a standard 38-pin or 30-pin ESP32 dev board. It is functionally identical to the Mini RX V2 and uses the same pinout for all camera-facing signals. The main difference is form factor and the battery ADC circuit — full-size boards expose GPIO 34 as a true ADC input, so no switched divider is needed.</p>
+
+    <h3>Parts List</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Spec / Notes</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32 dev board</td><td>38-pin or 30-pin full-size. NodeMCU-32S, DOIT DevKit, or equivalent.</td><td>1</td></tr>
+          <tr><td>LiPo battery or 2×18650 parallel</td><td>See battery ADC note below for divider ratio.</td><td>1</td></tr>
+          <tr><td>Voltage divider resistors</td><td>R1 = 47 kΩ, R2 = 100 kΩ for 2×18650 parallel (default, BATT_SCALE 1.47). Use 100 kΩ / 100 kΩ for single LiPo (change BATT_SCALE to 2.0 in firmware).</td><td>2</td></tr>
+          <tr><td>2N3904 or 2N2222 NPN transistors (×2)</td><td>Shutter and wake isolation.</td><td>2</td></tr>
+          <tr><td>1 kΩ base resistors (×2)</td><td></td><td>2</td></tr>
+          <tr><td>Power LED + 330 Ω resistor</td><td></td><td>1 each</td></tr>
+          <tr><td>Camera shutter cable</td><td></td><td>1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>GPIO Pinout</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>GPIO</th><th>Signal</th><th>Connects To</th></tr></thead>
+        <tbody>
+          <tr><td><code>GPIO 0</code></td><td>PAIR_CLR_PIN</td><td>Boot button. Hold LOW 3 s on power-on to clear pairing.</td></tr>
+          <tr><td><code>GPIO 2</code></td><td>STATUS_LED</td><td>Onboard LED (active HIGH).</td></tr>
+          <tr><td><code>GPIO 4</code></td><td>TRIGGER_OUT</td><td>Isolation circuit → camera shutter tip.</td></tr>
+          <tr><td><code>GPIO 5</code></td><td>WAKE_OUT</td><td>Isolation circuit → camera wake/AF ring.</td></tr>
+          <tr><td><code>GPIO 18</code></td><td>POWER_LED</td><td>LED anode → 330 Ω → GPIO 18. Cathode → GND.</td></tr>
+          <tr><td><code>GPIO 34</code></td><td>BATT_ADC</td><td>Voltage divider midpoint. Input-only ADC pin.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Battery ADC Notes</h3>
+    <p>The firmware ships with <code>BATT_SCALE 1.47</code>, calibrated for the 47 kΩ / 100 kΩ divider used with a 2×18650 parallel pack. For a single LiPo use equal 100 kΩ resistors and change <code>BATT_SCALE</code> to <code>2.0</code> in the firmware before flashing.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Battery Type</th><th>Divider</th><th>BATT_SCALE</th><th>Max Vpin at 4.2 V</th></tr></thead>
+        <tbody>
+          <tr><td>2×18650 parallel (3.0–4.2 V)</td><td>R1 = 47 kΩ, R2 = 100 kΩ (default)</td><td>1.47 (default)</td><td>~2.86 V (safe)</td></tr>
+          <tr><td>Single LiPo (3.0–4.2 V)</td><td>R1 = 100 kΩ, R2 = 100 kΩ</td><td>2.0 (must update)</td><td>~2.10 V (safe)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="warn">If you use the single-LiPo equal-resistor divider without updating <code>BATT_SCALE</code> to 2.0, battery percentage readings will be wrong. Edit the define near the top of <code>lr_rx_v2_firmware.ino</code> before flashing.</p>
+  </div>
+
+  <!-- §6 PI TX -->
+  <div class="section">
+    <span id="pi-tx" class="section-anchor"></span>
+    <div class="section-label">Section 06</div>
+    <h2>Pi TX <span class="pi-badge">PI</span></h2>
+    <p>The Pi TX turns a Raspberry Pi into a full-featured camera trigger and upload station. It supports TF-Luna LiDAR triggering, Pi Camera CSI, USB webcam, DSLR via gPhoto2, live preview, time-lapse, astronomical scheduling, and automatic upload to Google Drive. All control happens through the phone app or browser panel — no monitor or keyboard is needed in the field.</p>
+
+    <h3>Recommended Raspberry Pi Models</h3>
+    <ul class="bullets">
+      <li>Raspberry Pi 4 Model B — best performance; handles simultaneous LiDAR + camera + upload.</li>
+      <li>Raspberry Pi 3 Model B+ — supported for standard trigger and camera workflows.</li>
+      <li>Raspberry Pi 5 — supported and best for heavier simultaneous camera and upload workloads.</li>
+    </ul>
+    <p class="note">The installer is tested on Raspberry Pi OS Lite (Bookworm, 64-bit) with Pi 3B+, Pi 4, and Pi 5. Other models may work but are not part of the current tested target.</p>
+
+    <h3>Parts List</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Spec / Notes</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td>Raspberry Pi</td><td>Pi 3B+, Pi 4 Model B, or Pi 5 (see above).</td><td>1</td></tr>
+          <tr><td>microSD card</td><td>32 GB minimum; Class 10 / A1 or better.</td><td>1</td></tr>
+          <tr><td>5 V power supply</td><td>Official Pi PSU or a high-quality USB-C / micro-USB supply. 3 A recommended for Pi 4.</td><td>1</td></tr>
+          <tr><td>TF-Luna LiDAR (optional)</td><td>I²C interface. Required only if using distance triggering.</td><td>1</td></tr>
+          <tr><td>Pi Camera Module (optional)</td><td>Pi Camera v2 or Pi Camera 3. Connected via CSI ribbon cable.</td><td>1</td></tr>
+          <tr><td>2N3904 NPN transistor or PC817 optocoupler</td><td>For isolated shutter/wake output (Option B/C). Recommended over direct connection.</td><td>1–2</td></tr>
+          <tr><td>1 kΩ resistors</td><td>For transistor base drive.</td><td>1–2</td></tr>
+          <tr><td>Camera shutter cable</td><td>2.5 mm TRS or 3.5 mm TRRS to suit camera.</td><td>1</td></tr>
+          <tr><td>ESP-NOW UART Bridge (optional)</td><td>Separate ESP32 board. See <a href="#bridge" style="color:var(--orange)">Section 07</a>.</td><td>1</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>40-Pin GPIO Wiring</h3>
+    <p>All references use physical pin numbers (as printed on breakout boards). GPIO numbers are shown in parentheses.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Physical Pin</th><th>GPIO</th><th>Signal</th><th>Connects To</th></tr></thead>
+        <tbody>
+          <tr><td>Pin 4</td><td>5 V</td><td>TF-Luna VCC</td><td>TF-Luna VCC (if using LiDAR)</td></tr>
+          <tr><td>Pin 6</td><td>GND</td><td>TF-Luna GND</td><td>TF-Luna GND</td></tr>
+          <tr><td>Pin 3</td><td>GPIO 2 (SDA)</td><td>I²C SDA</td><td>TF-Luna SDA</td></tr>
+          <tr><td>Pin 5</td><td>GPIO 3 (SCL)</td><td>I²C SCL</td><td>TF-Luna SCL</td></tr>
+          <tr><td>Pin 11</td><td>GPIO 17</td><td>SHUTTER</td><td>Isolation circuit → camera shutter</td></tr>
+          <tr><td>Pin 13</td><td>GPIO 27</td><td>WAKE / AF</td><td>Isolation circuit → camera wake/AF</td></tr>
+          <tr><td>Pin 8</td><td>GPIO 14 (TXD)</td><td>UART TX → Bridge RX</td><td>ESP-NOW Bridge GPIO 16 (optional)</td></tr>
+          <tr><td>Pin 10</td><td>GPIO 15 (RXD)</td><td>UART RX ← Bridge TX</td><td>ESP-NOW Bridge GPIO 17 (optional)</td></tr>
+          <tr><td>Pin 1</td><td>3.3 V</td><td>Bridge 3.3 V (optional)</td><td>ESP32 bridge 3.3 V (bare module only)</td></tr>
+          <tr><td>Pin 14</td><td>GND</td><td>Shared GND</td><td>Bridge GND; isolation circuit GND</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Shutter Output — Trigger Wiring Options</h3>
+    <p class="warn">Do not connect the Pi's 3.3 V GPIO directly to a camera shutter without isolation. The Pi GPIO cannot source or sink significant current safely, and a wiring error can damage the Pi.</p>
+
+    <p><strong>Option A — Direct dry-contact (bench testing only):</strong> GPIO 17 → camera shutter tip. Pi GND → camera sleeve (GND). GPIO 17 pulls LOW to fire, short-circuiting tip to GND and closing the shutter contact. No transistor. Set <code>invertTrig = 0</code> (default).</p>
+
+    <p><strong>Option B — NPN transistor (recommended):</strong></p>
+    <ul class="bullets">
+      <li>GPIO 17 → 1 kΩ → 2N3904 Base</li>
+      <li>Collector → camera shutter tip</li>
+      <li>Emitter → camera GND (sleeve)</li>
+      <li>Pi GND and camera GND must share a common reference</li>
+      <li>Set <code>invertTrig = 1</code> in the app</li>
+    </ul>
+
+    <div class="diagram-wrap">
+      <div class="diagram-card">
+        <div class="diagram-title">Option B — NPN Transistor Isolation Circuit (GPIO 17 → Camera)</div>
+        <svg viewBox="0 0 560 205" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;margin:0 auto;" aria-label="NPN transistor trigger isolation circuit for Pi TX GPIO 17">
+          <!-- GPIO 17 source -->
+          <text x="4" y="100" fill="#F27D26" font-family="Courier New,monospace" font-size="12" font-weight="700">GPIO 17</text>
+          <!-- Wire to resistor -->
+          <line x1="68" y1="96" x2="104" y2="96" stroke="#888" stroke-width="1.5"/>
+          <!-- 1 kΩ resistor box -->
+          <rect x="104" y="87" width="58" height="18" rx="2" fill="#1e1e1e" stroke="#555" stroke-width="1.5"/>
+          <text x="133" y="100" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">1 kΩ</text>
+          <!-- Wire resistor → Base -->
+          <line x1="162" y1="96" x2="215" y2="96" stroke="#888" stroke-width="1.5"/>
+          <text x="198" y="92" fill="#F27D26" font-family="Courier New,monospace" font-size="9">B</text>
+          <!-- Transistor body -->
+          <rect x="215" y="64" width="84" height="66" rx="3" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
+          <text x="257" y="88" fill="#888" font-family="Courier New,monospace" font-size="9" text-anchor="middle">NPN</text>
+          <text x="257" y="102" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10" text-anchor="middle">2N3904</text>
+          <!-- C terminal top -->
+          <line x1="257" y1="64" x2="257" y2="36" stroke="#888" stroke-width="1.5"/>
+          <text x="263" y="57" fill="#F27D26" font-family="Courier New,monospace" font-size="9">C</text>
+          <!-- E terminal bottom -->
+          <line x1="257" y1="130" x2="257" y2="160" stroke="#888" stroke-width="1.5"/>
+          <text x="263" y="150" fill="#F27D26" font-family="Courier New,monospace" font-size="9">E</text>
+          <!-- Collector → camera tip (horizontal) -->
+          <line x1="257" y1="36" x2="382" y2="36" stroke="#888" stroke-width="1.5"/>
+          <!-- Emitter / shared GND rail -->
+          <line x1="257" y1="160" x2="382" y2="160" stroke="#888" stroke-width="1.5"/>
+          <circle cx="257" cy="160" r="3" fill="#888"/>
+          <!-- Camera port dashed border -->
+          <rect x="380" y="22" width="174" height="150" rx="3" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="5,3"/>
+          <text x="467" y="16" fill="#555" font-family="Courier New,monospace" font-size="8" text-anchor="middle" letter-spacing="1.5">CAMERA PORT</text>
+          <!-- Tip label -->
+          <text x="390" y="40" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10">Tip  (Shutter)</text>
+          <!-- Sleeve label -->
+          <text x="390" y="164" fill="#e8e8e8" font-family="Courier New,monospace" font-size="10">Sleeve  (GND)</text>
+          <!-- Pi GND source (dashed line = shared reference) -->
+          <text x="4" y="175" fill="#F27D26" font-family="Courier New,monospace" font-size="11" font-weight="700">Pi GND</text>
+          <line x1="62" y1="171" x2="257" y2="171" stroke="#888" stroke-width="1.5" stroke-dasharray="4,2"/>
+          <line x1="257" y1="160" x2="257" y2="171" stroke="#888" stroke-width="1.5"/>
+          <text x="156" y="188" fill="#555" font-family="Courier New,monospace" font-size="8" text-anchor="middle">shared ground — must be connected</text>
+          <!-- invertTrig note -->
+          <text x="4" y="200" fill="#555" font-family="Courier New,monospace" font-size="8">Set invertTrig = 1 in app.  Wire GPIO 27 (WAKE/AF) identically using the same circuit.</text>
+        </svg>
+      </div>
+    </div>
+
+    <p><strong>Option C — PC817 optocoupler (full isolation):</strong></p>
+    <ul class="bullets">
+      <li>GPIO 17 → 330 Ω → PC817 anode (pin 1)</li>
+      <li>PC817 cathode (pin 2) → Pi GND</li>
+      <li>PC817 collector (pin 4) → camera shutter tip</li>
+      <li>PC817 emitter (pin 3) → camera shutter GND (sleeve)</li>
+      <li>Set <code>invertTrig = 1</code> in the app</li>
+    </ul>
+
+    <p><strong>Hot-mode trigger (trigMode = 1):</strong> GPIO 17 drives 3.3 V directly to the camera tip. Use only for cameras that accept an active-HIGH signal on the shutter port — verify your camera's spec before wiring.</p>
+    <p class="note">Wire GPIO 27 (WAKE/AF) using the same isolation circuit as the shutter output.</p>
+
+    <h3>raspi-config Settings</h3>
+    <p>The install script runs <code>raspi-config</code> non-interactively for the following two settings. If you need to verify them manually:</p>
+    <ul class="bullets">
+      <li><strong>Interface Options → I²C:</strong> Enable (required for TF-Luna LiDAR).</li>
+      <li><strong>Interface Options → Serial Port → Login shell over serial:</strong> Disable. <strong>Hardware serial port:</strong> Enable. (Required for UART Bridge.)</li>
+    </ul>
+    <p class="note">Pi Camera support does not require a separate raspi-config camera step on modern Raspberry Pi OS (Bookworm). The install script installs <code>python3-picamera2</code> and <code>libcamera-apps</code> via apt, which is sufficient for both Pi Camera v2 and Pi Camera 3 CSI modules.</p>
+    <h3>Local-first WiFi network</h3>
+    <p>The installer creates a secured NetworkManager hotspot that stays available for local control, even when the Pi has no internet. The SSID begins with <code>PI_TX_</code>, the Pi uses <code>10.42.0.1</code>, and the generated password is printed by the installer and stored root-only on the Pi. Ethernet or a second WiFi adapter can optionally provide upstream internet without taking the built-in WiFi adapter away from the hotspot.</p>
+    <p class="warn">Do not connect the Pi's GPIO directly to a camera shutter without the documented isolation circuit. The direct dry-contact option is for bench testing only.</p>
+  </div>
+
+  <!-- §7 ESP-NOW UART BRIDGE -->
+  <div class="section">
+    <span id="bridge" class="section-anchor"></span>
+    <div class="section-label">Section 07</div>
+    <h2>ESP-NOW UART Bridge</h2>
+    <p>The ESP-NOW UART Bridge connects to the Pi TX's hardware UART port and re-transmits trigger packets over ESP-NOW to any paired Mini RX V2 or Full RX V2 receivers in the field. It lets the Pi TX drive wireless receivers without any dedicated ESP-NOW radio on the Pi itself.</p>
+
+    <h3>Supported ESP32 Boards</h3>
+    <ul class="bullets">
+      <li><strong>ESP32-DevKit-C / WROOM-32</strong> — plug-and-play, no pin remapping needed.</li>
+      <li><strong>ESP32-C3 Mini</strong> — change <code>BRIDGE_UART_RX</code> to GPIO 6 and <code>BRIDGE_UART_TX</code> to GPIO 7 in the firmware before flashing.</li>
+      <li><strong>ESP32-S3 Mini</strong> — change <code>BRIDGE_UART_RX</code> to GPIO 4 and <code>BRIDGE_UART_TX</code> to GPIO 5 before flashing.</li>
+    </ul>
+
+    <h3>Parts List</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Component</th><th>Spec / Notes</th><th>Qty</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32-DevKit-C, WROOM-32, C3 Mini, or S3 Mini</td><td>See pin remap note above for mini variants.</td><td>1</td></tr>
+          <tr><td>Logic-level wires</td><td>3 wires: RX, TX, GND between Pi and ESP32.</td><td>—</td></tr>
+          <tr><td>3.3 V supply wire (bare module only)</td><td>If using a bare ESP32 module without an onboard 3.3 V regulator, power from Pi Pin 1.</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>UART Wiring (DevKit-C / WROOM-32)</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Raspberry Pi</th><th>Physical Pin</th><th>ESP32 GPIO</th><th>Signal</th></tr></thead>
+        <tbody>
+          <tr><td>GPIO 14 (TXD)</td><td>Pin 8</td><td>GPIO 16 (UART2 RX)</td><td>Pi transmits → Bridge receives</td></tr>
+          <tr><td>GPIO 15 (RXD)</td><td>Pin 10</td><td>GPIO 17 (UART2 TX)</td><td>Bridge transmits → Pi receives</td></tr>
+          <tr><td>GND</td><td>Pin 14</td><td>GND</td><td>Shared ground (required)</td></tr>
+          <tr><td>3.3 V (optional)</td><td>Pin 1</td><td>3.3 V or VIN</td><td>Power (bare module only; skip if using USB)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="warn">The Pi's UART is 3.3 V logic. Do not connect it to a 5 V UART port — this will damage the Pi's GPIO. All standard ESP32 dev boards are 3.3 V logic compatible.</p>
+    <p class="note">UART baud rate between Pi and Bridge is fixed at 115200 in both the Pi TX daemon and the bridge firmware. Both sides must match.</p>
+
+    <div class="diagram-wrap">
+      <div class="diagram-card">
+        <div class="diagram-title">UART Wiring — Raspberry Pi TX ↔ ESP32 Bridge (DevKit-C / WROOM-32)</div>
+        <svg viewBox="0 0 560 188" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;display:block;margin:0 auto;" aria-label="UART wiring diagram between Raspberry Pi and ESP32 Bridge">
+          <!-- Pi box -->
+          <rect x="10" y="24" width="185" height="152" rx="4" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
+          <text x="102" y="16" fill="#5b9bd5" font-family="Courier New,monospace" font-size="9" text-anchor="middle" font-weight="700" letter-spacing="1.5">RASPBERRY PI</text>
+          <!-- Pi pin rows (y: 66, 96, 126, 156) -->
+          <text x="180" y="62" fill="#F27D26" font-family="Courier New,monospace" font-size="9" text-anchor="end">GPIO 14  TXD</text>
+          <text x="180" y="73" fill="#555" font-family="Courier New,monospace" font-size="7" text-anchor="end">Pin 8</text>
+          <text x="180" y="92" fill="#F27D26" font-family="Courier New,monospace" font-size="9" text-anchor="end">GPIO 15  RXD</text>
+          <text x="180" y="103" fill="#555" font-family="Courier New,monospace" font-size="7" text-anchor="end">Pin 10</text>
+          <text x="180" y="122" fill="#F27D26" font-family="Courier New,monospace" font-size="9" text-anchor="end">GND</text>
+          <text x="180" y="133" fill="#555" font-family="Courier New,monospace" font-size="7" text-anchor="end">Pin 14</text>
+          <text x="180" y="152" fill="#888" font-family="Courier New,monospace" font-size="9" text-anchor="end">3.3 V</text>
+          <text x="180" y="163" fill="#555" font-family="Courier New,monospace" font-size="7" text-anchor="end">Pin 1 (optional)</text>
+          <!-- Pi connector dots -->
+          <circle cx="195" cy="66" r="3.5" fill="#F27D26"/>
+          <circle cx="195" cy="95" r="3.5" fill="#F27D26"/>
+          <circle cx="195" cy="125" r="3.5" fill="#F27D26"/>
+          <circle cx="195" cy="155" r="3.5" fill="#888"/>
+          <!-- ESP32 box -->
+          <rect x="365" y="24" width="185" height="152" rx="4" fill="#1a1a1a" stroke="#555" stroke-width="1.5"/>
+          <text x="457" y="16" fill="#F27D26" font-family="Courier New,monospace" font-size="9" text-anchor="middle" font-weight="700" letter-spacing="1.5">ESP32 BRIDGE</text>
+          <!-- ESP32 pin rows (mirror of Pi) -->
+          <text x="380" y="62" fill="#F27D26" font-family="Courier New,monospace" font-size="9">GPIO 16  RX</text>
+          <text x="380" y="73" fill="#555" font-family="Courier New,monospace" font-size="7">UART2 receive</text>
+          <text x="380" y="92" fill="#F27D26" font-family="Courier New,monospace" font-size="9">GPIO 17  TX</text>
+          <text x="380" y="103" fill="#555" font-family="Courier New,monospace" font-size="7">UART2 transmit</text>
+          <text x="380" y="122" fill="#F27D26" font-family="Courier New,monospace" font-size="9">GND</text>
+          <text x="380" y="133" fill="#555" font-family="Courier New,monospace" font-size="7">shared ground (required)</text>
+          <text x="380" y="152" fill="#888" font-family="Courier New,monospace" font-size="9">3.3 V / VIN</text>
+          <text x="380" y="163" fill="#555" font-family="Courier New,monospace" font-size="7">bare module only, skip if USB</text>
+          <!-- ESP32 connector dots -->
+          <circle cx="365" cy="66" r="3.5" fill="#F27D26"/>
+          <circle cx="365" cy="95" r="3.5" fill="#F27D26"/>
+          <circle cx="365" cy="125" r="3.5" fill="#F27D26"/>
+          <circle cx="365" cy="155" r="3.5" fill="#888"/>
+          <!-- Connecting lines -->
+          <!-- TXD → RX (Pi TX to Bridge RX) -->
+          <line x1="198" y1="66" x2="362" y2="66" stroke="#F27D26" stroke-width="1.5"/>
+          <!-- Direction label: TX→RX -->
+          <text x="280" y="62" fill="#F27D26" font-family="Courier New,monospace" font-size="8" text-anchor="middle">TX → RX</text>
+          <!-- RXD ← TX (Bridge TX to Pi RX) -->
+          <line x1="198" y1="95" x2="362" y2="95" stroke="#5b9bd5" stroke-width="1.5"/>
+          <text x="280" y="91" fill="#5b9bd5" font-family="Courier New,monospace" font-size="8" text-anchor="middle">RX ← TX</text>
+          <!-- GND (solid) -->
+          <line x1="198" y1="125" x2="362" y2="125" stroke="#888" stroke-width="1.5"/>
+          <text x="280" y="121" fill="#888" font-family="Courier New,monospace" font-size="8" text-anchor="middle">GND</text>
+          <!-- 3.3V (dashed, optional) -->
+          <line x1="198" y1="155" x2="362" y2="155" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3"/>
+          <text x="280" y="151" fill="#555" font-family="Courier New,monospace" font-size="8" text-anchor="middle">optional</text>
+          <!-- Note: all 3.3V logic -->
+          <text x="280" y="182" fill="#444" font-family="Courier New,monospace" font-size="8" text-anchor="middle">all signals are 3.3 V logic · baud 115200</text>
+        </svg>
+      </div>
+    </div>
+
+    <h3>Pin Remap for C3 / S3 Mini Variants</h3>
+    <p>Before flashing the bridge firmware to a C3 or S3 Mini board, edit these two <code>#define</code> lines near the top of <code>pi_espnow_bridge.ino</code>:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Board</th><th>BRIDGE_UART_RX</th><th>BRIDGE_UART_TX</th></tr></thead>
+        <tbody>
+          <tr><td>ESP32-DevKit-C / WROOM-32</td><td>GPIO 16 (default)</td><td>GPIO 17 (default)</td></tr>
+          <tr><td>ESP32-C3 Mini</td><td>GPIO 6</td><td>GPIO 7</td></tr>
+          <tr><td>ESP32-S3 Mini</td><td>GPIO 4</td><td>GPIO 5</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The Pi TX UART wiring does not change — only the ESP32 pin assignments in firmware need updating for mini variants.</p>
+  </div>
+
+  <!-- §8 TROUBLESHOOTING -->
+  <div class="section">
+    <span id="troubleshooting" class="section-anchor"></span>
+    <div class="section-label">Section 08</div>
+    <h2>Troubleshooting</h2>
+    <p>Common hardware assembly problems and their fixes. Firmware-related issues are covered in the <a href="install-guide.html#troubleshooting" style="color:var(--orange)">Install Guide §12</a>.</p>
+
+    <h3>ESP-NOW Pairing</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Laser Eye V2 TX fires but the Mini RX V2 / Full RX V2 does not respond — no trigger output on the receiver</div>
+        <div class="trouble-fix">Confirm the receiver's STA MAC address was entered correctly during pairing in the app (format <code>AA:BB:CC:DD:EE:FF</code> — all uppercase, colon-separated). The MAC is printed to Serial Monitor at 115200 baud on every boot. If the MAC was entered correctly, clear the pairing on both sides: hold the receiver's BOOT button (GPIO 0) LOW for 3 seconds on power-on until the LED blinks rapidly, then re-pair in the app. Ensure both devices are within reliable ESP-NOW radio range (open air: &lt;200 m; walls and obstructions reduce this significantly).</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Mini RX V2 shows as paired in the app but stops receiving triggers after a power cycle</div>
+        <div class="trouble-fix">The pairing is stored in flash (<code>Preferences</code>) on the receiver. If the receiver has been reflashed since pairing, the stored peer MAC is erased and you must re-pair. After any firmware flash, always re-pair the receiver from the app before use.</div>
+      </div>
+    </div>
+
+    <h3>Trigger Output</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Trigger output not firing the camera — shutter does not activate even though the trigger LED blinks</div>
+        <div class="trouble-fix">Check the <code>invertTrig</code> setting in the app — the correct value depends on your wiring option. Direct connection (Option A): set <code>invertTrig = 0</code>. NPN transistor (Option B) or PC817 optocoupler (Option C): set <code>invertTrig = 1</code>. Also verify your camera's shutter port is 2.5 mm TRS (most DSLRs and mirrorless) and that tip and sleeve assignments match your wiring — a reversed cable will not fire the shutter.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Trigger fires the camera but the camera body powers off or behaves erratically</div>
+        <div class="trouble-fix">The camera GND (sleeve) and ESP32 / Pi GND are not sharing a common reference, causing a floating or unexpected voltage on the shutter port. Ensure the shared ground wire is connected as shown in the NPN transistor circuit diagram in §02 or §06. If using Option A (direct), ensure ESP32 GND is tied to the camera's shutter sleeve directly.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">WAKE / AF output does not wake the camera before the shutter fires</div>
+        <div class="trouble-fix">Wire the WAKE_OUT pin (GPIO 12 on Laser Eye TX; GPIO 27 on Pi TX) to the camera's ring contact (2.5 mm TRS: ring = AF/wake; tip = shutter). Use the same isolation circuit as the shutter output. The firmware pulses WAKE_OUT before TRIGGER_OUT by the wake-up delay configured in the app — confirm this delay is non-zero.</div>
+      </div>
+    </div>
+
+    <h3>Battery Percentage</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Battery percentage reads 0 %, stuck at 100 %, or wildly inaccurate</div>
+        <div class="trouble-fix">Verify the voltage divider is wired correctly: Battery+ → R1 → midpoint → R2 → GND, with the midpoint tapped to the ADC input pin (GPIO 34 on full-size boards; GPIO 9 on ESP32-S2 Mini). Measure the midpoint voltage with a multimeter at a known battery charge level and confirm it matches the expected value from the divider formula. Also verify the resistor values match the values expected by the firmware's <code>BATT_SCALE</code> constant — a wrong resistor value (e.g. 10 kΩ instead of 100 kΩ) will produce consistently wrong readings.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">ESP32-S2 Mini always reads 0 % battery regardless of charge level</div>
+        <div class="trouble-fix">The S2 Mini uses a switched ADC circuit controlled by GPIO 12 (BATT_EN_PIN). Confirm GPIO 12 is wired to the 10 kΩ base resistor as shown in the S2 Mini switched ADC diagram in §04. If GPIO 12 is unconnected, the transistor gate never opens and the ADC reads nothing. Also ensure you selected <strong>ESP32-S2 Dev Module</strong> as the board in Arduino IDE — compiling for a standard ESP32 board will use the wrong ADC pin assignments.</div>
+      </div>
+    </div>
+
+    <h3>TF-Luna LiDAR</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">TF-Luna not detected on I²C — Serial Monitor shows repeated "TF-Luna init failed" or distance always reads 0 or –1</div>
+        <div class="trouble-fix">First confirm the TF-Luna is in I²C mode — units shipped in UART mode will not respond on I²C. Use the TF-Luna configuration tool (TFMini Plus Config Tool, Windows only) or short the UART/I²C mode selection pad on the sensor PCB to switch it. Next check wiring: SDA → GPIO 21, SCL → GPIO 22 for Laser Eye TX; SDA → Pi GPIO 2 (Pin 3), SCL → Pi GPIO 3 (Pin 5) for Pi TX. The ESP32 uses internal pull-ups on I²C; the Pi may need external 4.7 kΩ pull-ups if the cable run is long (&gt;30 cm). Finally confirm power: the TF-Luna draws up to 130 mA at 5 V — ensure the supply can deliver this alongside the rest of the circuit.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">TF-Luna reports valid distance but readings are noisy or jump erratically</div>
+        <div class="trouble-fix">Strong ambient IR light (direct sunlight or nearby IR sources) saturates the TF-Luna's receiver and produces noisy readings. Shade the sensor aperture or reduce the frame rate in firmware to give the sensor longer integration time. Also check that the I²C cable is away from the servo signal wire (Cable Trigger) or any PWM lines — coupling noise can corrupt readings.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>SHP Asset Manager &nbsp;&middot;&nbsp; Hardware Build Guide</div>
+    <div style="margin-top:8px;">
+      <a href="install-guide.html" style="color:var(--orange);text-decoration:none;">Firmware &amp; Software Install</a>
+      &nbsp;&middot;&nbsp;
+      <a href="lazer-eye-manual.html" style="color:var(--orange);text-decoration:none;">Lazer Eye Manual</a>
+      &nbsp;&middot;&nbsp;
+      <a href="cable-trigger-manual.html" style="color:var(--orange);text-decoration:none;">Cable Trigger Manual</a>
+    </div>
+    <div><a href="https://scotthendersonphotography.net" style="color:#F27D26;text-decoration:none;">scotthendersonphotography.net</a></div>
+  </div>
+
+</div>
+</body>
+</html>

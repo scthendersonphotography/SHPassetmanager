@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lazer Eye — User Manual</title>
+<style>
+  :root {
+    --orange: #F27D26;
+    --bg: #0d0d0d;
+    --card: #161616;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #888;
+    --faint: #444;
+    --mono: "Courier New", Courier, monospace;
+    --radius: 6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: var(--mono); background: var(--bg); color: var(--text); line-height: 1.7; }
+  .page-wrap { max-width: 820px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  .cover { text-align: center; padding: 60px 0 50px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .cover-eyebrow { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 18px; }
+  .cover-title { font-size: 38px; font-weight: 700; letter-spacing: 3px; color: var(--orange); line-height: 1.1; margin-bottom: 10px; text-transform: uppercase; }
+  .cover-sub { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+  .cover-divider { width: 60px; height: 2px; background: var(--orange); margin: 28px auto; }
+  .cover-meta { font-size: 10px; color: var(--faint); letter-spacing: 1px; }
+
+  .toc { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 48px; }
+  .toc-title { font-size: 9px; letter-spacing: 2.5px; color: var(--orange); text-transform: uppercase; margin-bottom: 20px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .toc-list li { border-top: 1px solid var(--border); padding: 9px 0; }
+  .toc-list li:nth-child(odd) { padding-right: 24px; }
+  .toc-list a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.4px; }
+  .toc-list a:hover { color: var(--orange); }
+  .toc-num { color: var(--orange); margin-right: 6px; font-size: 10px; }
+
+  .section { margin-bottom: 56px; }
+  .section-anchor { display: block; height: 0; }
+  .section-label { font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin: 28px 0 12px; }
+  p { font-size: 13px; color: var(--text); margin-bottom: 14px; line-height: 1.75; }
+  p.note { font-size: 11px; color: var(--muted); background: var(--card); border-left: 3px solid var(--orange); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 14px; }
+  p.warn { font-size: 11px; color: #e0a030; background: rgba(224,160,48,0.08); border: 1px solid rgba(224,160,48,0.25); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px; }
+
+  ol.steps { list-style: none; counter-reset: step; margin-bottom: 16px; }
+  ol.steps li { counter-increment: step; display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.65; }
+  ol.steps li::before { content: counter(step); min-width: 24px; height: 24px; line-height: 24px; text-align: center; background: var(--orange); color: #000; font-size: 11px; font-weight: 700; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+  ul.bullets { list-style: none; margin-bottom: 16px; }
+  ul.bullets li { padding: 5px 0 5px 18px; font-size: 13px; color: var(--text); position: relative; line-height: 1.65; }
+  ul.bullets li::before { content: "›"; color: var(--orange); position: absolute; left: 0; font-size: 16px; line-height: 1.4; }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { background: var(--card); color: var(--orange); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.6; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  code { background: #1e1e1e; border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-family: var(--mono); font-size: 11px; color: var(--orange); }
+
+  .setting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .setting-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .setting-card-name { font-size: 9px; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px; }
+  .setting-card-range { font-size: 10px; color: var(--faint); margin-bottom: 8px; }
+  .setting-card-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .screenshot-wrap { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 24px 0; }
+  .screenshot-item { display: flex; flex-direction: column; align-items: center; }
+  .screenshot-wrap img { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .screenshot-caption { text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; margin-top: 8px; }
+  .screenshot-placeholder { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px dashed var(--border); background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; gap: 10px; }
+  .screenshot-placeholder-label { font-size: 10px; color: var(--faint); text-align: center; letter-spacing: 0.5px; }
+
+  .trouble-row { display: grid; grid-template-columns: 1fr 1.5fr; gap: 0; border-bottom: 1px solid var(--border); padding: 14px 0; align-items: start; }
+  .trouble-row:last-child { border-bottom: none; }
+  .trouble-symptom { font-size: 12px; color: #cc7733; padding-right: 20px; line-height: 1.6; }
+  .trouble-fix { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .v2-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #000; background: var(--orange); border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+  .pi-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #000; background: #5b9bd5; border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+
+  .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; line-height: 2; }
+
+  @media print {
+    :root { --bg: #fff; --card: #f8f8f8; --border: #d0d0d0; --text: #111; --muted: #555; --faint: #888; }
+    body { background: #fff; color: #111; font-size: 12px; }
+    .page-wrap { padding: 20px 24px 40px; max-width: 100%; }
+    .cover { padding: 30px 0; page-break-after: always; }
+    .cover-title { font-size: 28px; color: #F27D26; }
+    .toc { page-break-after: always; }
+    .toc-list a::after { content: " (" attr(href) ")"; font-size: 9px; color: #888; }
+    .section { page-break-before: always; }
+    h2 { color: #111; font-size: 16px; border-bottom-color: #d0d0d0; }
+    h3 { color: #F27D26; font-size: 11px; }
+    code { background: #eee; border-color: #ccc; color: #c44a00; }
+    .setting-card { background: #f8f8f8; border-color: #d0d0d0; }
+    .setting-card-name { color: #F27D26; }
+    .setting-card-desc, .setting-card-range { color: #555; }
+    thead th { background: #f0f0f0; color: #F27D26; border-color: #ccc; }
+    tbody td { color: #333; border-color: #ddd; }
+    p.note { background: #f5f5f5; border-color: #F27D26; color: #555; }
+    p.warn { background: #fff8ee; color: #7a5000; }
+    .screenshot-wrap img { max-width: 240px; box-shadow: none; border-color: #ccc; }
+    .screenshot-placeholder { border-color: #ccc; background: #f5f5f5; }
+    .screenshot-placeholder-label { color: #888; }
+    .trouble-symptom { color: #c44a00; }
+    .trouble-fix { color: #555; }
+    ol.steps li::before { background: #F27D26; }
+    .toc-num, .section-label { color: #F27D26; }
+    .v2-badge { background: #F27D26; color: #000; }
+    .pi-badge { background: #5b9bd5; color: #000; }
+    .footer { color: #888; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <div class="cover">
+    <div class="cover-eyebrow">SHP Asset Manager</div>
+    <div class="cover-title">Lazer Eye</div>
+    <div class="cover-sub">User Manual &mdash; V2 Hardware</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated August 2026</div>
+  </div>
+
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ol class="toc-list">
+      <li><a href="#section-1"><span class="toc-num">01</span> System Overview</a></li>
+      <li><a href="#section-2"><span class="toc-num">02</span> Connecting to the App</a></li>
+      <li><a href="#section-3"><span class="toc-num">03</span> Configuration Settings</a></li>
+      <li><a href="#section-4"><span class="toc-num">04</span> Wake Trigger</a></li>
+      <li><a href="#section-5"><span class="toc-num">05</span> Trigger Schedule</a></li>
+      <li><a href="#section-6"><span class="toc-num">06</span> Battery Monitor</a></li>
+      <li><a href="#section-7"><span class="toc-num">07</span> ESP-NOW Wireless Receiver &amp; Pairing</a></li>
+      <li><a href="#section-8"><span class="toc-num">08</span> Direct Cable Trigger Cross-Link</a></li>
+      <li><a href="#section-9"><span class="toc-num">09</span> BLE Cable Trigger Link</a></li>
+      <li><a href="#section-10"><span class="toc-num">10</span> TX &amp; RX Output Modes</a></li>
+      <li><a href="#section-11"><span class="toc-num">11</span> Browser Panel</a></li>
+      <li><a href="#section-12"><span class="toc-num">12</span> Camera</a></li>
+      <li><a href="#section-13"><span class="toc-num">13</span> Google Drive Upload</a></li>
+      <li><a href="#section-14"><span class="toc-num">14</span> Time-Lapse</a></li>
+      <li><a href="#section-15"><span class="toc-num">15</span> Astronomical Triggers</a></li>
+      <li><a href="#section-16"><span class="toc-num">16</span> Advanced Settings</a></li>
+      <li><a href="#section-17"><span class="toc-num">17</span> Status LEDs &amp; Battery</a></li>
+      <li><a href="#section-18"><span class="toc-num">18</span> Troubleshooting</a></li>
+    </ol>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 01 -->
+  <div class="section">
+    <span id="section-1" class="section-anchor"></span>
+    <div class="section-label">Section 01</div>
+    <h2>System Overview</h2>
+    <p>The <strong>Lazer Eye</strong> is a LiDAR-based camera trigger. It continuously measures the distance to whatever is in front of it and fires your camera shutter the moment something enters a distance window you define &mdash; no button press required.</p>
+    <p>Common uses include wildlife photography (animal crosses the beam), action sports (athlete reaches a point), product photography, and long-exposure light painting.</p>
+
+    <h3>Wireless receiver options</h3>
+    <p>An optional wireless receiver sits at the camera end and receives trigger and wake signals from the Lazer Eye, eliminating a cable run between the sensor and your camera. Two V2 receiver types are supported:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Receiver</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>LR Mini RX V2</strong> <span class="v2-badge">V2</span></td>
+            <td>Compact receiver. Identifies itself to the app automatically once paired.</td>
+          </tr>
+          <tr>
+            <td><strong>LR Full ESP32 RX V2</strong> <span class="v2-badge">V2</span></td>
+            <td>Full-size receiver, same feature set as the Mini.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Trigger output</h3>
+    <p>The Lazer Eye has a wired trigger jack, and can optionally also trigger a paired V2 receiver wirelessly over ESP-NOW.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Output</th><th>What it does</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>ESP-NOW wireless (optional)</strong></td>
+            <td>Sends trigger and wake signals to a paired V2 receiver over 2.4&nbsp;GHz. No cable required between the Lazer Eye and the camera.</td>
+            <td>Remote or awkward placements, water environments, moving rigs.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 02 -->
+  <div class="section">
+    <span id="section-2" class="section-anchor"></span>
+    <div class="section-label">Section 02</div>
+    <h2>Connecting to the App</h2>
+    <p>The SHP Asset Manager app controls all Lazer Eye settings in real time. Connect via <strong>Bluetooth</strong>, <strong>WiFi</strong>, or through a <strong>Pi TX</strong> Raspberry Pi &mdash; all three give full control.</p>
+    <div class="screenshot-wrap">
+      <div class="screenshot-item">
+        <img src="screenshots/lazer-eye-main.jpg" alt="Lazer Eye tab with CONNECT DEVICE button in the header">
+        <div class="screenshot-caption">Tap &#9889; CONNECT DEVICE to start pairing</div>
+      </div>
+    </div>
+
+    <h3>Bluetooth</h3>
+    <ol class="steps">
+      <li>Power on the Lazer Eye.</li>
+      <li>Ensure Bluetooth is enabled on your phone.</li>
+      <li>Open the app and tap the <strong>LAZER EYE</strong> tab at the bottom of the screen.</li>
+      <li>Tap <strong>&#9889; CONNECT DEVICE</strong> in the header and select your device from the scan list. The Lazer Eye appears as <code>LASER_EYE_V2</code>.</li>
+      <li>Settings sync automatically. The dot in the header turns orange when connected.</li>
+    </ol>
+    <p class="note">The app remembers your device. On subsequent launches it reconnects silently if the Lazer Eye is in range.</p>
+
+    <h3>WiFi</h3>
+    <p>The Lazer Eye creates its own WiFi hotspot. WiFi is recommended when installing app or firmware updates &mdash; it is significantly faster than Bluetooth.</p>
+    <ol class="steps">
+      <li>Power on the Lazer Eye.</li>
+      <li>On your phone, join the <code>LASER_EYE</code> network in OS WiFi settings. If you have set a Security PIN of 8 or more characters in the app, that PIN is also the hotspot password.</li>
+      <li>Return to the app. Tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
+      <li>Enter IP <strong>192.168.4.1</strong> and port <strong>80</strong>, then tap CONNECT.</li>
+      <li>Settings sync automatically once connected.</li>
+    </ol>
+
+    <h3>Pi TX <span class="pi-badge">Pi TX</span></h3>
+      <p>A <strong>Pi TX</strong> is a Raspberry Pi running the SHP Pi daemon. Its secured hotspot is the recommended field-control path: join the WiFi network whose name begins with <code>PI_TX_</code>, then connect the app to <code>10.42.0.1</code>. No internet or separate router is required for local control. Optional Ethernet or a second WiFi adapter can provide upstream internet while the Pi&apos;s built-in WiFi remains dedicated to the hotspot.</p>
+    <ol class="steps">
+        <li>Join the Pi TX network whose SSID begins with <code>PI_TX_</code>, using the password printed during installation.</li>
+        <li>In the app, tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
+        <li>Choose the Pi TX connection flow. The app checks <strong>10.42.0.1</strong> first; tap CONNECT if prompted.</li>
+        <li>The app identifies the Pi via its <code>PLATFORM,PI</code> response and all Pi TX sections appear automatically.</li>
+    </ol>
+      <p class="note">If the Pi is also on a trusted upstream LAN, <code>pi-tx.local</code> or its LAN IP can be used instead. Normal-LAN control is currently unauthenticated, so use the secured Pi TX hotspot for untrusted or shared networks.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 03 -->
+  <div class="section">
+    <span id="section-3" class="section-anchor"></span>
+    <div class="section-label">Section 03</div>
+    <h2>Configuration Settings</h2>
+    <p>The <strong>CONFIGURATION</strong> card is expanded by default at the top of the Lazer Eye tab. It holds the core trigger-zone settings, laser alignment, the LED toggles, and Wake Trigger.</p>
+    <div class="screenshot-wrap">
+      <div class="screenshot-item">
+        <img src="screenshots/lazer-eye-config.jpg" alt="Lazer Eye tab showing the configuration card with Min Distance, Max Distance, Shot Interval and Shots Per Trigger">
+        <div class="screenshot-caption">Configuration card &mdash; Min/Max Distance, Shot Interval, Shots Per Trigger</div>
+      </div>
+    </div>
+    <div class="setting-grid">
+      <div class="setting-card">
+        <div class="setting-card-name">Min Distance</div>
+        <div class="setting-card-range">0 cm up to Max Distance</div>
+        <div class="setting-card-desc">The closest range at which the Lazer Eye will trigger. Objects nearer than this are ignored entirely.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Max Distance</div>
+        <div class="setting-card-range">Min Distance up to 1000 cm</div>
+        <div class="setting-card-desc">The furthest range that triggers a shot. Objects beyond this are ignored. The orange zone on the distance bar shows your active trigger window.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Shot Interval</div>
+        <div class="setting-card-range">0.0 s to 30 s</div>
+        <div class="setting-card-desc">Minimum time between successive triggers. Set to <strong>0.0 s</strong> to fire on every sensor reading. Increase to limit how rapidly the camera fires when a subject lingers in the zone.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Delay Before Shot</div>
+        <div class="setting-card-range">0 s to 5 s</div>
+        <div class="setting-card-desc">Pauses this long between the detection event and the shutter firing. Use for subjects that are still approaching the ideal frame position when detected. 0 = instant.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Shots Per Trigger</div>
+        <div class="setting-card-range">1 to 10</div>
+        <div class="setting-card-desc">How many photos are taken each time the trigger fires. <strong>1</strong> for single capture; increase for burst sequences.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Laser Alignment</div>
+        <div class="setting-card-range">On / off &mdash; auto-off after 5 min</div>
+        <div class="setting-card-desc">Fires the built-in alignment laser so you can see exactly where the sensor is aimed. Turns off automatically after 5 minutes, or tap the toggle again to stop it early.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Status LED</div>
+        <div class="setting-card-range">On / off</div>
+        <div class="setting-card-desc">Blinks during each camera trigger and wake pulse. Disable in environments where stray light would disturb the shot.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Power LED</div>
+        <div class="setting-card-range">On / off</div>
+        <div class="setting-card-desc">Solid indicator that the Lazer Eye is powered on. Disable for stealth shooting or to minimise light pollution during long exposures.</div>
+      </div>
+    </div>
+    <p>All values are written to the device immediately when changed and are retained after power-off.</p>
+    <p class="warn">Do not stare directly into the alignment laser beam.</p>
+    <h3>Reading the distance monitor</h3>
+    <ul class="bullets">
+      <li>The large number at the top shows the live distance reading.</li>
+      <li>The <strong>orange zone</strong> on the bar marks your Min&ndash;Max trigger window. When the moving dot enters it the shutter fires and the display flashes <strong>TRIGGER</strong>.</li>
+      <li>Tap <strong>CM/M</strong> or <strong>FT/IN</strong> to switch the display unit.</li>
+    </ul>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 04 -->
+  <div class="section">
+    <span id="section-4" class="section-anchor"></span>
+    <div class="section-label">Section 04</div>
+    <h2>Wake Trigger</h2>
+    <p>Many cameras enter a sleep or standby mode after a period of inactivity and miss the first shutter trigger after a long wait. Wake Trigger sends a short periodic pulse to keep your camera awake between triggers.</p>
+    <ol class="steps">
+      <li>Scroll to the <strong>WAKE TRIGGER</strong> row inside the Configuration card.</li>
+      <li>Toggle the switch <strong>ON</strong>. The label turns orange when active.</li>
+      <li>Select a preset interval or enter a custom value.</li>
+    </ol>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Preset</th><th>Interval</th><th>Recommended for</th></tr></thead>
+        <tbody>
+          <tr><td>30s</td><td>30 seconds</td><td>Cameras with very aggressive sleep settings</td></tr>
+          <tr><td>1 min</td><td>60 seconds</td><td>General use &mdash; most cameras</td></tr>
+          <tr><td>2 min</td><td>120 seconds</td><td>Cameras with 1&ndash;2 min auto-off</td></tr>
+          <tr><td>5 min</td><td>300 seconds</td><td>Long waits &mdash; wildlife setups</td></tr>
+          <tr><td>10 min</td><td>600 seconds</td><td>Very long waits</td></tr>
+          <tr><td>30 min</td><td>1800 seconds</td><td>Overnight setups</td></tr>
+          <tr><td>CUSTOM</td><td>1&ndash;1800 s</td><td>Any specific interval</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>When connected, a <strong>NEXT PULSE IN</strong> countdown appears at the bottom of the card showing when the next wake pulse will fire.</p>
+    <p class="note">Set the wake interval slightly shorter than your camera&apos;s auto-off time. If the camera sleeps after 1 minute, use a 45-second interval.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 05 -->
+  <div class="section">
+    <span id="section-5" class="section-anchor"></span>
+    <div class="section-label">Section 05</div>
+    <h2>Trigger Schedule</h2>
+    <p>The <strong>TRIGGER SCHEDULE</strong> card lets you restrict LiDAR triggering to a set time window. The shutter only fires when the current time falls inside your START TIME&ndash;END TIME range; detections outside that window are silently ignored.</p>
+
+    <h3>Setting a time window</h3>
+    <ol class="steps">
+      <li>Find the <strong>TRIGGER SCHEDULE</strong> card in the Lazer Eye tab and expand it.</li>
+      <li>Toggle <strong>RESTRICT TO TIME WINDOW</strong> on. The card label turns orange.</li>
+      <li>Enter <strong>START TIME</strong> and <strong>END TIME</strong> in 24&nbsp;h format (<code>HH:MM</code>). Both fields accept a decimal keyboard &mdash; tap the field, type, then tap away to confirm.</li>
+    </ol>
+
+    <h3>Overnight windows</h3>
+    <p>If your End Time is earlier than your Start Time the window is treated as crossing midnight. For example, <code>22:00</code>&ndash;<code>06:00</code> means &ldquo;active from 10 pm until 6 am.&rdquo;</p>
+
+    <h3>Live status badge</h3>
+    <p>While the schedule is enabled a status banner appears below the time inputs:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Banner</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Active &mdash; stops at HH:MM</strong></td><td>Inside the window. LiDAR triggering is live.</td></tr>
+          <tr><td><strong>Inactive &mdash; starts at HH:MM</strong></td><td>Outside the window. Triggers are suppressed until the start time.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Times are based on the phone&apos;s local clock (24&nbsp;h). Connect to the device at least once before leaving it unattended so it receives a time sync from the app.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 06 -->
+  <div class="section">
+    <span id="section-6" class="section-anchor"></span>
+    <div class="section-label">Section 06</div>
+    <h2>Battery Monitor</h2>
+    <p>Battery Monitor watches the Lazer Eye&apos;s battery level in the background and sends a local notification when it drops below your chosen threshold &mdash; useful during long unattended shoots.</p>
+
+    <h3>Enabling the monitor</h3>
+    <ol class="steps">
+      <li>Tap the <strong>&#9881; gear icon</strong> in the Lazer Eye tab header to open Settings.</li>
+      <li>Find the <strong>BATTERY MONITOR</strong> row and toggle it on.</li>
+      <li>Set the <strong>ALERT THRESHOLD</strong> slider to the battery percentage at which you want to be notified. The range is 5&ndash;50%; the default is 20%.</li>
+      <li>If the system asks for notification permission, grant it. The monitor cannot alert you without permission.</li>
+    </ol>
+    <p>When the monitor is active a small <strong>MONITOR</strong> badge appears in the app header next to the battery icon.</p>
+
+    <h3>Alert behaviour</h3>
+    <ul class="bullets">
+      <li>One alert fires per discharge cycle. Once the alert has fired, it will not repeat until the battery has been charged back above the threshold and drained again.</li>
+      <li>On <strong>iOS</strong> the app uses background fetch to check the battery level periodically (typically every 15 minutes). iOS schedules background fetch adaptively &mdash; the alert may arrive up to 15 minutes after the threshold is crossed.</li>
+      <li>On <strong>Android</strong> the monitor runs as a persistent foreground service with a status-bar notification so it can check the level continuously.</li>
+    </ul>
+    <p class="note">The monitor works over both Bluetooth and WiFi. It automatically uses silent reconnect after a brief disconnection so it does not interrupt your shoot.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 07 -->
+  <div class="section">
+    <span id="section-7" class="section-anchor"></span>
+    <div class="section-label">Section 07</div>
+    <h2>ESP-NOW Wireless Receiver &amp; Pairing</h2>
+    <p>The ESP-NOW WIRELESS RECEIVER card lets the Lazer Eye trigger a paired V2 receiver wirelessly, sending trigger and wake signals over 2.4&nbsp;GHz instead of a cable run to the camera.</p>
+
+    <h3>Pairing a receiver</h3>
+    <ol class="steps">
+      <li>Power on the wireless receiver and connect the Lazer Eye to the app (Bluetooth or WiFi).</li>
+      <li>In the Lazer Eye tab, find the <strong>ESP-NOW WIRELESS RECEIVER</strong> card and turn its toggle <strong>ON</strong>.</li>
+      <li>Expand the card. Tap the <strong>&#8635; refresh</strong> button next to <strong>RECEIVER MAC ADDRESS</strong> to read back the Lazer Eye&apos;s own wireless ID.</li>
+      <li>Find the MAC address printed on the receiver itself.</li>
+      <li>Enter it into the <strong>PAIR TRANSMITTER MAC</strong> field in the format <code>AA:BB:CC:DD:EE:FF</code>, then tap <strong>PAIR TRANSMITTER</strong>.</li>
+      <li>The receiver locks onto the first packet it gets and pairs automatically. The badge at the top of the card switches from <strong>NOT PAIRED</strong> to <strong>PAIRED</strong>.</li>
+    </ol>
+    <p class="note">Pairing is remembered by both devices. You do not need to re-pair after power-cycling either the Lazer Eye or the receiver.</p>
+    <p class="note">Up to four receivers can be paired to the same transmitter simultaneously. Tap <strong>ADD RECEIVER</strong> to register additional units (up to the 4-receiver limit).</p>
+
+    <h3>What appears after pairing</h3>
+    <ul class="bullets">
+      <li><strong>RECEIVER TYPE</strong> &mdash; shows MINI RX V2 or FULL ESP32 RX V2 once the receiver identifies itself.</li>
+      <li><strong>RX FIRMWARE</strong> &mdash; the receiver&apos;s firmware version, once reported.</li>
+      <li><strong>TX battery icon</strong> &mdash; shows the receiver&apos;s battery level, updated whenever it reports a reading wirelessly.</li>
+    </ul>
+
+    <h3>Resetting a receiver&apos;s pairing</h3>
+    <p>To pair a receiver to a different Lazer Eye, clear its stored pairing first:</p>
+    <ol class="steps">
+      <li>Power off the receiver.</li>
+      <li>Hold its <strong>BOOT button</strong> while applying power, and keep holding for <strong>3 seconds</strong>, then release.</li>
+      <li>The receiver clears its stored pairing and waits for a new first packet from whichever Lazer Eye pairs to it next.</li>
+    </ol>
+
+    <h3>Updating bridge firmware from the app <span class="pi-badge">Pi TX</span></h3>
+    <p>When connected to a Pi TX, the <strong>BRIDGE FIRMWARE</strong> card appears in the Lazer Eye tab. It lets you update the ESP-NOW bridge co-processor on the Pi wirelessly &mdash; no USB cable or terminal access required.</p>
+    <ol class="steps">
+      <li>With the Pi TX connected, scroll to the <strong>BRIDGE FIRMWARE</strong> card.</li>
+      <li>Tap <strong>CHECK FOR UPDATES</strong>. The app fetches the latest bridge <code>.bin</code> from the firmware GitHub release.</li>
+      <li>If an update is available tap <strong>INSTALL UPDATE</strong>. The app sends an <code>OTA</code> command to the Pi, which generates a fresh per-session token and forwards it to the bridge co-processor.</li>
+      <li>The bridge tears down ESP-NOW, raises a temporary WiFi access point (<code>LR-BRIDGE-OTA</code>), and the app joins it using the session token as the WPA2 password.</li>
+      <li>The app uploads the new firmware. The bridge reboots after flashing and re-announces itself to the Pi &mdash; the ESP-NOW card updates within a few seconds.</li>
+    </ol>
+    <p class="note">If no bridge co-processor is attached to the Pi, the card reports <code>ERR_NO_BRIDGE</code>. To abort a bridge OTA mid-transfer, power-cycle the bridge &mdash; it boots back to normal operation.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 08 -->
+  <div class="section">
+    <span id="section-8" class="section-anchor"></span>
+    <div class="section-label">Section 08</div>
+    <h2>Direct Cable Trigger Cross-Link</h2>
+    <p>The <strong>DIRECT CABLE TRIGGER LINK</strong> card pairs the Lazer Eye directly with a Cable Trigger over ESP-NOW. Once paired, every accepted LiDAR detection fires the Cable Trigger wirelessly &mdash; even when your phone is put away or out of Bluetooth range.</p>
+    <p class="note">This feature requires the Lazer Eye firmware v2.9.4 or later for confirmed-delivery status. Earlier firmware versions still send the signal but cannot confirm whether the Cable Trigger received it.</p>
+
+    <h3>Pairing</h3>
+    <ol class="steps">
+      <li>Connect the <strong>Cable Trigger</strong> to the app via Bluetooth.</li>
+      <li>Also connect the <strong>Lazer Eye</strong> via Bluetooth or WiFi.</li>
+      <li>In the Lazer Eye tab, find the <strong>DIRECT CABLE TRIGGER LINK</strong> card and expand it.</li>
+      <li>Under <strong>STEP 1 &mdash; GET CABLE TRIGGER MAC</strong>, tap <strong>GET MAC</strong>. The app reads the Cable Trigger&apos;s ESP-NOW hardware address over BLE and fills in the MAC display automatically.</li>
+      <li>Tap <strong>PAIR</strong> under STEP 2. The Lazer Eye stores the Cable Trigger&apos;s MAC and begins sending wireless triggers on every detection.</li>
+      <li>The card badge switches to <strong>PAIRED</strong> and shows the stored MAC address.</li>
+    </ol>
+
+    <h3>Testing the link</h3>
+    <p>Tap <strong>TEST LINK</strong> to send a test trigger. The result shown depends on firmware version:</p>
+    <ul class="bullets">
+      <li><strong>Delivery confirmed</strong> &mdash; the Cable Trigger acknowledged the test packet. You should have heard a click.</li>
+      <li><strong>Sent (delivery not confirmed)</strong> &mdash; the packet was sent but acknowledgement requires Lazer Eye firmware v2.9.4+. Listen for a click on the Cable Trigger.</li>
+      <li><strong>Error</strong> &mdash; the packet could not be sent. Confirm ESP-NOW is enabled and the devices are within range.</li>
+    </ul>
+
+    <h3>Unpairing</h3>
+    <p>Tap <strong>UNPAIR</strong> to remove the cross-link. Both devices forget the association. The pairing must be re-done from scratch if you want to restore it.</p>
+    <p class="note">The cross-link is independent of your phone. Once paired you can pocket the phone &mdash; the Lazer Eye sends directly to the Cable Trigger over ESP-NOW with no relay required.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 09 -->
+  <div class="section">
+    <span id="section-9" class="section-anchor"></span>
+    <div class="section-label">Section 09</div>
+    <h2>BLE Cable Trigger Link</h2>
+    <p>The <strong>CABLE TRIGGER LINK</strong> card provides a BLE-mediated link between the Lazer Eye and the Cable Trigger. When enabled, every accepted LiDAR detection also fires the Cable Trigger via the phone&apos;s active BLE connection &mdash; no ESP-NOW pairing required, but both devices must stay connected simultaneously.</p>
+
+    <h3>Enabling the link</h3>
+    <ol class="steps">
+      <li>Connect both the <strong>Lazer Eye</strong> and the <strong>Cable Trigger</strong> to the app (either via Bluetooth or WiFi).</li>
+      <li>In the Lazer Eye tab, find the <strong>CABLE TRIGGER LINK</strong> card and expand it.</li>
+      <li>Toggle <strong>FIRE CABLE TRIGGER ON LIDAR EVENT</strong> on. The card badge changes to <strong>LINKED</strong>.</li>
+    </ol>
+    <p>A green status banner confirms both devices are connected. An amber banner appears if the Cable Trigger disconnects &mdash; the link will not fire while disconnected.</p>
+
+    <h3>Behaviour</h3>
+    <ul class="bullets">
+      <li>Each relay uses the Cable Trigger&apos;s own <strong>Shots Per Trigger</strong> setting.</li>
+      <li>If the Cable Trigger is already mid-sequence when a trigger arrives, that event is <strong>skipped</strong> &mdash; not queued. Events are not buffered.</li>
+      <li>The link stops automatically when either device disconnects. Toggle the switch again when both reconnect.</li>
+    </ul>
+    <p class="note">For hands-free setups where you want the link to work even after putting the phone away, use the Direct Cable Trigger Cross-Link (Section 08) instead. The BLE link is best when you are actively monitoring both devices from the app simultaneously.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 10 -->
+  <div class="section">
+    <span id="section-10" class="section-anchor"></span>
+    <div class="section-label">Section 10</div>
+    <h2>TX &amp; RX Output Modes</h2>
+    <p>The <strong>TX OUTPUT</strong> card controls the Lazer Eye&apos;s own wake signal and autofocus behaviour. Once a receiver has been paired at least once, an <strong>RX OUTPUT</strong> card appears below it with the same controls for the receiver.</p>
+
+    <h3>Wake signal</h3>
+    <p>Sets the signal level used on the wake/focus output.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Mode</th><th>Use when</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Dry Contact</strong></td>
+            <td>Default. Works with most camera wake/focus inputs.</td>
+          </tr>
+          <tr>
+            <td><strong>HOT 3.3V</strong></td>
+            <td>Only enable if your camera requires a positive voltage pulse on the focus pin rather than a ground closure. Most cameras (Sony multi-terminal, Canon N3, Nikon MC-DC2 compatible) use ground closure &mdash; check your camera&apos;s remote/shutter pinout before switching this on.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="warn">The app shows a confirmation warning the first time you switch either Wake Signal to HOT 3.3V, since it applies voltage instead of a simple contact closure.</p>
+
+    <h3>Autofocus pre-pulse</h3>
+    <p>Holds the wake/focus pin for a set time <em>before</em> the shutter fires, giving your camera&apos;s autofocus a head start on moving subjects.</p>
+    <ul class="bullets">
+      <li>Toggle <strong>AUTOFOCUS PRE-PULSE</strong> (TX OUTPUT) or <strong>RX AUTOFOCUS PRE-PULSE</strong> (RX OUTPUT) on.</li>
+      <li>Set <strong>FOCUS HOLD TIME</strong> (TX: 50&ndash;2000 ms) or <strong>RX FOCUS HOLD TIME</strong> (RX: 50&ndash;5000 ms) to how long your camera needs to lock focus &mdash; typically 200&ndash;600 ms.</li>
+      <li>The wake pin is held for that duration, then the shutter fires.</li>
+    </ul>
+
+    <h3>RX Output LEDs</h3>
+    <p>The RX OUTPUT card also has its own <strong>STATUS LED</strong> and <strong>POWER LED</strong> toggles for the receiver, independent of the Lazer Eye&apos;s own LED settings in the Configuration card.</p>
+    <p class="note">RX OUTPUT is greyed out until ESP-NOW is enabled and a receiver has been paired at least once. After that it stays editable even if the Lazer Eye is disconnected.</p>
+    <p class="note">If a red <strong>&#8226; Command not confirmed &mdash; tap to retry</strong> banner appears after changing a Wake Signal mode, the Lazer Eye didn&apos;t confirm the change in time and the toggle reverted. Tap the banner to resend, or move closer to the device / switch from Bluetooth to WiFi.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 11 -->
+  <div class="section">
+    <span id="section-11" class="section-anchor"></span>
+    <div class="section-label">Section 11</div>
+    <h2>Browser Panel <span class="pi-badge">Pi TX</span></h2>
+    <p>When the app is connected to a Pi TX, the Pi also serves a full control panel to any browser connected through the Pi TX hotspot or a trusted upstream LAN. It offers live telemetry, trigger and wake controls, ESP-NOW receiver pairing, camera settings, Google Drive uploads, time-lapse, and astronomical triggers &mdash; the same feature set as the phone app.</p>
+    <p>The panel&apos;s <strong>Camera</strong> section mirrors the app&apos;s CAMERA card, including the three-way source selector (DSLR, Pi Camera, Webcam), the Pi Camera 3 focus and exposure controls, and the Pi Camera live preview (see Section 12). The live preview is particularly useful from a laptop &mdash; it updates at ~1&nbsp;fps and lets you check framing and focus without touching the phone.</p>
+      <p>This is useful for monitoring a long shoot from a laptop, controlling the system from a second device, or accessing settings when the phone is not handy. Join the Pi TX hotspot for local browser control without internet, then open <code>http://10.42.0.1</code>.</p>
+
+    <h3>Opening the panel</h3>
+    <ol class="steps">
+      <li>For offline field control, join the Pi TX network whose name begins with <code>PI_TX_</code>. On a trusted upstream LAN, connect your computer to the same private network as the Pi instead.</li>
+      <li>Open a browser and navigate to <strong>http://10.42.0.1</strong> from the Pi TX hotspot, or to <strong>http://pi-tx.local</strong> (mDNS) / <code>http://&lt;pi-ip-address&gt;</code> from a trusted upstream LAN.</li>
+      <li>The browser panel loads automatically. No login required.</li>
+    </ol>
+    <p class="note">If <code>pi-tx.local</code> does not resolve, use the Pi&apos;s numeric IP address. On most home networks this is shown in your router&apos;s DHCP client list, or run <code>hostname -I</code> on the Pi.</p>
+    <p class="note">The browser panel and the phone app use the same protocol. Both can be open simultaneously. Changes made in one are reflected in the other within a few seconds.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 12 -->
+  <div class="section">
+    <span id="section-12" class="section-anchor"></span>
+    <div class="section-label">Section 12</div>
+    <h2>Camera <span class="pi-badge">Pi TX</span></h2>
+    <p>When connected to a Pi TX, the <strong>CAMERA</strong> card appears in the Lazer Eye tab. It lets LiDAR triggers fire a camera attached directly to the Pi instead of the GPIO trigger pin. Three camera sources are supported, selected with the three-button source selector at the top of the card:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Source</th><th>Hardware</th><th>Best for</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>DSLR</strong></td>
+            <td>DSLR or mirrorless body on the Pi&apos;s USB port (gPhoto2)</td>
+            <td>Full image quality and lens control &mdash; ISO, aperture, shutter, burst.</td>
+          </tr>
+          <tr>
+            <td><strong>PI CAMERA</strong></td>
+            <td>Raspberry Pi camera module on the CSI ribbon connector</td>
+            <td>Compact permanent installs. Pi Camera 3 adds full focus and exposure control.</td>
+          </tr>
+          <tr>
+            <td><strong>WEBCAM</strong></td>
+            <td>Any UVC USB webcam</td>
+            <td>Low-cost monitoring and documentation shots.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Only one source is active at a time. Photos from every source are saved to the Pi&apos;s staging directory and can be uploaded to Google Drive (Section 13). All settings are remembered between sessions.</p>
+
+    <h3>DSLR / Mirrorless via USB</h3>
+    <p>Any gPhoto2-compatible camera will work. This includes the majority of:</p>
+    <ul class="bullets">
+      <li>Canon EOS DSLRs and EOS R mirrorless bodies (PTP/PC mode)</li>
+      <li>Nikon DSLR and Z-series bodies</li>
+      <li>Sony Alpha cameras with USB PTP support</li>
+      <li>Fujifilm X-series bodies</li>
+      <li>Olympus / OM System bodies</li>
+      <li>Pentax DSLRs</li>
+    </ul>
+    <p>Consult gPhoto2&apos;s camera support list at <code>gphoto.org</code> to verify a specific model.</p>
+    <ol class="steps">
+      <li>Set the camera to <strong>PTP</strong> (Picture Transfer Protocol) mode in its USB connection settings. This is usually called &ldquo;PC Remote&rdquo;, &ldquo;Tethered Shooting&rdquo;, or &ldquo;PTP&rdquo; depending on the brand.</li>
+      <li>Connect the camera to the Pi with a USB cable.</li>
+      <li>In the app, expand the <strong>CAMERA</strong> card and tap the <strong>DSLR</strong> source button. Selecting the source activates it and starts searching for the camera.</li>
+      <li>The card switches to a searching state. Once the camera is detected, its model name and battery level appear.</li>
+    </ol>
+    <p>Use the left and right arrow pickers to step through the available values for each setting. The Pi reads the choices directly from the camera so only values the camera supports are shown.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>ISO</strong></td><td>Sensor sensitivity. Choices come from the camera&apos;s own supported ISO list.</td></tr>
+          <tr><td><strong>APERTURE</strong></td><td>Lens aperture (f-number). Only shown for lenses that support electronic aperture control.</td></tr>
+          <tr><td><strong>SHUTTER</strong></td><td>Shutter speed. Choices come from the camera&apos;s own speed list including Bulb.</td></tr>
+          <tr><td><strong>BURST</strong></td><td>Number of frames captured per LiDAR trigger. Range 1&ndash;20 shots.</td></tr>
+          <tr><td><strong>AUTOFOCUS DELAY</strong></td><td>Toggle on to hold the AF signal for the Focus Hold Time before the shutter fires, giving the camera time to lock focus.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Tap <strong>TEST SHUTTER</strong> to fire one frame immediately and verify the connection is working.</p>
+    <p class="note">Settings are saved to the Pi and restored automatically the next time the same camera model is connected. If the camera does not appear after plugging in, confirm it is set to PTP mode and not &ldquo;mass storage&rdquo; or &ldquo;charging only&rdquo;.</p>
+
+    <h3>Pi Camera (CSI ribbon)</h3>
+    <p>A Raspberry Pi camera module plugged into the Pi&apos;s CSI ribbon connector can be triggered directly &mdash; no USB cable or external camera body needed. The camera must be connected before the Pi boots and enabled on the Pi (camera support is on by default in current Raspberry Pi OS; on older images enable it via <code>sudo raspi-config</code> &rarr; Interface Options).</p>
+    <ol class="steps">
+      <li>In the <strong>CAMERA</strong> card, tap the <strong>PI CAMERA</strong> source button. Selecting the source activates it and searches for the camera module; a green dot on the button confirms it is connected.</li>
+      <li>Once detected, the module&apos;s sensor model appears (e.g. <code>imx708</code> for a Pi Camera 3).</li>
+      <li>Choose a capture resolution with the <strong>RESOLUTION</strong> picker (1080p or 4K).</li>
+    </ol>
+    <p>On camera modules older than the Pi Camera 3 (fixed-focus modules such as the v1, v2, and HQ camera with manual lenses), capture runs with automatic exposure and no focus control &mdash; the card shows the resolution picker only.</p>
+
+    <h3>Live preview</h3>
+    <p>Once the Pi Camera source is connected, a <strong>live preview</strong> appears automatically in the CAMERA card &mdash; both in the phone app and in the browser panel. It refreshes at approximately 1&nbsp;frame per second and is useful for checking framing and confirming focus before a shoot or a time-lapse run.</p>
+    <ul class="bullets">
+      <li>The preview runs independently of captures. Taking a test shot or LiDAR-triggered shot does not interrupt it.</li>
+      <li>The preview stream is always 640&times;360 regardless of the capture resolution you have selected. It is a separate low-resolution pipeline on the Pi and has no effect on capture quality.</li>
+      <li>A <strong>&#8220;Preview loading&hellip;&#8221;</strong> message is shown while the first frame arrives &mdash; this is normal and takes a moment after switching to the Pi Camera source.</li>
+    </ul>
+    <p><strong>Direct browser access:</strong> the preview is also available as a still JPEG at any time by opening <code>http://pi-tx.local/preview.jpg</code> (or <code>http://&lt;pi-ip&gt;/preview.jpg</code>) in any browser on your network. Refreshing the page fetches a new frame. This URL works in any modern browser and is convenient for a quick focus check from a laptop without opening the full browser panel.</p>
+    <p class="note">The preview only streams while the Pi Camera source is active. If you switch to DSLR or Webcam, <code>/preview.jpg</code> returns a 404 until you switch back to Pi Camera.</p>
+    <p class="note">At 1&nbsp;fps the preview uses very little bandwidth &mdash; typically under 50&nbsp;KB/s. It can run simultaneously with a time-lapse or Drive upload without affecting those operations.</p>
+
+    <h3>Pi Camera 3 controls</h3>
+    <p>When the connected module is a <strong>Pi Camera 3</strong> (Sony IMX708 sensor), the card automatically expands with focus, exposure, and white balance controls. These controls only appear on the Camera 3 &mdash; the Pi detects the sensor model at connect time.</p>
+    <div class="setting-grid">
+      <div class="setting-card">
+        <div class="setting-card-name">Focus</div>
+        <div class="setting-card-range">CONT / AUTO / MANUAL</div>
+        <div class="setting-card-desc"><strong>CONT</strong> (continuous) refocuses constantly &mdash; best for moving subjects. <strong>AUTO</strong> focuses once on demand using the TRIGGER AUTOFOCUS button. <strong>MANUAL</strong> locks the lens at a position you set.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Trigger Autofocus</div>
+        <div class="setting-card-range">AUTO focus mode only</div>
+        <div class="setting-card-desc">Runs a one-shot focus cycle. The button shows <strong>FOCUSING&hellip;</strong> while the cycle runs, then <strong>FOCUS LOCKED</strong> or <strong>FOCUS FAILED</strong>. If no result arrives within about 5 seconds the button resets and you can try again. Tap again to refocus at any time.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Lens Pos</div>
+        <div class="setting-card-range">MANUAL focus mode only &mdash; &infin; to ~10 cm</div>
+        <div class="setting-card-desc">Steps the lens position directly. The readout shows the approximate focus distance (&infin; at one end, closer distances in cm as you step up). Take a test shot to confirm focus on a fixed subject.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Exposure</div>
+        <div class="setting-card-range">AUTO / MANUAL</div>
+        <div class="setting-card-desc">A single mode switch for the exposure system. <strong>AUTO</strong> lets the camera meter both shutter and gain. <strong>MANUAL</strong> reveals the Shutter and Gain controls below &mdash; both are fixed together, because the sensor cannot mix an automatic shutter with a manual gain (or vice versa).</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Shutter</div>
+        <div class="setting-card-range">1 ms to 10,000 ms</div>
+        <div class="setting-card-desc">Manual exposure time in milliseconds. When you first switch Exposure to MANUAL, the current metered values are carried over as the starting point, so the image brightness does not jump.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Gain</div>
+        <div class="setting-card-range">1&times; to 16&times; (&asymp; ISO 100&ndash;1600)</div>
+        <div class="setting-card-desc">Manual analogue sensor gain. This is not a true ISO value &mdash; multiply by 100 for the approximate ISO equivalent shown next to the stepper. Higher gain brightens the image at the cost of noise.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">White Bal</div>
+        <div class="setting-card-range">AUTO / presets</div>
+        <div class="setting-card-desc">Auto white balance, or a fixed preset: <strong>Daylight</strong>, <strong>Cloudy</strong>, <strong>Tungsten</strong>, <strong>Fluorescent</strong>, or <strong>Indoor</strong>. Use a preset for consistent colour across a time-lapse.</div>
+      </div>
+    </div>
+    <p class="note">All Camera 3 settings are stored on the Pi and reapplied automatically when the camera reconnects &mdash; including after a resolution change or Pi reboot.</p>
+
+    <h3>USB Webcam</h3>
+    <p>Any standard UVC USB webcam can be used as a capture source. No drivers or configuration are needed on the Pi &mdash; the webcam is detected automatically.</p>
+    <ol class="steps">
+      <li>Plug the webcam into any of the Pi&apos;s USB ports.</li>
+      <li>In the <strong>CAMERA</strong> card, tap the <strong>WEBCAM</strong> source button. Selecting the source activates it and searches for the webcam.</li>
+      <li>Once detected, the webcam&apos;s model name appears.</li>
+      <li>Choose a capture resolution with the <strong>RESOLUTION</strong> picker (720p or 1080p). If the webcam does not support the exact resolution, it captures at the closest mode it does support.</li>
+    </ol>
+    <p>Webcam capture runs with the webcam&apos;s own automatic exposure. Photos are staged and uploaded exactly like DSLR and Pi Camera shots.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 13 -->
+  <div class="section">
+    <span id="section-13" class="section-anchor"></span>
+    <div class="section-label">Section 13</div>
+    <h2>Google Drive Upload <span class="pi-badge">Pi TX</span></h2>
+    <p>The <strong>GOOGLE DRIVE</strong> card lets the Pi TX upload photos captured by any camera source (DSLR, Pi Camera, or webcam) directly to your Google Drive. Authorization uses Google&apos;s device-flow, so no browser redirect to the Pi is needed &mdash; you approve access on any device.</p>
+
+    <h3>Step 1 &mdash; Enter OAuth credentials</h3>
+    <p>The Pi needs a Google OAuth 2.0 Client ID and Secret before it can request authorization. These are free to create:</p>
+    <ol class="steps">
+      <li>Go to <strong>console.cloud.google.com</strong>, create (or select) a project, and enable the <strong>Google Drive API</strong> under APIs &amp; Services &rarr; Library.</li>
+      <li>Go to APIs &amp; Services &rarr; Credentials &rarr; <strong>Create Credentials &rarr; OAuth 2.0 Client ID</strong>. For Application type choose <strong>TVs and Limited Input devices</strong>.</li>
+      <li>Copy the <strong>Client ID</strong> and <strong>Client Secret</strong> shown.</li>
+      <li>In the app, expand the <strong>GOOGLE DRIVE</strong> card, paste the Client ID and Client Secret into the fields, and tap <strong>SAVE TO PI</strong>. The Pi stores them securely on its SD card.</li>
+    </ol>
+
+    <h3>Step 2 &mdash; Authorize with Google</h3>
+    <ol class="steps">
+      <li>Tap <strong>AUTHORIZE WITH GOOGLE</strong>. The Pi starts a device-flow authorization and returns a URL and a short code.</li>
+      <li>Open the URL on any phone or computer browser, sign in to your Google account, and enter the code shown in the app. Tap the COPY URL and COPY CODE buttons to copy each to the clipboard.</li>
+      <li>After approving, return to the app and tap <strong>ALREADY APPROVED? CHECK STATUS</strong>. The Pi confirms authorization and shows your account email.</li>
+    </ol>
+    <p class="note">The Pi saves the authorization token to its SD card. You only need to authorize once &mdash; the token is refreshed automatically and survives Pi reboots.</p>
+
+    <h3>Uploading photos</h3>
+    <p>Once authorized, the upload controls appear:</p>
+    <ul class="bullets">
+      <li><strong>FOLDER</strong> &mdash; type a folder name and tap SET. The Pi creates this folder in your Drive root if it does not exist. Defaults to &ldquo;Pi TX Photos&rdquo;.</li>
+      <li><strong>UPLOAD LAST 50</strong> &mdash; uploads the 50 most recently captured files from the Pi&apos;s staging directory.</li>
+      <li><strong>UPLOAD ALL NEW</strong> &mdash; uploads every file in the staging directory that has not been uploaded before.</li>
+    </ul>
+    <p>A progress bar shows <strong>done / total</strong> during an active upload. Any errors (network loss, Drive quota) appear below the bar.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 14 -->
+  <div class="section">
+    <span id="section-14" class="section-anchor"></span>
+    <div class="section-label">Section 14</div>
+    <h2>Time-Lapse <span class="pi-badge">Pi TX</span></h2>
+    <p>The <strong>TIME-LAPSE</strong> card programs the Pi TX to fire the camera at a fixed interval for a set duration, automatically &mdash; no phone interaction required once started. The time-lapse engine uses all currently configured camera settings (ISO, aperture, shutter, burst).</p>
+
+    <h3>Configuring a sequence</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Field</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>INTERVAL</strong></td><td>Seconds between successive triggers. Minimum 1 second.</td></tr>
+          <tr><td><strong>DURATION</strong></td><td>Total run time entered as hours + minutes. The sequence ends automatically when this time elapses.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Starting and stopping</h3>
+    <ol class="steps">
+      <li>Set INTERVAL and DURATION, then tap <strong>START TIME-LAPSE</strong>.</li>
+      <li>The card switches to the running view, showing a <strong>shot counter</strong> and <strong>remaining time</strong> with a progress bar.</li>
+      <li>To end the sequence early, tap <strong>STOP TIME-LAPSE</strong>. The Pi stops firing immediately and the card returns to the configuration view.</li>
+    </ol>
+    <p class="note">The Pi keeps the time-lapse running even if the phone disconnects mid-sequence. Reconnect at any time to check progress or stop it early.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 15 -->
+  <div class="section">
+    <span id="section-15" class="section-anchor"></span>
+    <div class="section-label">Section 15</div>
+    <h2>Astronomical Triggers <span class="pi-badge">Pi TX</span></h2>
+    <p>The <strong>ASTRONOMICAL TRIGGERS</strong> card programs the Pi TX to start a time-lapse session automatically at a calculated solar or lunar event &mdash; sunrise, sunset, moonrise, moonset, golden hour, or blue hour. Triggers survive Pi reboots and run daily without any further phone interaction.</p>
+
+    <h3>Step 1 &mdash; Set the Pi&apos;s location</h3>
+    <p>Astronomical times are calculated for a specific latitude and longitude. Enter the coordinates manually or use the phone&apos;s GPS:</p>
+    <ol class="steps">
+      <li>Tap <strong>USE CURRENT LOCATION</strong> to fill the fields from the phone&apos;s GPS automatically. Grant location permission if prompted.</li>
+      <li>Alternatively, type a latitude and longitude directly into the fields and tap <strong>SET</strong>.</li>
+    </ol>
+    <p>Once a location is set, the Pi calculates today&apos;s event times and displays them in the <strong>TODAY&apos;S EVENTS</strong> list below the location fields.</p>
+
+    <h3>Event types</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Event</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><strong>SUNRISE</strong></td><td>Moment the upper limb of the sun appears above the horizon.</td></tr>
+          <tr><td><strong>SUNSET</strong></td><td>Moment the upper limb of the sun disappears below the horizon.</td></tr>
+          <tr><td><strong>MOONRISE</strong></td><td>Moment the moon rises above the horizon.</td></tr>
+          <tr><td><strong>MOONSET</strong></td><td>Moment the moon sets below the horizon.</td></tr>
+          <tr><td><strong>GOLDEN HOUR START</strong></td><td>Start of the golden hour &mdash; warm, low-angle light after sunrise or before sunset.</td></tr>
+          <tr><td><strong>GOLDEN HOUR END</strong></td><td>End of the golden hour &mdash; typically when the sun is 6&deg; above the horizon.</td></tr>
+          <tr><td><strong>BLUE HOUR START</strong></td><td>Start of the blue hour &mdash; the twilight period with cool blue ambient light.</td></tr>
+          <tr><td><strong>BLUE HOUR END</strong></td><td>End of the blue hour &mdash; when civil twilight ends and the sky darkens fully.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Step 2 &mdash; Add a trigger</h3>
+    <ol class="steps">
+      <li>In the <strong>ADD TRIGGER</strong> section, tap an event button to select it.</li>
+      <li>Set <strong>OFFSET</strong> in minutes. Positive values fire <em>after</em> the event; negative values fire <em>before</em> it. For example, &minus;15 starts the sequence 15 minutes before sunrise.</li>
+      <li>Set <strong>DURATION</strong> (hours + minutes) &mdash; how long the time-lapse session should run.</li>
+      <li>Set <strong>INTERVAL</strong> (seconds) &mdash; time between shots during the session.</li>
+      <li>Tap <strong>ADD [EVENT] TRIGGER</strong>. The trigger appears in the ACTIVE TRIGGERS list.</li>
+    </ol>
+
+    <h3>Managing active triggers</h3>
+    <ul class="bullets">
+      <li>Each entry in <strong>ACTIVE TRIGGERS</strong> shows the event name, offset, duration, and interval.</li>
+      <li>Tap the <strong>&#128465; delete</strong> icon on any entry to remove that trigger.</li>
+      <li>Tap <strong>CLEAR ALL</strong> to remove every scheduled trigger at once.</li>
+    </ul>
+    <p class="note">Astronomical triggers are stored on the Pi and run daily. You do not need to keep the app open or the phone connected. Event times are recalculated each day using the stored location.</p>
+    <p class="note">If a moonrise or moonset event does not occur on a given day (the moon is up all day or down all day at the set latitude), the Pi skips that day&apos;s instance automatically.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 16 -->
+  <div class="section">
+    <span id="section-16" class="section-anchor"></span>
+    <div class="section-label">Section 16</div>
+    <h2>Advanced Settings</h2>
+    <p>Tap the <strong>ADVANCED</strong> row to expand these controls. Most users can leave them at their defaults.</p>
+    <div class="screenshot-wrap">
+      <div class="screenshot-item">
+        <img src="screenshots/lazer-eye-full.jpg" alt="Full Lazer Eye tab showing the ADVANCED row collapsed at the bottom of the screen">
+        <div class="screenshot-caption">ADVANCED row &mdash; tap to expand</div>
+      </div>
+    </div>
+    <div class="setting-grid">
+      <div class="setting-card">
+        <div class="setting-card-name">Scan Rate</div>
+        <div class="setting-card-range">10&ndash;500 Hz, default 100 Hz</div>
+        <div class="setting-card-desc">How many distance readings per second the sensor takes. Higher values make the system more responsive to fast-moving subjects but draw more power.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Pulse Speed</div>
+        <div class="setting-card-range">50&ndash;2000 ms, default 300 ms</div>
+        <div class="setting-card-desc">How long the trigger output is held active per shot. Increase if the camera misses short triggers.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Smoothing</div>
+        <div class="setting-card-range">1&ndash;10</div>
+        <div class="setting-card-desc">Averages recent readings before evaluating the trigger. Higher values smooth out readings over longer distances and reduce false triggers, at the cost of slightly more latency.</div>
+      </div>
+      <div class="setting-card">
+        <div class="setting-card-name">Flux Gate</div>
+        <div class="setting-card-range">Off, or 5&ndash;200</div>
+        <div class="setting-card-desc">Rejects low-confidence readings (weak signal returns), which filters phantom distance spikes from fast-moving subjects crossing the beam edge or reflective surfaces. Increase if you see false triggers; lower it or turn it off if the sensor stops detecting low-reflectivity subjects (e.g. dark clothing).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 17 -->
+  <div class="section">
+    <span id="section-17" class="section-anchor"></span>
+    <div class="section-label">Section 17</div>
+    <h2>Status LEDs &amp; Battery</h2>
+
+    <h3>Lazer Eye LEDs</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>LED</th><th>Behaviour</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>Status LED</strong></td>
+            <td>Single blink</td>
+            <td>A trigger or wake pulse just fired. Toggle in Configuration &rarr; Status LED.</td>
+          </tr>
+          <tr>
+            <td><strong>Power LED</strong></td>
+            <td>Solid on</td>
+            <td>Device is powered on and running. Toggle in Configuration &rarr; Power LED.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>V2 Receiver LEDs</h3>
+    <p>Both the LR Mini RX V2 and LR Full ESP32 RX V2 use the same LED behaviour, controlled independently from the Lazer Eye&apos;s own LEDs via the RX OUTPUT card&apos;s Status LED and Power LED toggles.</p>
+
+    <h3>Battery</h3>
+    <p>The Lazer Eye&apos;s battery percentage appears as a battery icon in the app header when connected. Once a receiver is paired and reporting, its battery level appears next to the <strong>TX</strong> battery icon in the ESP-NOW card.</p>
+    <p>Charge devices via their USB-C ports using any standard 5&nbsp;V USB charger.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════ SECTION 18 -->
+  <div class="section">
+    <span id="section-18" class="section-anchor"></span>
+    <div class="section-label">Section 18</div>
+    <h2>Troubleshooting</h2>
+
+    <div class="trouble-row">
+      <div class="trouble-symptom">False triggers when nothing is in frame</div>
+      <div class="trouble-fix">Increase the <strong>Flux Gate</strong> value in Advanced &mdash; start at 20 and increase until false triggers stop. The sensor is catching low-confidence reflections from a background or shiny surface.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Sensor stops detecting subjects</div>
+      <div class="trouble-fix">Lower the <strong>Flux Gate</strong> value, or turn it off. It may be set too strict for dark or matte subjects (e.g. black clothing). Also confirm the Min&ndash;Max trigger zone covers the subject&apos;s position using the live distance monitor.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Camera misses the first shot after a long wait</div>
+      <div class="trouble-fix">Enable <strong>Wake Trigger</strong> at an interval slightly shorter than your camera&apos;s auto-off time. If the camera sleeps after 1 minute, use a 45-second interval.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Camera fires too late or too early relative to the subject</div>
+      <div class="trouble-fix">Adjust <strong>Delay Before Shot</strong> in Configuration to fine-tune the pause between detection and the shutter firing.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Camera misses short triggers</div>
+      <div class="trouble-fix">Increase <strong>Pulse Speed</strong> in Advanced. Some camera bodies require a longer signal to reliably register a shutter command.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Camera doesn&apos;t focus in time before the shot</div>
+      <div class="trouble-fix">Enable <strong>Autofocus Pre-Pulse</strong> in TX OUTPUT (or RX OUTPUT) and increase the Focus Hold Time until the camera locks focus reliably before the shutter fires.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">A red "Command not confirmed" banner appears after changing a Wake Signal mode</div>
+      <div class="trouble-fix">The command was sent but the device did not confirm it in time &mdash; the toggle reverted to the last known good state. Tap the banner to resend. If it reappears repeatedly, move closer to the device or switch from Bluetooth to WiFi.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Receiver type or firmware shows blank after pairing</div>
+      <div class="trouble-fix">Power-cycle the receiver. On boot it reports its type and firmware version to the Lazer Eye; the app displays the correct values within a few seconds of the receiver coming online.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">ESP-NOW shows NOT PAIRED</div>
+      <div class="trouble-fix">Make sure the receiver is powered on and the ESP-NOW toggle is on. Re-enter the receiver&apos;s MAC address in PAIR TRANSMITTER MAC and tap PAIR TRANSMITTER again. If it was previously paired to a different Lazer Eye, reset its pairing first (see Section 07).</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Can&apos;t connect via Bluetooth</div>
+      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Lazer Eye. On iOS: Settings &rarr; Privacy &rarr; Bluetooth &rarr; confirm the SHP Asset Manager app has permission. The Lazer Eye appears as <code>LASER_EYE_V2</code> in the scan list.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Pi TX not found / pi-tx.local does not resolve</div>
+      <div class="trouble-fix">For offline control, confirm the phone is joined to the Pi TX network whose name begins with <code>PI_TX_</code> and retry <code>10.42.0.1</code>. On a trusted upstream LAN, confirm the Pi and phone are on the same private network. If mDNS is unavailable on that LAN (some mesh routers block it), use the Pi&apos;s numeric IP address instead. Find it by running <code>hostname -I</code> on the Pi, or check the router&apos;s DHCP client list.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Trigger Schedule is blocking shots unexpectedly</div>
+      <div class="trouble-fix">Check that the phone&apos;s time is correct &mdash; the schedule uses the device clock. If an overnight window is not working as expected (e.g. 22:00&ndash;06:00), confirm that the start time is later than the end time so the window is treated as crossing midnight.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Battery Monitor alert never arrives</div>
+      <div class="trouble-fix">Confirm notification permission is granted in OS Settings for the SHP Asset Manager app. On iOS, background fetch is rate-limited by the OS &mdash; alerts may arrive up to 15 minutes after the threshold is crossed. On Android, ensure the app is not being killed by battery optimisation; add it to the battery optimisation exceptions list.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Direct Cable Trigger Cross-Link shows "delivery not confirmed"</div>
+      <div class="trouble-fix">Update the Lazer Eye firmware to v2.9.4 or later (Settings &rarr; Hardware Settings &rarr; Check For Updates). Older firmware still transmits the trigger but cannot confirm receipt. Also verify the Cable Trigger is within ESP-NOW range (typically up to 50&nbsp;m line-of-sight).</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">BLE Cable Trigger Link fires inconsistently</div>
+      <div class="trouble-fix">Both the Lazer Eye and Cable Trigger must remain connected via BLE or WiFi simultaneously. Events are not queued &mdash; if the Cable Trigger is mid-sequence when a trigger arrives, that event is skipped. For a hands-free setup that works when the phone is away, use the Direct Cable Trigger Cross-Link (Section 08) instead.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">DSLR / mirrorless not detected after plugging in</div>
+      <div class="trouble-fix">Confirm the camera is set to <strong>PTP</strong> mode (not Mass Storage, Charging Only, or MTP). On Canon, this is usually labelled &ldquo;PC Remote&rdquo;; on Nikon, &ldquo;PTP&rdquo;; on Sony, &ldquo;PC Remote&rdquo;. Power-cycle the camera after switching modes. Also check the USB cable &mdash; some cables are charge-only and carry no data.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Pi Camera not detected after selecting the PI CAMERA source</div>
+      <div class="trouble-fix">Power off the Pi and re-seat both ends of the CSI ribbon cable &mdash; the contacts must face the correct direction (check the connector markings) and the retaining clips must be fully closed. The camera is only detected at boot, so reboot after re-seating. On older Raspberry Pi OS images, also confirm the camera interface is enabled via <code>sudo raspi-config</code> &rarr; Interface Options. Verify detection on the Pi with <code>libcamera-hello --list-cameras</code>.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Pi Camera focus / exposure controls do not appear</div>
+      <div class="trouble-fix">The extended controls only appear on a <strong>Pi Camera 3</strong> (IMX708 sensor) &mdash; check the model name shown after activation. Older modules (v1, v2, HQ) are fixed-focus with automatic exposure and show the resolution picker only. If you have a Camera 3 but the model shows differently, re-seat the ribbon cable and reboot the Pi.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Webcam not found after plugging in</div>
+      <div class="trouble-fix">Confirm the webcam is a standard UVC device &mdash; run <code>lsusb</code> on the Pi to check it enumerates, and <code>ls /dev/video*</code> to confirm a video device exists. Try a different USB port, and avoid unpowered USB hubs, which can brown out the webcam. Tap the WEBCAM source button again after re-plugging.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Google Drive authorization fails or CHECK STATUS returns an error</div>
+      <div class="trouble-fix">Confirm the Google Cloud project has the <strong>Google Drive API</strong> enabled (not just the credentials created). Also verify the OAuth application type is <strong>TVs and Limited Input devices</strong> &mdash; other application types do not support the device code flow the Pi uses. If the code has expired, tap AUTHORIZE WITH GOOGLE again to start a fresh flow.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Time-lapse stops before the set duration</div>
+      <div class="trouble-fix">Check available storage on the Pi&apos;s SD card. If the staging directory fills up the engine halts to avoid data loss. Also confirm the USB camera stays in PTP mode and does not auto-switch to mass storage after an idle period &mdash; some cameras do this when untouched for several minutes.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Astronomical trigger does not fire at the expected time</div>
+      <div class="trouble-fix">Confirm the Pi&apos;s system clock is correct (<code>timedatectl</code> on the Pi). Astronomical event times are calculated in UTC and converted to local time using the Pi&apos;s timezone &mdash; set it with <code>sudo timedatectl set-timezone &lt;region/city&gt;</code>. Also verify the location coordinates are correct; a wrong hemisphere or sign will shift all events significantly.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Bridge firmware update fails or hangs mid-transfer</div>
+      <div class="trouble-fix">If the transfer stalls, power-cycle the bridge co-processor &mdash; it boots back to normal operation automatically. Then retry from the BRIDGE FIRMWARE card. Ensure the phone stays on the <code>LR-BRIDGE-OTA</code> WiFi network for the entire upload; switching networks mid-transfer will break it.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">An update is slow or failing</div>
+      <div class="trouble-fix">Switch to a WiFi connection &mdash; updates over WiFi are dramatically faster than Bluetooth. Settings &rarr; Hardware Settings &rarr; Check For Updates.</div>
+    </div>
+
+    <h3>Updating firmware</h3>
+    <ol class="steps">
+      <li>Connect to the Lazer Eye in the app.</li>
+      <li>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings.</li>
+      <li>Scroll to <strong>Hardware Settings</strong> and tap <strong>CHECK FOR UPDATES</strong>.</li>
+      <li>If an update is available, tap <strong>INSTALL UPDATE</strong>. The device reboots and the app reconnects automatically.</li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    <div>SHP Asset Manager &nbsp;&middot;&nbsp; Lazer Eye User Manual &nbsp;&middot;&nbsp; V2 Hardware</div>
+    <div style="margin-top:8px;">
+      <a href="build-guide.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
+      &nbsp;&middot;&nbsp;
+      <a href="install-guide.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
+      &nbsp;&middot;&nbsp;
+      <a href="cable-trigger-manual.html" style="color:#F27D26;text-decoration:none;">Cable Trigger Manual</a>
+    </div>
+    <div><a href="https://scotthendersonphotography.net" style="color:#F27D26;text-decoration:none;">scotthendersonphotography.net</a></div>
+  </div>
+
+</div>
+</body>
+</html>

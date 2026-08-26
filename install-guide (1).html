@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SHP Asset Manager — Firmware &amp; Software Install Guide</title>
+<style>
+  :root {
+    --orange: #F27D26;
+    --bg: #0d0d0d;
+    --card: #161616;
+    --border: #2a2a2a;
+    --text: #e8e8e8;
+    --muted: #888;
+    --faint: #444;
+    --mono: "Courier New", Courier, monospace;
+    --radius: 6px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { font-family: var(--mono); background: var(--bg); color: var(--text); line-height: 1.7; }
+  .page-wrap { max-width: 820px; margin: 0 auto; padding: 40px 28px 80px; }
+
+  .cover { text-align: center; padding: 60px 0 50px; border-bottom: 1px solid var(--border); margin-bottom: 48px; }
+  .cover-eyebrow { font-size: 10px; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-bottom: 18px; }
+  .cover-title { font-size: 38px; font-weight: 700; letter-spacing: 3px; color: var(--orange); line-height: 1.1; margin-bottom: 10px; text-transform: uppercase; }
+  .cover-sub { font-size: 13px; color: var(--muted); letter-spacing: 1px; }
+  .cover-divider { width: 60px; height: 2px; background: var(--orange); margin: 28px auto; }
+  .cover-meta { font-size: 10px; color: var(--faint); letter-spacing: 1px; }
+
+  .toc { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px 32px; margin-bottom: 48px; }
+  .toc-title { font-size: 9px; letter-spacing: 2.5px; color: var(--orange); text-transform: uppercase; margin-bottom: 20px; }
+  .toc-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  .toc-list li { border-top: 1px solid var(--border); padding: 9px 0; }
+  .toc-list li:nth-child(odd) { padding-right: 24px; }
+  .toc-list a { color: var(--muted); text-decoration: none; font-size: 11px; letter-spacing: 0.4px; }
+  .toc-list a:hover { color: var(--orange); }
+  .toc-num { color: var(--orange); margin-right: 6px; font-size: 10px; }
+
+  .section { margin-bottom: 56px; }
+  .section-anchor { display: block; height: 0; }
+  .section-label { font-size: 9px; letter-spacing: 3px; color: var(--orange); text-transform: uppercase; margin-bottom: 8px; }
+  h2 { font-size: 20px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--orange); margin: 28px 0 12px; }
+  p { font-size: 13px; color: var(--text); margin-bottom: 14px; line-height: 1.75; }
+  p.note { font-size: 11px; color: var(--muted); background: var(--card); border-left: 3px solid var(--orange); padding: 10px 14px; border-radius: 0 var(--radius) var(--radius) 0; margin-bottom: 14px; }
+  p.warn { font-size: 11px; color: #e0a030; background: rgba(224,160,48,0.08); border: 1px solid rgba(224,160,48,0.25); border-radius: var(--radius); padding: 10px 14px; margin-bottom: 14px; }
+
+  ol.steps { list-style: none; counter-reset: step; margin-bottom: 16px; }
+  ol.steps li { counter-increment: step; display: flex; align-items: flex-start; gap: 14px; margin-bottom: 10px; font-size: 13px; color: var(--text); line-height: 1.65; }
+  ol.steps li::before { content: counter(step); min-width: 24px; height: 24px; line-height: 24px; text-align: center; background: var(--orange); color: #000; font-size: 11px; font-weight: 700; border-radius: 50%; flex-shrink: 0; margin-top: 2px; }
+  ul.bullets { list-style: none; margin-bottom: 16px; }
+  ul.bullets li { padding: 5px 0 5px 18px; font-size: 13px; color: var(--text); position: relative; line-height: 1.65; }
+  ul.bullets li::before { content: "›"; color: var(--orange); position: absolute; left: 0; font-size: 16px; line-height: 1.4; }
+
+  .table-wrap { overflow-x: auto; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead th { background: var(--card); color: var(--orange); font-size: 9px; letter-spacing: 1.5px; text-transform: uppercase; padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--border); }
+  tbody td { padding: 10px 14px; border-bottom: 1px solid var(--border); color: var(--text); vertical-align: top; line-height: 1.6; }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+  code { background: #1e1e1e; border: 1px solid var(--border); border-radius: 3px; padding: 1px 5px; font-family: var(--mono); font-size: 11px; color: var(--orange); }
+  pre { background: #1e1e1e; border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 18px; font-family: var(--mono); font-size: 12px; color: var(--orange); overflow-x: auto; margin-bottom: 16px; line-height: 1.6; white-space: pre; }
+
+  .setting-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+  .setting-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; }
+  .setting-card-name { font-size: 9px; letter-spacing: 2px; color: var(--orange); text-transform: uppercase; margin-bottom: 6px; }
+  .setting-card-range { font-size: 10px; color: var(--faint); margin-bottom: 8px; }
+  .setting-card-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .screenshot-wrap { display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin: 24px 0; }
+  .screenshot-item { display: flex; flex-direction: column; align-items: center; }
+  .screenshot-wrap img { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+  .screenshot-caption { text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; margin-top: 8px; }
+  .screenshot-placeholder { max-width: 280px; width: 100%; border-radius: var(--radius); border: 1px dashed var(--border); background: var(--card); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; gap: 10px; }
+  .screenshot-placeholder-label { font-size: 10px; color: var(--faint); text-align: center; letter-spacing: 0.5px; }
+
+  .trouble-row { display: grid; grid-template-columns: 1fr 1.5fr; gap: 0; border-bottom: 1px solid var(--border); padding: 14px 0; align-items: start; }
+  .trouble-row:last-child { border-bottom: none; }
+  .trouble-symptom { font-size: 12px; color: #cc7733; padding-right: 20px; line-height: 1.6; }
+  .trouble-fix { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .v2-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #000; background: var(--orange); border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+  .pi-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #000; background: #5b9bd5; border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+  .hw-badge { display: inline-block; font-size: 9px; letter-spacing: 1.5px; color: #fff; background: #2a7a2a; border-radius: 3px; padding: 2px 7px; font-weight: 700; text-transform: uppercase; vertical-align: middle; margin-left: 8px; }
+
+  .lib-matrix { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr; gap: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+  .lib-matrix-header { background: var(--card); font-size: 9px; letter-spacing: 1.5px; color: var(--orange); text-transform: uppercase; padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .lib-matrix-cell { font-size: 11px; color: var(--muted); padding: 8px 12px; border-bottom: 1px solid var(--border); }
+  .lib-matrix-cell.yes { color: var(--orange); font-weight: 700; }
+  .lib-matrix-cell.opt { color: var(--faint); }
+
+  .doc-links { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 32px; }
+  .doc-link { display: inline-block; font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--orange); border: 1px solid var(--orange); border-radius: var(--radius); padding: 6px 14px; text-decoration: none; }
+  .doc-link:hover { background: var(--orange); color: #000; }
+
+  .footer { margin-top: 60px; padding-top: 24px; border-top: 1px solid var(--border); text-align: center; font-size: 10px; color: var(--faint); letter-spacing: 0.5px; line-height: 2; }
+
+  @media print {
+    :root { --bg: #fff; --card: #f8f8f8; --border: #d0d0d0; --text: #111; --muted: #555; --faint: #888; }
+    body { background: #fff; color: #111; font-size: 12px; }
+    .page-wrap { padding: 20px 24px 40px; max-width: 100%; }
+    .cover { padding: 30px 0; page-break-after: always; }
+    .cover-title { font-size: 28px; color: #F27D26; }
+    .toc { page-break-after: always; }
+    .toc-list a::after { content: " (" attr(href) ")"; font-size: 9px; color: #888; }
+    .section { page-break-before: always; }
+    h2 { color: #111; font-size: 16px; border-bottom-color: #d0d0d0; }
+    h3 { color: #F27D26; font-size: 11px; }
+    code, pre { background: #eee; border-color: #ccc; color: #c44a00; }
+    .setting-card { background: #f8f8f8; border-color: #d0d0d0; }
+    .setting-card-name { color: #F27D26; }
+    .setting-card-desc, .setting-card-range { color: #555; }
+    thead th { background: #f0f0f0; color: #F27D26; border-color: #ccc; }
+    tbody td { color: #333; border-color: #ddd; }
+    p.note { background: #f5f5f5; border-color: #F27D26; color: #555; }
+    p.warn { background: #fff8ee; color: #7a5000; }
+    ol.steps li::before { background: #F27D26; }
+    .toc-num, .section-label { color: #F27D26; }
+    .v2-badge { background: #F27D26; color: #000; }
+    .pi-badge { background: #5b9bd5; color: #000; }
+    .hw-badge { background: #2a7a2a; color: #fff; }
+    .footer { color: #888; }
+    .doc-links { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="page-wrap">
+
+  <!-- COVER -->
+  <div class="cover">
+    <div class="cover-eyebrow">SHP Asset Manager</div>
+    <div class="cover-title">Firmware &amp;<br>Software Install</div>
+    <div class="cover-divider"></div>
+    <div class="cover-sub">Arduino IDE &nbsp;·&nbsp; ESP32 Firmware Flashing &nbsp;·&nbsp; Pi TX Software &nbsp;·&nbsp; App Install &nbsp;·&nbsp; OTA Updates</div>
+    <div class="cover-divider"></div>
+    <div class="cover-meta">Step-by-step installation for all SHP Asset Manager devices</div>
+  </div>
+
+  <!-- RELATED DOCS -->
+  <div class="doc-links">
+    <a class="doc-link" href="build-guide.html">← Hardware Build Guide</a>
+    <a class="doc-link" href="lazer-eye-manual.html">Lazer Eye User Manual</a>
+    <a class="doc-link" href="cable-trigger-manual.html">Cable Trigger Manual</a>
+  </div>
+
+  <!-- TABLE OF CONTENTS -->
+  <div class="toc">
+    <div class="toc-title">Contents</div>
+    <ul class="toc-list">
+      <li><a href="#overview"><span class="toc-num">01</span>Overview</a></li>
+      <li><a href="#arduino-ide"><span class="toc-num">02</span>Arduino IDE &amp; Board Package</a></li>
+      <li><a href="#libraries"><span class="toc-num">03</span>Required Libraries</a></li>
+      <li><a href="#flash-laser-eye"><span class="toc-num">04</span>Flash Laser Eye V2 TX</a></li>
+      <li><a href="#flash-cable-trigger"><span class="toc-num">05</span>Flash Cable Trigger</a></li>
+      <li><a href="#flash-mini-rx"><span class="toc-num">06</span>Flash Mini RX V2</a></li>
+      <li><a href="#flash-full-rx"><span class="toc-num">07</span>Flash Full ESP32 RX V2</a></li>
+      <li><a href="#flash-bridge"><span class="toc-num">08</span>Flash ESP-NOW UART Bridge</a></li>
+      <li><a href="#pi-tx-install"><span class="toc-num">09</span>Pi TX Software Install</a></li>
+      <li><a href="#app-install"><span class="toc-num">10</span>App Install</a></li>
+      <li><a href="#ota"><span class="toc-num">11</span>OTA Firmware Updates</a></li>
+      <li><a href="#troubleshooting"><span class="toc-num">12</span>Troubleshooting</a></li>
+    </ul>
+  </div>
+
+  <!-- §1 OVERVIEW -->
+  <div class="section">
+    <span id="overview" class="section-anchor"></span>
+    <div class="section-label">Section 01</div>
+    <h2>Overview</h2>
+    <p>This guide walks through installing firmware on every ESP32-based device and the full software stack on the Raspberry Pi TX. Install only the sections that apply to the hardware you have built.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Device</th><th>Firmware File</th><th>Tool Required</th></tr></thead>
+        <tbody>
+          <tr><td>Laser Eye V2 TX</td><td><code>firmware/laser_eye_v2_firmware.ino</code></td><td>Arduino IDE</td></tr>
+          <tr><td>Cable Trigger</td><td><code>firmware/cable_trigger_firmware.ino</code></td><td>Arduino IDE</td></tr>
+          <tr><td>Mini RX V2</td><td><code>firmware/lr-mini-rx-v2/lr_mini_rx_v2_firmware.ino</code></td><td>Arduino IDE</td></tr>
+          <tr><td>Full ESP32 RX V2</td><td><code>firmware/lr-rx-v2/lr_rx_v2_firmware.ino</code></td><td>Arduino IDE</td></tr>
+          <tr><td>ESP-NOW UART Bridge</td><td><code>firmware/pi-espnow-bridge/pi_espnow_bridge.ino</code></td><td>Arduino IDE</td></tr>
+          <tr><td>Pi TX</td><td><em>Python daemon + web UI</em></td><td>install.sh (run on the Pi)</td></tr>
+          <tr><td>Cable Trigger App</td><td><em>Expo mobile app</em></td><td>Expo Go or built APK/IPA</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Build the hardware first before flashing. See the <a href="build-guide.html" style="color:var(--orange)">Hardware Build Guide</a> for wiring and assembly.</p>
+  </div>
+
+  <!-- §2 ARDUINO IDE -->
+  <div class="section">
+    <span id="arduino-ide" class="section-anchor"></span>
+    <div class="section-label">Section 02</div>
+    <h2>Arduino IDE &amp; Board Package</h2>
+    <p>All ESP32 firmware in this project is written for the Arduino IDE with the official Espressif ESP32 board package. Arduino IDE 2.x is recommended.</p>
+
+    <h3>Install Arduino IDE</h3>
+    <ol class="steps">
+      <li>Download Arduino IDE 2.x from <strong>arduino.cc/en/software</strong>. Choose the installer for your operating system (Windows, macOS, or Linux).</li>
+      <li>Run the installer and follow the on-screen prompts. Accept the default install path.</li>
+      <li>Launch Arduino IDE. On first run, allow any firewall prompts it requests.</li>
+    </ol>
+
+    <h3>Add the ESP32 Board Package</h3>
+    <ol class="steps">
+      <li>Open <strong>File → Preferences</strong> (macOS: <strong>Arduino IDE → Settings</strong>).</li>
+      <li>In the <strong>Additional boards manager URLs</strong> field, paste this URL:
+        <pre>https://raw.githubusercontent.com/espressif/arduino-esp32/gh-pages/package_esp32_index.json</pre>
+        If there are already URLs in the field, add a comma then the new URL on the same line.
+      </li>
+      <li>Click <strong>OK</strong> to close Preferences.</li>
+      <li>Open <strong>Tools → Board → Boards Manager</strong>.</li>
+      <li>Search for <strong>esp32</strong>. Select the entry published by <em>Espressif Systems</em>.</li>
+      <li>Click <strong>Install</strong>. The download is several hundred MB — allow a few minutes.</li>
+      <li>When the status bar shows "Installed", close the Boards Manager.</li>
+    </ol>
+    <p class="note">The board package must be version 2.0.0 or later. Earlier versions lack full NimBLE and AsyncTCP support.</p>
+
+    <h3>USB Driver</h3>
+    <p>Most ESP32 dev boards use a CH340 or CP210x USB-to-UART chip. If your computer does not recognise the board when plugged in, install the driver for your chip:</p>
+    <ul class="bullets">
+      <li><strong>CH340 / CH341:</strong> wch.cn/en/download — "CH341SER" driver.</li>
+      <li><strong>CP2102 / CP2104:</strong> silabs.com — "CP210x USB to UART Bridge VCP Drivers".</li>
+    </ul>
+    <p>After driver install, replug the board. It should appear as a new port in <strong>Tools → Port</strong>.</p>
+  </div>
+
+  <!-- §3 LIBRARIES -->
+  <div class="section">
+    <span id="libraries" class="section-anchor"></span>
+    <div class="section-label">Section 03</div>
+    <h2>Required Libraries</h2>
+    <p>Install all libraries needed for the devices you are building before opening any firmware sketch. Use the Arduino Library Manager (<strong>Tools → Manage Libraries</strong>) unless noted otherwise.</p>
+
+    <h3>Library Reference</h3>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Library</th>
+            <th>Author</th>
+            <th>Laser Eye TX</th>
+            <th>Cable Trigger</th>
+            <th>Mini RX V2</th>
+            <th>Full RX V2</th>
+            <th>Bridge</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>NimBLE-Arduino</td>
+            <td>h2zero</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+          </tr>
+          <tr>
+            <td>ESPAsyncWebServer</td>
+            <td>me-no-dev / ESP32Async</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+          </tr>
+          <tr>
+            <td>AsyncTCP</td>
+            <td>me-no-dev</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+          </tr>
+          <tr>
+            <td>TFLI2C</td>
+            <td>(search "TFLI2C")</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+          </tr>
+          <tr>
+            <td>ESP32Servo</td>
+            <td>(search "ESP32Servo")</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+          </tr>
+          <tr>
+            <td>TM1637</td>
+            <td>Smarthome</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+            <td style="color:var(--faint);">—</td>
+          </tr>
+          <tr>
+            <td>ESP32 core (built-in)</td>
+            <td>Espressif</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+            <td style="color:var(--orange);font-weight:700;">Required</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">The Full ESP32 RX V2 firmware uses only the ESP32 core built-ins (esp_now.h, WiFi.h, Preferences.h). No additional library installs are needed for that device.</p>
+    <p class="note">TM1637 is marked Required for the Cable Trigger because the firmware unconditionally includes <code>&lt;TM1637Display.h&gt;</code> at compile time — the sketch will not compile without it. The TM1637 display module must be wired to the board.</p>
+
+    <h3>Installing Libraries</h3>
+    <ol class="steps">
+      <li>Open <strong>Tools → Manage Libraries</strong>.</li>
+      <li>Search by the library name (e.g. "NimBLE-Arduino"). Select the correct publisher and click <strong>Install</strong>. Accept any dependency prompts.</li>
+      <li>Repeat for each required library in the table above.</li>
+    </ol>
+
+    <h3>ESPAsyncWebServer — Alternative Source</h3>
+    <p>If the me-no-dev version does not appear in Library Manager, use the ESP32Async fork, which is more actively maintained:</p>
+    <ol class="steps">
+      <li>In Library Manager, search <strong>ESP Async WebServer</strong>. Select the entry published by <em>ESP32Async</em> (or <em>mathieucarbou</em>).</li>
+      <li>Install it along with the AsyncTCP dependency.</li>
+    </ol>
+    <p class="note">Both forks are API-compatible with this firmware. Use whichever appears in your Library Manager.</p>
+  </div>
+
+  <!-- §4 FLASH LASER EYE V2 TX -->
+  <div class="section">
+    <span id="flash-laser-eye" class="section-anchor"></span>
+    <div class="section-label">Section 04</div>
+    <h2>Flash Laser Eye V2 TX <span class="v2-badge">V2</span></h2>
+
+    <h3>Board Settings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Board</td><td><strong>ESP32 Dev Module</strong> or NodeMCU-32S</td></tr>
+          <tr><td>Upload Speed</td><td>921600</td></tr>
+          <tr><td>Flash Frequency</td><td>80 MHz</td></tr>
+          <tr><td>Flash Mode</td><td>DIO</td></tr>
+          <tr><td>Partition Scheme</td><td>Default (or "Huge APP" if flash errors occur)</td></tr>
+          <tr><td>Core Debug Level</td><td>None</td></tr>
+          <tr><td>Port</td><td>Select the COM / /dev/tty port that appears when you plug in the board</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Flash Steps</h3>
+    <ol class="steps">
+      <li>Open the firmware sketch: <strong>File → Open</strong> → navigate to <code>firmware/laser_eye_v2_firmware.ino</code>.</li>
+      <li>Connect the Laser Eye V2 TX board to your computer via USB.</li>
+      <li>Select the board and port under <strong>Tools</strong>.</li>
+      <li>Click <strong>Sketch → Upload</strong> (or the → arrow button). The IDE compiles then flashes.</li>
+      <li>Watch the output panel. When you see <em>"Leaving... Hard resetting via RTS pin"</em>, flashing is complete.</li>
+      <li>Open <strong>Tools → Serial Monitor</strong> at <strong>115200 baud</strong>. Confirm the boot message shows the firmware version and "LR_TX_V2" device name.</li>
+    </ol>
+    <p class="warn">If the board doesn't enter flash mode automatically, hold the BOOT button on the ESP32 while clicking Upload, then release it once the IDE shows "Connecting..."</p>
+
+    <h3>Required Libraries (reminder)</h3>
+    <ul class="bullets">
+      <li>NimBLE-Arduino</li>
+      <li>ESPAsyncWebServer</li>
+      <li>AsyncTCP</li>
+      <li>TFLI2C</li>
+    </ul>
+  </div>
+
+  <!-- §5 FLASH CABLE TRIGGER -->
+  <div class="section">
+    <span id="flash-cable-trigger" class="section-anchor"></span>
+    <div class="section-label">Section 05</div>
+    <h2>Flash Cable Trigger</h2>
+
+    <h3>Board Settings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Board</td><td><strong>ESP32 Dev Module</strong></td></tr>
+          <tr><td>Upload Speed</td><td>921600</td></tr>
+          <tr><td>Partition Scheme</td><td>Default</td></tr>
+          <tr><td>Port</td><td>Select your USB port</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Flash Steps</h3>
+    <ol class="steps">
+      <li>Open <code>firmware/cable_trigger_firmware.ino</code> in Arduino IDE.</li>
+      <li>Connect the Cable Trigger board via USB. Select the board and port.</li>
+      <li>Click <strong>Upload</strong>. Wait for "Hard resetting via RTS pin".</li>
+      <li>Open Serial Monitor at <strong>115200 baud</strong>. Confirm the boot message shows version 1.8.0 and "CABLE_TRIGGER".</li>
+    </ol>
+    <p class="note">The TM1637 display module must be wired to the board. The firmware unconditionally initialises it and shows a startup animation at boot — there is no absent-display detection path.</p>
+
+    <h3>Required Libraries (reminder)</h3>
+    <ul class="bullets">
+      <li>NimBLE-Arduino</li>
+      <li>ESPAsyncWebServer</li>
+      <li>AsyncTCP</li>
+      <li>ESP32Servo</li>
+      <li>TM1637 by Smarthome (required — display hardware must be wired)</li>
+    </ul>
+  </div>
+
+  <!-- §6 FLASH MINI RX V2 -->
+  <div class="section">
+    <span id="flash-mini-rx" class="section-anchor"></span>
+    <div class="section-label">Section 06</div>
+    <h2>Flash Mini RX V2 <span class="v2-badge">V2</span></h2>
+    <p>Select the board type that matches your physical hardware — original ESP32 Mini or ESP32-S2 Mini. The firmware auto-detects S2 at compile time and activates the alternate pin set and S2 battery ADC circuit.</p>
+
+    <h3>Board Settings — Original ESP32 Mini</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Board</td><td><strong>ESP32 Dev Module</strong></td></tr>
+          <tr><td>Upload Speed</td><td>921600</td></tr>
+          <tr><td>Flash Mode</td><td>DIO</td></tr>
+          <tr><td>Partition Scheme</td><td>Default</td></tr>
+          <tr><td>Port</td><td>Select your USB port</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Board Settings — ESP32-S2 Mini</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Board</td><td><strong>ESP32-S2 Dev Module</strong> (or your board's exact name)</td></tr>
+          <tr><td>Upload Speed</td><td>921600</td></tr>
+          <tr><td>Partition Scheme</td><td>Default</td></tr>
+          <tr><td>Port</td><td>Select your USB port</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Flash Steps</h3>
+    <ol class="steps">
+      <li>Open <code>firmware/lr-mini-rx-v2/lr_mini_rx_v2_firmware.ino</code>.</li>
+      <li>Select the correct board (original or S2) and port under <strong>Tools</strong>.</li>
+      <li>Click <strong>Upload</strong>.</li>
+      <li>Open Serial Monitor at <strong>115200 baud</strong>. At boot, the Mini prints its STA MAC address — note this down, you will need it for pairing in the app.</li>
+      <li>Confirm the device reports firmware version and "LR_MINI_RX_V2".</li>
+    </ol>
+
+    <h3>Pairing the Mini RX V2 with the Laser Eye V2 TX</h3>
+    <ol class="steps">
+      <li>Note the STA MAC address shown in the Serial Monitor at boot (format: <code>AA:BB:CC:DD:EE:FF</code>).</li>
+      <li>In the SHP Asset Manager app, open the <strong>LiDAR</strong> tab → <strong>ESP-NOW</strong> → tap <strong>Pair</strong>.</li>
+      <li>Enter the Mini's STA MAC when prompted and confirm.</li>
+      <li>The Mini will auto-pair on receiving the first trigger packet from the Laser Eye V2 TX and will send back its device type.</li>
+    </ol>
+    <p class="note">To clear a stored pairing, hold GPIO 0 (the boot button) LOW during power-on for 3 seconds. The status LED will blink rapidly to confirm the pairing was cleared.</p>
+
+    <h3>Required Libraries (reminder)</h3>
+    <ul class="bullets">
+      <li>ESPAsyncWebServer</li>
+      <li>AsyncTCP</li>
+    </ul>
+  </div>
+
+  <!-- §7 FLASH FULL ESP32 RX V2 -->
+  <div class="section">
+    <span id="flash-full-rx" class="section-anchor"></span>
+    <div class="section-label">Section 07</div>
+    <h2>Flash Full ESP32 RX V2 <span class="v2-badge">V2</span></h2>
+
+    <h3>Board Settings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Board</td><td><strong>ESP32 Dev Module</strong> (38-pin or 30-pin)</td></tr>
+          <tr><td>Upload Speed</td><td>921600</td></tr>
+          <tr><td>Partition Scheme</td><td>Default</td></tr>
+          <tr><td>Port</td><td>Select your USB port</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Flash Steps</h3>
+    <ol class="steps">
+      <li>Open <code>firmware/lr-rx-v2/lr_rx_v2_firmware.ino</code>.</li>
+      <li>Connect the board via USB, select board and port.</li>
+      <li>Click <strong>Upload</strong>.</li>
+      <li>Open Serial Monitor at <strong>115200 baud</strong>. Note the STA MAC address printed at boot.</li>
+      <li>Confirm the device reports "LR_RX_V2".</li>
+    </ol>
+
+    <h3>Pairing</h3>
+    <p>Same pairing flow as the Mini RX V2 — see <a href="#flash-mini-rx" style="color:var(--orange)">Section 06</a>. The app will show "FULL ESP32 RX V2" as the receiver type after pairing.</p>
+
+    <h3>Required Libraries</h3>
+    <p class="note">The Full ESP32 RX V2 firmware uses only the ESP32 Arduino core built-in libraries. No additional Library Manager installs are required.</p>
+  </div>
+
+  <!-- §8 FLASH BRIDGE -->
+  <div class="section">
+    <span id="flash-bridge" class="section-anchor"></span>
+    <div class="section-label">Section 08</div>
+    <h2>Flash ESP-NOW UART Bridge</h2>
+
+    <h3>Pin Remap (Mini Boards Only)</h3>
+    <p>Before opening the sketch, if you are using an ESP32-C3 Mini or ESP32-S3 Mini, edit the UART pin defines at the top of <code>pi_espnow_bridge.ino</code>:</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Board</th><th>BRIDGE_UART_RX define</th><th>BRIDGE_UART_TX define</th></tr></thead>
+        <tbody>
+          <tr><td>DevKit-C / WROOM-32 (default)</td><td>16</td><td>17</td></tr>
+          <tr><td>ESP32-C3 Mini</td><td>6</td><td>7</td></tr>
+          <tr><td>ESP32-S3 Mini</td><td>4</td><td>5</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Board Settings</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Setting</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td>Board (DevKit-C / WROOM)</td><td><strong>ESP32 Dev Module</strong></td></tr>
+          <tr><td>Board (C3 Mini)</td><td><strong>ESP32-C3 Dev Module</strong></td></tr>
+          <tr><td>Board (S3 Mini)</td><td><strong>ESP32-S3 Dev Module</strong></td></tr>
+          <tr><td>Upload Speed</td><td>921600</td></tr>
+          <tr><td>Port</td><td>Select your USB port</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Flash Steps</h3>
+    <ol class="steps">
+      <li>Open <code>firmware/pi-espnow-bridge/pi_espnow_bridge.ino</code>.</li>
+      <li>If using a mini variant, edit the UART pin defines as shown above and save.</li>
+      <li>Select the correct board and port, then click <strong>Upload</strong>.</li>
+      <li>Open Serial Monitor at <strong>115200 baud</strong>. Confirm the device boots and shows "PI_ESPNOW_BRIDGE".</li>
+      <li>Disconnect USB, then wire the bridge to the Pi TX's UART port as described in the <a href="build-guide.html#bridge" style="color:var(--orange)">Build Guide §07</a>.</li>
+    </ol>
+
+    <h3>Required Libraries (reminder)</h3>
+    <ul class="bullets">
+      <li>ESPAsyncWebServer</li>
+      <li>AsyncTCP</li>
+    </ul>
+  </div>
+
+  <!-- §9 PI TX SOFTWARE -->
+  <div class="section">
+    <span id="pi-tx-install" class="section-anchor"></span>
+    <div class="section-label">Section 09</div>
+    <h2>Pi TX Software Install <span class="pi-badge">PI</span></h2>
+    <p>The Pi TX daemon, web UI, and all dependencies are installed by a single script. The script handles apt packages, pip packages, raspi-config settings (I²C and UART only), a persistent local WiFi hotspot, the systemd service, mDNS (Avahi), and the UI build. Pi Camera support is provided by the installed apt packages — no separate raspi-config camera step is needed on modern Raspberry Pi OS.</p>
+
+    <h3>Prerequisites</h3>
+    <ul class="bullets">
+      <li>Raspberry Pi running Raspberry Pi OS Lite (Bookworm, 64-bit) — the installer is tested on Pi 3B+, Pi 4, and Pi 5. Bullseye or other images may require additional changes and are not the current tested target.</li>
+      <li>The Pi is connected to the internet (Ethernet or WiFi) before running install so it can download system and Python packages. Internet is not required for local camera control after installation.</li>
+      <li>SSH or keyboard access to the Pi's terminal.</li>
+      <li>The SHP Asset Manager repository cloned onto the Pi.</li>
+    </ul>
+
+    <h3>Install Steps</h3>
+    <ol class="steps">
+      <li>Clone the repository onto the Pi (or copy the project folder via SCP/USB):
+        <pre>git clone &lt;repository-url&gt;
+cd &lt;repository-folder&gt;</pre>
+      </li>
+      <li>Navigate into the directory that contains <code>install.sh</code>, <code>main.py</code>, and <code>requirements.txt</code>. In the development monorepo:
+        <pre>cd artifacts/pi-tx</pre>
+        If you cloned the published standalone Pi TX repository, use <code>cd SHPassetmanager</code> instead because those files are at the repository root.
+      </li>
+      <li>Make the install script executable and run it with sudo:
+        <pre>chmod +x install.sh
+sudo ./install.sh</pre>
+        The script will take several minutes to complete — it downloads apt packages including picamera2 and opencv, installs Python dependencies, and builds the web UI.
+      </li>
+      <li>When the script finishes, reboot the Pi:
+        <pre>sudo reboot</pre>
+      </li>
+    </ol>
+
+    <h3>Connect locally without internet</h3>
+    <ol class="steps">
+      <li>After reboot, join the WiFi network whose name starts with <code>PI_TX_</code>. The installer prints the generated password; rerunning the installer preserves it unless you explicitly supply a replacement.</li>
+      <li>Open the phone app's <strong>PI TX</strong> tab and connect. The app checks the fixed local address <strong>10.42.0.1</strong> first.</li>
+      <li>For browser control, open <code>http://10.42.0.1</code> from a device joined to the Pi TX hotspot.</li>
+      <li>The phone may warn that this WiFi network has no internet. Stay connected: local triggering, camera control, preview, time-lapse, and schedules do not require internet.</li>
+    </ol>
+    <p class="note">Optional internet can be supplied through Ethernet or a second USB WiFi adapter. The built-in WiFi adapter remains dedicated to the Pi TX hotspot.</p>
+
+    <h3>Verify the Service is Running</h3>
+    <ol class="steps">
+      <li>After reboot, check the systemd service status:
+        <pre>systemctl status pi-tx</pre>
+        The output should show <strong>active (running)</strong>.
+      </li>
+      <li>Tail the live log to watch for errors:
+        <pre>journalctl -u pi-tx -f</pre>
+        Press Ctrl+C to exit the log view.
+      </li>
+      <li>From another device on the same network, open a browser and navigate to:
+        <pre>http://pi-tx.local</pre>
+        The Pi TX web UI should load. This confirms mDNS, the daemon, and the web server are all working. When using the Pi TX hotspot instead, open <code>http://10.42.0.1</code>.
+      </li>
+    </ol>
+    <p class="note">If <code>pi-tx.local</code> does not resolve, try the Pi's IP address directly. Find the IP with <code>hostname -I</code> run on the Pi. mDNS resolution may take a minute or two after first boot.</p>
+
+    <h3>What the Install Script Configures</h3>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Item</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td>I²C interface</td><td>Enabled via raspi-config (required for TF-Luna)</td></tr>
+          <tr><td>Hardware UART</td><td>Login shell disabled; hardware port enabled (required for ESP-NOW Bridge)</td></tr>
+          <tr><td>picamera2 / libcamera packages</td><td>Installed via apt — provides Pi Camera CSI support without a separate raspi-config camera step</td></tr>
+          <tr><td>opencv-python</td><td>Installed via apt (for USB webcam support)</td></tr>
+          <tr><td>Python pip packages</td><td>Installed from <code>requirements.txt</code></td></tr>
+          <tr><td>systemd unit (pi-tx.service)</td><td>Installed and enabled to start on boot</td></tr>
+          <tr><td>Avahi/mDNS</td><td>Configured so Pi is reachable as <code>pi-tx.local</code></td></tr>
+          <tr><td>Web UI</td><td>Built and served by the daemon</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Google Drive Setup</h3>
+    <p>To enable automatic upload of captured photos to Google Drive, the Pi TX must be authorized with your Google account. This is done through the app after installation:</p>
+    <ol class="steps">
+      <li>Open the SHP Asset Manager app and connect to the Pi TX via the Browser Panel.</li>
+      <li>Navigate to <strong>Upload → Google Drive</strong> and tap <strong>Authorize</strong>.</li>
+      <li>The Pi will generate a Google authorization URL. Open it on any device, sign in, and grant access.</li>
+      <li>Authorization tokens are stored securely on the Pi and persist across reboots.</li>
+    </ol>
+    <p class="note">Google Drive upload requires the Pi to have internet access at the time of authorization. Field sessions without internet still capture locally; uploads happen when connectivity is restored.</p>
+  </div>
+
+  <!-- §10 APP INSTALL -->
+  <div class="section">
+    <span id="app-install" class="section-anchor"></span>
+    <div class="section-label">Section 10</div>
+    <h2>App Install</h2>
+    <p>The SHP Asset Manager app is a React Native / Expo application that runs on iOS and Android. It communicates with the Laser Eye V2 TX and Cable Trigger over BLE and WiFi, and with the Pi TX via its web UI.</p>
+
+    <h3>Development Build (Expo Go)</h3>
+    <ol class="steps">
+      <li>Install the <strong>Expo Go</strong> app on your phone from the App Store (iOS) or Google Play (Android).</li>
+      <li>On your development computer, install Node.js (18 or later) and run:
+        <pre>npm install -g expo-cli</pre>
+      </li>
+      <li>In the project root, install dependencies:
+        <pre>pnpm install</pre>
+      </li>
+      <li>Start the Expo dev server for the app:
+        <pre>pnpm --filter @workspace/cable-trigger run dev</pre>
+      </li>
+      <li>Scan the QR code shown in the terminal with the Expo Go app on your phone.</li>
+    </ol>
+    <p class="note">Expo Go runs a JavaScript bundle from your dev machine. The phone and computer must be on the same WiFi network.</p>
+
+    <h3>Production Build</h3>
+    <p>For a standalone APK or IPA that does not require the Expo Go wrapper, use EAS Build. Refer to the Expo documentation for EAS Build setup — this is outside the scope of this install guide.</p>
+    <p class="warn">BLE device scanning requires the app to run in a production or development build (not in Expo Go's default web mode). Ensure BLE permissions are granted when prompted on first launch.</p>
+  </div>
+
+  <!-- §11 OTA UPDATES -->
+  <div class="section">
+    <span id="ota" class="section-anchor"></span>
+    <div class="section-label">Section 11</div>
+    <h2>OTA Firmware Updates</h2>
+    <p>The Laser Eye V2 TX, Cable Trigger, Mini RX V2, and ESP-NOW UART Bridge all support over-the-air firmware updates. The update path and access controls differ by device — read the relevant subsection before updating.</p>
+    <p class="warn">If power is lost or the update is interrupted mid-transfer, the firmware partition may be left in a corrupt state. The ESP32 does not automatically roll back to the previous firmware in these builds. Recovery requires USB reflashing via Arduino IDE (see the flashing sections above for board settings).</p>
+
+    <h3>Generating the .bin File</h3>
+    <p>All OTA methods require a compiled <code>.bin</code> file. To produce one:</p>
+    <ol class="steps">
+      <li>Open the firmware sketch in Arduino IDE with the correct board and settings (same as the initial flash).</li>
+      <li>Choose <strong>Sketch → Export Compiled Binary</strong>. Arduino IDE writes a <code>.bin</code> file into the sketch folder.</li>
+      <li>Transfer the <code>.bin</code> to your phone or computer as needed for the update method below.</li>
+    </ol>
+
+    <h3>Laser Eye V2 TX — OTA via BLE (App)</h3>
+    <p>The Laser Eye V2 TX receives firmware updates over the BLE connection. No WiFi or HTTP endpoint is involved in the normal app-driven flow.</p>
+    <ol class="steps">
+      <li>Connect to the Laser Eye V2 TX in the app via BLE.</li>
+      <li>Navigate to the device settings panel and tap <strong>Firmware Update</strong>.</li>
+      <li>Select the <code>.bin</code> file. The app streams the binary over BLE in base64-encoded chunks.</li>
+      <li>The device reboots automatically when the transfer completes.</li>
+    </ol>
+    <p class="note">The Laser Eye V2 TX also registers an HTTP <code>/update</code> endpoint on its WiFi AP. This endpoint has no additional access control beyond network access — only use it while directly connected to the device's own AP, never on an untrusted shared network.</p>
+
+    <h3>Cable Trigger — OTA via BLE (App)</h3>
+    <p>The Cable Trigger uses the same BLE-based OTA flow as the Laser Eye V2 TX. Connect in the app, navigate to Firmware Update, and select the <code>.bin</code>.</p>
+    <p class="note">Like the Laser Eye TX, the Cable Trigger also has an HTTP <code>/update</code> endpoint with no token protection. Use it only while connected to the device's own AP.</p>
+
+    <h3>Mini RX V2 — OTA via HTTP</h3>
+    <p>The Mini RX V2 enters OTA mode when its BOOT button (GPIO 0) is held for 3 seconds while the device is already running. It then raises a WiFi AP and serves firmware uploads over HTTP.</p>
+    <ol class="steps">
+      <li>With the Mini RX V2 powered on and running normally, hold the BOOT button (GPIO 0) for 3 seconds. The status LED will fast-blink to confirm OTA mode is active.</li>
+      <li>Connect your phone or computer to the <code>LR-MINI-RX-OTA</code> WiFi network. The password is <code>lrmini123</code>.</li>
+      <li>Open a browser and navigate to <code>http://192.168.4.1/update</code>.</li>
+      <li>Select the <code>.bin</code> file and upload. The device reboots when complete.</li>
+    </ol>
+    <p class="warn">The Mini RX AP password <code>lrmini123</code> is a fixed value shared by all Mini RX V2 units — it provides only basic access control. Keep OTA updates to situations where you are the only device connected to the Mini's AP. Do not perform updates on shared or public networks.</p>
+
+    <h3>ESP-NOW UART Bridge — OTA via Token-Gated HTTP</h3>
+    <p>The Bridge has the strongest OTA security of all devices. The Pi daemon generates a random per-session token, sends it to the Bridge over UART, and the app receives it through the Pi's authenticated channel. The Bridge raises a temporary WiFi AP using the token as both the WPA2 password and the required URL query parameter.</p>
+    <ol class="steps">
+      <li>In the app, navigate to the Bridge settings and tap <strong>Update Bridge Firmware</strong>.</li>
+      <li>The app coordinates with the Pi daemon to obtain the session token and switch the Bridge into OTA mode.</li>
+      <li>Connect to the <code>LR-BRIDGE-OTA</code> WiFi AP (password = session token, shown in the app).</li>
+      <li>The app uploads the <code>.bin</code> to <code>http://192.168.4.1/update?token=&lt;token&gt;</code>. Requests without the correct token receive a 403 response.</li>
+      <li>The Bridge reboots and reconnects to the Pi UART when complete.</li>
+    </ol>
+
+    <h3>Pi TX Software Updates</h3>
+    <p>The Pi TX daemon is updated by pulling the latest code and running the install script again:</p>
+    <pre>cd &lt;directory-containing-pi-tx-files&gt;
+git pull
+sudo ./install.sh
+sudo systemctl restart pi-tx</pre>
+    <p>A full reboot is not required for daemon-only updates — <code>systemctl restart pi-tx</code> is sufficient unless the install script specifically prompts for a reboot.</p>
+  </div>
+
+  <!-- §12 TROUBLESHOOTING -->
+  <div class="section">
+    <span id="troubleshooting" class="section-anchor"></span>
+    <div class="section-label">Section 12</div>
+    <h2>Troubleshooting</h2>
+    <p>Common problems encountered during firmware flashing and software installation, with their causes and fixes.</p>
+
+    <h3>Arduino IDE — Board &amp; Port</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Board not detected — no port appears in Tools → Port after plugging in the ESP32</div>
+        <div class="trouble-fix">Install the USB-to-UART driver for your board's chip (CH340 / CH341 or CP2102 / CP2104). See §02 USB Driver. After driver install, replug the board and wait a few seconds. On Windows, check Device Manager for a yellow-flagged "Unknown device" to identify the chip.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Upload stuck at <code>Connecting...</code> with dots repeating indefinitely</div>
+        <div class="trouble-fix">The ESP32 is not entering flash mode. Hold the <strong>BOOT</strong> (IO0) button on the board, click Upload, and release the button once the IDE output shows "Connecting..." — the upload should begin immediately. Some boards also require a brief press of the EN/RESET button while BOOT is held. After first successful upload, subsequent uploads usually auto-enter flash mode.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Port disappears mid-upload or upload fails with a serial timeout error</div>
+        <div class="trouble-fix">Try a different USB cable — many USB cables are charge-only and lack the data wires needed for serial communication. Reduce Upload Speed to <strong>460800</strong> in Tools if errors persist on the cable you have.</div>
+      </div>
+    </div>
+
+    <h3>Arduino IDE — Compilation</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom"><code>fatal error: NimBLEDevice.h: No such file or directory</code> (or similar for any library header)</div>
+        <div class="trouble-fix">The required library is not installed. Open <strong>Tools → Manage Libraries</strong>, search for the library name, and install it. Ensure you installed the correct publisher — see the library table in §03. If the library was installed, restart Arduino IDE after installation; the IDE occasionally fails to index a newly installed library until restarted.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Sketch compiles but shows "Sketch too large" or flash size overflow error</div>
+        <div class="trouble-fix">Change the <strong>Partition Scheme</strong> in Tools to <strong>Huge APP (3 MB No OTA / 1 MB SPIFFS)</strong>. This allocates more flash to the application at the cost of OTA update capability. If OTA must be retained, use <strong>Minimal SPIFFS (1.9 MB APP with OTA)</strong>.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Compilation error referencing <code>TM1637Display.h</code> when building a device other than the Cable Trigger</div>
+        <div class="trouble-fix">You have the wrong sketch open. Confirm the filename in the Arduino IDE tab matches the firmware listed in §01 for the device you are building. Do not mix firmware files between devices.</div>
+      </div>
+    </div>
+
+    <h3>Pi TX — Service &amp; Network</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Pi TX service fails to start — <code>systemctl status pi-tx</code> shows <em>failed</em> or <em>activating</em></div>
+        <div class="trouble-fix">Run <code>journalctl -u pi-tx -n 60</code> to read the last 60 log lines and find the specific error. Common causes: (1) Python dependency missing — re-run <code>sudo ./install.sh</code> to reinstall. (2) Port already in use — check for another process on port 5000 with <code>ss -tlnp | grep 5000</code> and stop it. (3) Permission error on the working directory — the service user must own the project folder.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom"><code>pi-tx.local</code> does not resolve — browser shows "site not found" or connection refused</div>
+        <div class="trouble-fix">First confirm the pi-tx service is running (<code>systemctl status pi-tx</code>). If running, mDNS (Avahi) may not have propagated yet — wait 60–90 seconds after boot and try again. As a fallback, find the Pi's IP address with <code>hostname -I</code> run on the Pi and navigate to that IP address directly in the browser. On Windows, mDNS resolution requires the Bonjour service (installed with iTunes or Apple Devices app) or a browser extension.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">install.sh completes but the service is not enabled at boot</div>
+        <div class="trouble-fix">Run <code>sudo systemctl enable pi-tx</code> then <code>sudo systemctl start pi-tx</code>. If the unit file is missing, the install did not complete cleanly — re-run <code>sudo ./install.sh</code> from the directory containing the Pi TX files (the repository root in the standalone package).</div>
+      </div>
+    </div>
+
+    <h3>Google Drive Authorization</h3>
+    <div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Google Drive authorization URL never appears in the app after tapping Authorize</div>
+        <div class="trouble-fix">The Pi must have internet access to contact Google's OAuth server and generate the URL. Confirm the Pi can reach the internet: run <code>curl -s https://accounts.google.com | head -5</code> on the Pi. If this fails, check the Pi's network connection. After connectivity is confirmed, restart the pi-tx service and try again.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Authorization URL opens and access is granted, but the app still shows "Not authorized" after returning</div>
+        <div class="trouble-fix">Token exchange may have timed out. Return to the app, navigate back to <strong>Upload → Google Drive</strong>, and tap <strong>Authorize</strong> again — the Pi generates a fresh URL each time. Ensure you complete the sign-in flow and see the Google confirmation page ("You are now signed in") before switching back to the app.</div>
+      </div>
+      <div class="trouble-row">
+        <div class="trouble-symptom">Upload to Google Drive fails with a permissions or 403 error after a previously working authorization</div>
+        <div class="trouble-fix">The stored OAuth token has expired or been revoked. Re-authorize from <strong>Upload → Google Drive → Authorize</strong> in the app. Google tokens can be revoked if your Google account password changed or if the app's access was removed from your Google account's security settings.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    <div>SHP Asset Manager &nbsp;&middot;&nbsp; Firmware &amp; Software Install Guide</div>
+    <div style="margin-top:8px;">
+      <a href="build-guide.html" style="color:var(--orange);text-decoration:none;">Hardware Build Guide</a>
+      &nbsp;&middot;&nbsp;
+      <a href="lazer-eye-manual.html" style="color:var(--orange);text-decoration:none;">Lazer Eye Manual</a>
+      &nbsp;&middot;&nbsp;
+      <a href="cable-trigger-manual.html" style="color:var(--orange);text-decoration:none;">Cable Trigger Manual</a>
+    </div>
+    <div><a href="https://scotthendersonphotography.net" style="color:#F27D26;text-decoration:none;">scotthendersonphotography.net</a></div>
+  </div>
+
+</div>
+</body>
+</html>
