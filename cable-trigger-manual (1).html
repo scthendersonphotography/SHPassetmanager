@@ -119,7 +119,7 @@
     <div class="cover-title">Cable Trigger</div>
     <div class="cover-sub">User Manual</div>
     <div class="cover-divider"></div>
-    <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated August 2026</div>
+    <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated November 2026</div>
   </div>
 
   <div class="toc">
@@ -223,17 +223,18 @@
     <p>The Cable Trigger creates its own WiFi hotspot. WiFi is recommended when installing firmware updates &mdash; it is significantly faster than Bluetooth.</p>
     <ol class="steps">
       <li>Power on the Cable Trigger.</li>
-      <li>On your phone, join the Cable Trigger's network in your OS WiFi settings. If you have set a Security PIN of 8 or more characters in the app, that PIN is also the hotspot password.</li>
+      <li>On your phone, join the Cable Trigger's network in your OS WiFi settings. Its hotspot password is <strong>12345678</strong>; the app Security PIN does not change this password.</li>
       <li>Return to the app. Tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
       <li>Enter IP <strong>192.168.4.1</strong> and port <strong>80</strong>, then tap CONNECT.</li>
       <li>Settings sync automatically once connected.</li>
     </ol>
 
-    <h3>Pi TX control</h3>
-      <p>If you use a <strong>Pi TX</strong> (Raspberry Pi transmitter), the Cable Trigger can also be controlled from the Pi TX browser panel. For local field use, join the secured WiFi network whose name begins with <code>PI_TX_</code> and open <code>http://10.42.0.1</code>; no internet is required. If the Pi is on a trusted upstream LAN, <code>http://pi-tx.local</code> or its LAN IP can be used instead. The Pi TX browser panel mirrors the app&apos;s Cable Trigger controls, so you can trigger, adjust settings, and run a longevity test without the phone present. See the <a href="lazer-eye-manual.html">Lazer Eye manual</a> for Pi TX setup details.</p>
+    <h3>Using Cable Trigger with Advanced TX</h3>
+    <p><strong>Advanced TX</strong> is the Raspberry Pi camera/control unit. Its PI TX tab and browser panel control the Pi&apos;s own camera, trigger output, wake output, and paired RX units; they do not operate the Cable Trigger&apos;s servo or change its settings. Connect to the Cable Trigger in the Cable Trigger tab for those controls. To have Lazer Eye detections fire both devices, pair the Lazer Eye TX with the Cable Trigger using the <strong>DIRECT CABLE TRIGGER LINK</strong>, and separately link the Lazer Eye TX to Advanced TX using the <strong>ADVANCED TX LINK</strong>. See the <a href="lazer-eye-manual.html#section-7">Lazer Eye manual, Section 07</a> for RX and Advanced TX pairing, and <a href="lazer-eye-manual.html#section-8">Section 08</a> for the Cable Trigger link.</p>
+    <p class="warn">The Advanced TX browser panel requires a trusted network. It does not require login, so do not expose it to a public or untrusted network.</p>
 
     <h3>Settings</h3>
-    <p>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings. From here you can check for firmware updates, change the device name, set a security PIN, and adjust app preferences.</p>
+    <p>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings. From there, Hardware Settings includes FIRMWARE UPDATE (OTA), DEVICE NAME, and SECURITY PIN. The Cable Trigger WiFi hotspot uses its fixed password <code>12345678</code>; its Security PIN is for BLE authentication, not the WiFi password. See the <a href="lazer-eye-manual.html#section-2">Lazer Eye manual, Section 02</a> for the Advanced TX connection and network distinction.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 03 -->
@@ -312,7 +313,7 @@
     <span id="section-6" class="section-anchor"></span>
     <div class="section-label">Section 06</div>
     <h2>Shutter Calibration</h2>
-    <p><strong>Shutter Calibration</strong> uses your phone's microphone to listen to the actual shutter click and measure exactly when it opens and closes. It calculates the offset between what the firmware held and how long the shutter was actually open, so you can apply a correction to Exposure Time for your specific camera body.</p>
+    <p><strong>Shutter Calibration</strong> uses your phone's microphone to record the shutter sound and estimate an Exposure Time offset for a specific camera. It does not change the Cable Trigger automatically.</p>
     <p>The SHUTTER CALIBRATION card is a separate collapsible section below the CONFIGURATION card. Tap its header to expand it.</p>
 
     <h3>Running a calibration test</h3>
@@ -329,8 +330,8 @@
 
     <h3>Applying a saved profile</h3>
     <p>Saved profiles appear in the <strong>SAVED PROFILES</strong> list at the bottom of the Shutter Calibration section. Each row shows the profile name, the date it was tested, and its offset in milliseconds.</p>
-    <p>Tap <strong>APPLY</strong> on any profile to adjust the firmware's Exposure Time for the current session. The app calculates the corrected hold time (current Exposure Time + offset) and sends it to the device. Confirm in the dialog that appears.</p>
-    <p class="note">Applied calibration lasts for the current connection session. If you disconnect and reconnect, the original Exposure Time is restored. Apply the profile again each time you connect if your shooting consistently requires the correction.</p>
+    <p>Tap <strong>APPLY</strong> on any profile to send the current Exposure Time plus the saved offset to the device for this connection. The app does not overwrite the stored Exposure Time.</p>
+    <p class="note">Applied calibration lasts until you disconnect or change Exposure Time. It is temporary; saved profiles stay on the phone. Apply the profile again when needed.</p>
     <p class="warn">Grant microphone permission when prompted. Without it the app cannot record audio and TEST SHUTTER will fail with a permission error.</p>
 
     <h3>When to recalibrate</h3>
@@ -356,6 +357,9 @@
     <h3>iOS &mdash; Bluetooth clicker</h3>
     <p>On iOS, pair a Bluetooth shutter remote (a BLE clicker, such as the kind sold for selfies or remote presentations) with your phone. While Remote Trigger Mode is on, pressing the clicker fires the Cable Trigger. The clicker can be held in one hand or placed on a surface nearby.</p>
 
+    <h3>Web &mdash; keyboard</h3>
+    <p>When using the web app, keep the Cable Trigger page active and press <strong>Space</strong>, <strong>Enter</strong>, or <strong>Up Arrow</strong> to fire. The web keyboard shortcut is only available while the page is active.</p>
+
     <div class="table-wrap">
       <table>
         <thead><tr><th>Platform</th><th>Remote input</th><th>How to activate</th></tr></thead>
@@ -370,10 +374,15 @@
             <td>BLE shutter clicker (paired in iOS Bluetooth settings)</td>
             <td>Pair the clicker via iOS Settings &rarr; Bluetooth, then enable the Remote Trigger Mode toggle in the app.</td>
           </tr>
+          <tr>
+            <td><strong>Web</strong></td>
+            <td>Space, Enter, or Up Arrow</td>
+            <td>Keep the Cable Trigger page active and enable Remote Trigger Mode.</td>
+          </tr>
         </tbody>
       </table>
     </div>
-    <p class="note">Disable Remote Trigger Mode when you're done shooting to restore normal volume-button behaviour on Android.</p>
+    <p class="note">Disable Remote Trigger Mode when you are done. The app keeps the screen awake while it is active and restores the previous Android volume after the mode is turned off.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 08 -->
@@ -386,7 +395,7 @@
 
     <h3>Running a longevity test</h3>
     <ol class="steps">
-      <li>Set the number of <strong>CYCLES</strong> using the +/&minus; buttons or type directly into the counter field (1 to 9999 cycles).</li>
+      <li>Set the number of <strong>CYCLES</strong> using the +/&minus; buttons or type directly into the counter field (1 to 9,999 cycles; initial count 10).</li>
       <li>Tap <strong>START TEST</strong>. The device begins firing immediately, repeating the full trigger sequence for the requested number of cycles.</li>
       <li>The progress display shows cycles remaining. The test continues even if you disconnect the phone.</li>
       <li>Tap <strong>STOP TEST</strong> at any time to abort.</li>
@@ -401,14 +410,14 @@
     <h2>Linking to a Lazer Eye</h2>
     <p>The Cable Trigger can be triggered automatically by a <strong>Lazer Eye</strong> LiDAR sensor in two ways. Both are configured from the <strong>LAZER EYE tab</strong> of the SHP Asset Manager app.</p>
 
-    <h3>Direct ESP-NOW Cross-Link</h3>
+    <h3>Direct Cable Trigger Link (ESP-NOW)</h3>
     <p>The Lazer Eye sends a wireless trigger packet directly to the Cable Trigger over <strong>ESP-NOW</strong> every time the LiDAR detects a subject. Once paired, this link operates autonomously &mdash; no phone needs to be connected after setup. The Cable Trigger fires using whatever Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount settings are currently stored on it.</p>
     <p class="note">Lazer Eye firmware <strong>v2.9.4 or later</strong> is required for confirmed-delivery status. Older firmware sends the packet but cannot confirm the Cable Trigger received it.</p>
 
     <ol class="steps">
       <li>Connect the <strong>Cable Trigger</strong> to the app via BLE (the orange dot in the Cable Trigger tab header confirms the connection).</li>
-      <li>Open the <strong>LAZER EYE tab</strong> and connect the Lazer Eye (WiFi, BLE, or Pi TX).</li>
-      <li>Expand the <strong>DIRECT CABLE TRIGGER LINK</strong> section. Tap <strong>GET MAC</strong> — the app reads the Cable Trigger's ESP radio MAC address over BLE and displays it.</li>
+      <li>Open the <strong>LAZER EYE tab</strong> and connect the Lazer Eye TX by WiFi or BLE.</li>
+      <li>Expand <strong>DIRECT CABLE TRIGGER LINK</strong>. Tap <strong>GET MAC</strong> — the app reads the Cable Trigger's ESP-NOW MAC over BLE and displays it.</li>
       <li>Tap <strong>PAIR</strong>. The Lazer Eye stores the Cable Trigger's MAC address and begins firing it on every accepted LiDAR detection.</li>
       <li>Tap <strong>TEST LINK</strong> to send a test packet. Listen for a shutter click from the Cable Trigger. If delivery is confirmed you will see a green "Delivery confirmed" message; on older Lazer Eye firmware you will see a yellow "Sent (delivery not confirmed)" message.</li>
     </ol>
@@ -418,9 +427,9 @@
     <h3>BLE-Mediated Link</h3>
     <p>While both the Cable Trigger and Lazer Eye are connected to the app simultaneously, you can enable the <strong>FIRE CABLE TRIGGER ON LIDAR EVENT</strong> toggle in the <strong>CABLE TRIGGER LINK</strong> section of the Lazer Eye tab. When enabled, the app relays each accepted LiDAR trigger to the Cable Trigger over BLE in real time.</p>
     <ul class="bullets">
-      <li>Each relay fires using the Cable Trigger's own <strong>shots-per-trigger</strong> setting.</li>
+      <li>Each relay uses the Cable Trigger's saved delay, exposure, and engagement settings.</li>
       <li>If the Cable Trigger is mid-sequence when an event arrives, that event is <strong>skipped</strong> — events are not queued.</li>
-      <li>The link stops automatically if either device disconnects. No pairing is stored; the toggle must be re-enabled each session.</li>
+      <li>The link stops if either device disconnects. No pairing is stored; enable the toggle again after reconnecting.</li>
     </ul>
 
     <h3>Choosing the right approach</h3>
@@ -430,7 +439,7 @@
         <tbody>
           <tr>
             <td>Unattended setup — phone pocketed or left behind</td>
-            <td><strong>Direct ESP-NOW Cross-Link</strong> — operates without a phone after pairing.</td>
+            <td><strong>Direct Cable Trigger Link</strong> — operates without a phone after pairing.</td>
           </tr>
           <tr>
             <td>Phone already monitoring both devices simultaneously</td>
@@ -438,7 +447,7 @@
           </tr>
           <tr>
             <td>Maximum reliability &amp; confirmed delivery</td>
-            <td><strong>Direct ESP-NOW Cross-Link</strong> with Lazer Eye firmware v2.9.4+.</td>
+            <td><strong>Direct Cable Trigger Link</strong> with Lazer Eye firmware v2.9.4+ for delivery confirmation.</td>
           </tr>
         </tbody>
       </table>
@@ -457,7 +466,7 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Camera fires inconsistently</div>
-      <div class="trouble-fix">Increase <strong>Exposure Time</strong> — the servo may not be pressing the release long enough for the camera to register the signal. Run <strong>Shutter Calibration</strong> (TEST SHUTTER) to measure the gap and apply a correction automatically.</div>
+      <div class="trouble-fix">Increase <strong>Exposure Time</strong> gradually. You can run <strong>Shutter Calibration</strong> (TEST SHUTTER), save the measured profile, and tap APPLY to use its offset for the current connection; the profile does not apply automatically.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Servo strains or over-drives the cable release</div>
@@ -465,7 +474,7 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">TEST SHUTTER shows no detection result or an error</div>
-      <div class="trouble-fix">Hold your phone closer to the camera (within 15 cm) with the microphone facing the shutter. Ensure the room is quiet. Check that microphone permission is granted for the SHP Asset Manager app in Settings &rarr; Privacy &rarr; Microphone. Also confirm Trigger Engagement Amount is already set high enough that the shutter actually fires during the test.</div>
+      <div class="trouble-fix">Hold your phone close to the camera with the microphone facing the shutter and keep the area quiet. Allow microphone access for SHP Asset Manager in phone Settings. Confirm Trigger Engagement Amount is already high enough for the shutter to fire during the test.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Applying a calibration profile has no visible effect</div>
@@ -473,15 +482,15 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Volume buttons don't trigger on Android</div>
-      <div class="trouble-fix">Confirm <strong>Remote Trigger Mode</strong> is toggled on (label turns orange and the toggle is highlighted). The app must be in the foreground. If another app has captured the hardware button events, close it and try again.</div>
+      <div class="trouble-fix">Confirm the remote trigger switch is on and the Cable Trigger screen is active. If another app has captured the hardware button events, close it and try again.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">BLE clicker doesn't fire on iOS</div>
-      <div class="trouble-fix">Confirm the clicker is paired in iOS Settings &rarr; Bluetooth and shows as connected. Then confirm <strong>Remote Trigger Mode</strong> is on in the app. The app must be in the foreground to receive clicker events.</div>
+      <div class="trouble-fix">Confirm the clicker is paired in iOS Settings → Bluetooth and shows as connected. Then confirm the remote trigger switch is on and the Cable Trigger screen is active.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Can't connect via Bluetooth</div>
-      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Cable Trigger. On iOS: Settings &rarr; Privacy &rarr; Bluetooth &rarr; confirm the SHP Asset Manager app has permission. The Cable Trigger appears in the scan list by the name set in Hardware Settings (the default name is shown on the device label).</div>
+      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Cable Trigger. Allow Bluetooth access for SHP Asset Manager in phone Settings. On Android, allow nearby-device permission on Android 12+ or Location permission on Android 10–11. The scan list uses the device&apos;s current name, which can be changed in Settings.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Settings revert after reconnecting</div>
@@ -489,15 +498,15 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">A firmware update is slow or failing</div>
-      <div class="trouble-fix">Switch to a WiFi connection — updates over WiFi are dramatically faster than Bluetooth. Open Settings &rarr; Hardware Settings &rarr; CHECK FOR UPDATES, then connect via WiFi first if needed.</div>
+      <div class="trouble-fix">Use WiFi for a faster transfer. Open Settings → HARDWARE SETTINGS → FIRMWARE UPDATE (OTA), check for updates, and download the release before joining the device hotspot. Then use INSTALL VIA WIFI — INSTANT.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Direct link shows "sent (delivery not confirmed)" instead of "delivery confirmed"</div>
       <div class="trouble-fix">Confirmed delivery requires <strong>Lazer Eye firmware v2.9.4 or later</strong>. Update the Lazer Eye via the Lazer Eye tab &rarr; Settings &rarr; CHECK FOR UPDATES. After updating, re-pair (UNPAIR then repeat the GET MAC &rarr; PAIR steps) and TEST LINK again.</div>
     </div>
     <div class="trouble-row">
-      <div class="trouble-symptom">Direct ESP-NOW link set up but Cable Trigger doesn't fire</div>
-      <div class="trouble-fix">Confirm ESP-NOW is enabled on the Lazer Eye (check the ESP-NOW section of the Lazer Eye tab). Keep both devices within range during initial testing. If TEST LINK shows an error, UNPAIR and redo the pairing — the Cable Trigger BLE connection must be active during GET MAC. After re-pairing, range of up to ~100 m line-of-sight is typical.</div>
+      <div class="trouble-symptom">Direct Cable Trigger Link set up but the Cable Trigger doesn't fire</div>
+      <div class="trouble-fix">Confirm the Lazer Eye TX is connected, ESP-NOW is enabled, and the Cable Trigger is powered. The Cable Trigger must be connected over BLE while you use GET MAC to pair. If TEST LINK fails, unpair and repeat the GET MAC → PAIR steps. Radio range varies with placement, walls, and interference.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">BLE-mediated link fires inconsistently or skips events</div>
@@ -505,24 +514,25 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Direct link stops working after powering both devices off and back on</div>
-      <div class="trouble-fix">Pairing is retained in flash memory on both devices and should survive power cycles. If the link stops: open the Lazer Eye tab, expand DIRECT CABLE TRIGGER LINK, and confirm it still shows PAIRED. If it shows NOT PAIRED, the Lazer Eye flash was cleared (e.g. by a firmware reflash) — redo the GET MAC &rarr; PAIR steps. Also confirm ESP-NOW is still enabled on the Lazer Eye.</div>
+      <div class="trouble-fix">Open the Lazer Eye tab and check the DIRECT CABLE TRIGGER LINK status. If it shows NOT PAIRED, confirm ESP-NOW is enabled and repeat GET MAC → PAIR while the Cable Trigger is connected over BLE. Tap TEST LINK to verify delivery.</div>
     </div>
 
     <h3>Updating firmware</h3>
     <ol class="steps">
       <li>Connect to the Cable Trigger in the app.</li>
-      <li>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings.</li>
-      <li>Scroll to <strong>Hardware Settings</strong> and tap <strong>CHECK FOR UPDATES</strong>.</li>
-      <li>If an update is available, tap <strong>INSTALL UPDATE</strong>. The device reboots and the app reconnects automatically.</li>
+      <li>Open Settings → <strong>HARDWARE SETTINGS</strong> → <strong>FIRMWARE UPDATE (OTA)</strong>.</li>
+      <li>Tap <strong>CHECK FOR UPDATES</strong>, or use <strong>PICK .BIN FILE</strong> for firmware already on the phone.</li>
+      <li>Install over Bluetooth, or download the release first, join the Cable Trigger hotspot, and use <strong>INSTALL VIA WIFI — INSTANT</strong>.</li>
+      <li>Keep power connected and do not interrupt the transfer. The device reboots and the app attempts to reconnect after a successful update.</li>
     </ol>
   </div>
 
   <div class="footer">
     <div>SHP Asset Manager &nbsp;&middot;&nbsp; Cable Trigger User Manual</div>
     <div style="margin-top:8px;">
-      <a href="build-guide.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
+      <a href="https://raw.githack.com/scthendersonphotography/SHPassetmanager/main/build-guide%20%281%29.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
       &nbsp;&middot;&nbsp;
-      <a href="install-guide.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
+      <a href="https://raw.githack.com/scthendersonphotography/SHPassetmanager/main/install-guide%20%281%29.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
       &nbsp;&middot;&nbsp;
       <a href="lazer-eye-manual.html" style="color:#F27D26;text-decoration:none;">Lazer Eye Manual</a>
     </div>
