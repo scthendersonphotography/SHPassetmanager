@@ -124,7 +124,7 @@
     <div class="cover-title">Lazer Eye</div>
     <div class="cover-sub">User Manual &mdash; V2 Hardware</div>
     <div class="cover-divider"></div>
-    <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated August 2026</div>
+    <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated November 2026</div>
   </div>
 
   <div class="toc">
@@ -136,8 +136,8 @@
       <li><a href="#section-4"><span class="toc-num">04</span> Wake Trigger</a></li>
       <li><a href="#section-5"><span class="toc-num">05</span> Trigger Schedule</a></li>
       <li><a href="#section-6"><span class="toc-num">06</span> Battery Monitor</a></li>
-      <li><a href="#section-7"><span class="toc-num">07</span> ESP-NOW Wireless Receiver &amp; Pairing</a></li>
-      <li><a href="#section-8"><span class="toc-num">08</span> Direct Cable Trigger Cross-Link</a></li>
+      <li><a href="#section-7"><span class="toc-num">07</span> RX &amp; Advanced TX Links</a></li>
+      <li><a href="#section-8"><span class="toc-num">08</span> Direct Cable Trigger Link</a></li>
       <li><a href="#section-9"><span class="toc-num">09</span> BLE Cable Trigger Link</a></li>
       <li><a href="#section-10"><span class="toc-num">10</span> TX &amp; RX Output Modes</a></li>
       <li><a href="#section-11"><span class="toc-num">11</span> Browser Panel</a></li>
@@ -145,7 +145,7 @@
       <li><a href="#section-13"><span class="toc-num">13</span> Google Drive Upload</a></li>
       <li><a href="#section-14"><span class="toc-num">14</span> Time-Lapse</a></li>
       <li><a href="#section-15"><span class="toc-num">15</span> Astronomical Triggers</a></li>
-      <li><a href="#section-16"><span class="toc-num">16</span> Advanced Settings</a></li>
+      <li><a href="#section-16"><span class="toc-num">16</span> Advanced Sensor Adjustments</a></li>
       <li><a href="#section-17"><span class="toc-num">17</span> Status LEDs &amp; Battery</a></li>
       <li><a href="#section-18"><span class="toc-num">18</span> Troubleshooting</a></li>
     </ol>
@@ -156,36 +156,53 @@
     <span id="section-1" class="section-anchor"></span>
     <div class="section-label">Section 01</div>
     <h2>System Overview</h2>
-    <p>The <strong>Lazer Eye</strong> is a LiDAR-based camera trigger. It continuously measures the distance to whatever is in front of it and fires your camera shutter the moment something enters a distance window you define &mdash; no button press required.</p>
-    <p>Common uses include wildlife photography (animal crosses the beam), action sports (athlete reaches a point), product photography, and long-exposure light painting.</p>
+    <p>The <strong>Lazer Eye TX</strong> is the transmitter unit in the system. Its LiDAR reads the distance to whatever is in front of it and fires your camera shutter when a subject enters a distance window you define &mdash; no button press required.</p>
+    <p>Common uses include wildlife photography when an animal crosses a path, action sports when an athlete reaches a point, product photography, and long-exposure light painting.</p>
 
-    <h3>Wireless receiver options</h3>
-    <p>An optional wireless receiver sits at the camera end and receives trigger and wake signals from the Lazer Eye, eliminating a cable run between the sensor and your camera. Two V2 receiver types are supported:</p>
+    <h3>Why direct LiDAR sensing?</h3>
+    <p>LiDAR reads subject distance directly. Unlike a reflected laser beam, it does not need a separate reflector across the path. Unlike PIR, it responds to measured distance rather than only heat or movement. Set a near and far boundary so a subject can trigger as it crosses a path or reaches a defined position while objects outside the window are ignored. Results still depend on the subject, surface, alignment, and shooting conditions.</p>
+
+    <h3>TX capabilities</h3>
+    <ul class="bullets">
+      <li>App-configurable trigger zone from 0 to 1,000 cm; usable detection range depends on the sensor, subject, and conditions.</li>
+      <li>App-controlled shot interval (0–30 seconds), delay before shot (0–5 seconds), and shots per trigger (1–10).</li>
+      <li>Direct subject reading with no reflector required.</li>
+      <li>Camera wake support, alignment laser, USB-C passthrough charging, and a standard 1/4-20 tripod mount.</li>
+      <li>Approximately 20 hours of onboard battery life; safe in rain but not intended for submersion.</li>
+    </ul>
+
+    <h3>RX receiving unit options</h3>
+    <p>An optional <strong>RX</strong> is the receiving unit at the camera end. It receives trigger and wake signals from the Lazer Eye TX, eliminating the cable run between the TX and camera. The app supports compact and full-size RX builds:</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Receiver</th><th>Best for</th></tr></thead>
+        <thead><tr><th>RX unit</th><th>Best for</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>LR Mini RX V2</strong> <span class="v2-badge">V2</span></td>
-            <td>Compact receiver. Identifies itself to the app automatically once paired.</td>
+            <td><strong>RX (compact)</strong></td>
+            <td>Compact receiving unit. Its technical identifier is <code>LR_MINI_RX_V2</code>; it identifies itself to the app once paired.</td>
           </tr>
           <tr>
-            <td><strong>LR Full ESP32 RX V2</strong> <span class="v2-badge">V2</span></td>
-            <td>Full-size receiver, same feature set as the Mini.</td>
+            <td><strong>RX (full-size)</strong></td>
+            <td>Full-size receiving unit. Its technical identifier is <code>LR_RX_V2</code>; it provides the same trigger-receive function.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
     <h3>Trigger output</h3>
-    <p>The Lazer Eye has a wired trigger jack, and can optionally also trigger a paired V2 receiver wirelessly over ESP-NOW.</p>
+    <p>The TX has a wired trigger output and can also trigger up to four paired RX units wirelessly over ESP-NOW. It can separately link to an Advanced TX or Cable Trigger; those links are described in Sections 07–09.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Output</th><th>What it does</th><th>Best for</th></tr></thead>
         <tbody>
           <tr>
+            <td><strong>Wired</strong></td>
+            <td>Fires the TX's wired trigger output.</td>
+            <td>Direct camera connection at the sensor.</td>
+          </tr>
+          <tr>
             <td><strong>ESP-NOW wireless (optional)</strong></td>
-            <td>Sends trigger and wake signals to a paired V2 receiver over 2.4&nbsp;GHz. No cable required between the Lazer Eye and the camera.</td>
+            <td>Sends trigger and wake signals to a paired RX. No cable is required between the TX and the camera.</td>
             <td>Remote or awkward placements, water environments, moving rigs.</td>
           </tr>
         </tbody>
@@ -198,7 +215,7 @@
     <span id="section-2" class="section-anchor"></span>
     <div class="section-label">Section 02</div>
     <h2>Connecting to the App</h2>
-    <p>The SHP Asset Manager app controls all Lazer Eye settings in real time. Connect via <strong>Bluetooth</strong>, <strong>WiFi</strong>, or through a <strong>Pi TX</strong> Raspberry Pi &mdash; all three give full control.</p>
+    <p>The SHP Asset Manager app connects to a Lazer Eye TX over <strong>Bluetooth</strong> or <strong>WiFi</strong>. <strong>Advanced TX</strong> is a separate Raspberry Pi camera/control unit with its own PI TX tab; it is not another Lazer Eye connection type.</p>
     <div class="screenshot-wrap">
       <div class="screenshot-item">
         <img src="screenshots/lazer-eye-main.jpg" alt="Lazer Eye tab with CONNECT DEVICE button in the header">
@@ -210,31 +227,30 @@
     <ol class="steps">
       <li>Power on the Lazer Eye.</li>
       <li>Ensure Bluetooth is enabled on your phone.</li>
-      <li>Open the app and tap the <strong>LAZER EYE</strong> tab at the bottom of the screen.</li>
-      <li>Tap <strong>&#9889; CONNECT DEVICE</strong> in the header and select your device from the scan list. The Lazer Eye appears as <code>LASER_EYE_V2</code>.</li>
+      <li>Open the app and tap the <strong>LAZER EYE</strong> tab.</li>
+      <li>Tap <strong>CONNECT DEVICE</strong>, choose Bluetooth, and select the Lazer Eye TX from the scan list.</li>
       <li>Settings sync automatically. The dot in the header turns orange when connected.</li>
     </ol>
-    <p class="note">The app remembers your device. On subsequent launches it reconnects silently if the Lazer Eye is in range.</p>
+    <p class="note">The app remembers the selected device and may reconnect silently when it is in range. Android 12 and later ask for nearby-device scan/connect permission; Android 10–11 may ask for Location permission for Bluetooth scanning. Allow the requested permissions. The scan list shows the device&apos;s advertised name, which can be changed in Settings.</p>
 
     <h3>WiFi</h3>
     <p>The Lazer Eye creates its own WiFi hotspot. WiFi is recommended when installing app or firmware updates &mdash; it is significantly faster than Bluetooth.</p>
     <ol class="steps">
       <li>Power on the Lazer Eye.</li>
-      <li>On your phone, join the <code>LASER_EYE</code> network in OS WiFi settings. If you have set a Security PIN of 8 or more characters in the app, that PIN is also the hotspot password.</li>
-      <li>Return to the app. Tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
-      <li>Enter IP <strong>192.168.4.1</strong> and port <strong>80</strong>, then tap CONNECT.</li>
+      <li>Join the Lazer Eye&apos;s hotspot in phone WiFi settings. If a Security PIN of 8 or more characters is set, use it as the hotspot password; without one, the hotspot is open. The network name follows the device name.</li>
+      <li>Return to the app, tap <strong>CONNECT DEVICE</strong>, choose the Lazer Eye WiFi option, and enter the device&apos;s address.</li>
+      <li>The usual address is <strong>192.168.4.1</strong>, port <strong>80</strong>. Tap CONNECT to sync settings.</li>
       <li>Settings sync automatically once connected.</li>
     </ol>
 
-    <h3>Pi TX <span class="pi-badge">Pi TX</span></h3>
-      <p>A <strong>Pi TX</strong> is a Raspberry Pi running the SHP Pi daemon. Its secured hotspot is the recommended field-control path: join the WiFi network whose name begins with <code>PI_TX_</code>, then connect the app to <code>10.42.0.1</code>. No internet or separate router is required for local control. Optional Ethernet or a second WiFi adapter can provide upstream internet while the Pi&apos;s built-in WiFi remains dedicated to the hotspot.</p>
+    <h3>Advanced TX <span class="pi-badge">Advanced TX</span></h3>
+      <p>An <strong>Advanced TX</strong> is a Raspberry Pi camera/control unit. It is controlled from the app&apos;s <strong>PI TX</strong> tab or its browser panel, separately from the Lazer Eye TX tab. The secured hotspot is recommended for field control: join the network whose name begins with <code>PI_TX_</code> and connect to <code>10.42.0.1</code>. Local control needs no internet; an upstream Ethernet or second WiFi connection is optional for internet services.</p>
     <ol class="steps">
-        <li>Join the Pi TX network whose SSID begins with <code>PI_TX_</code>, using the password printed during installation.</li>
-        <li>In the app, tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
-        <li>Choose the Pi TX connection flow. The app checks <strong>10.42.0.1</strong> first; tap CONNECT if prompted.</li>
-        <li>The app identifies the Pi via its <code>PLATFORM,PI</code> response and all Pi TX sections appear automatically.</li>
+        <li>Join the Advanced TX hotspot using the password configured during installation.</li>
+        <li>Open the app&apos;s <strong>PI TX</strong> tab and connect to <strong>10.42.0.1</strong>.</li>
+        <li>Use the PI TX tab for the Pi&apos;s camera, trigger, wake, receiver, time-lapse, and astronomy controls.</li>
     </ol>
-      <p class="note">If the Pi is also on a trusted upstream LAN, <code>pi-tx.local</code> or its LAN IP can be used instead. Normal-LAN control is currently unauthenticated, so use the secured Pi TX hotspot for untrusted or shared networks.</p>
+      <p class="note">On a trusted upstream LAN, use <code>pi-tx.local</code> or the Pi&apos;s LAN IP. Browser access does not require login, so do not expose it to a public or untrusted network. Internet access is needed for Google Drive and software downloads, not local camera control. To pair the Lazer Eye TX directly to Advanced TX over ESP-NOW, see Section 07.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 03 -->
@@ -242,7 +258,7 @@
     <span id="section-3" class="section-anchor"></span>
     <div class="section-label">Section 03</div>
     <h2>Configuration Settings</h2>
-    <p>The <strong>CONFIGURATION</strong> card is expanded by default at the top of the Lazer Eye tab. It holds the core trigger-zone settings, laser alignment, the LED toggles, and Wake Trigger.</p>
+    <p>The <strong>CONFIGURATION</strong> card contains the trigger zone, shot timing, alignment laser, TX LED switches, wake trigger, and advanced sensor controls. A fresh app profile starts in imperial units with a 30 cm minimum and 366 cm maximum; connected hardware may already have different saved values, which are loaded by the app.</p>
     <div class="screenshot-wrap">
       <div class="screenshot-item">
         <img src="screenshots/lazer-eye-config.jpg" alt="Lazer Eye tab showing the configuration card with Min Distance, Max Distance, Shot Interval and Shots Per Trigger">
@@ -257,28 +273,28 @@
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Max Distance</div>
-        <div class="setting-card-range">Min Distance up to 1000 cm</div>
-        <div class="setting-card-desc">The furthest range that triggers a shot. Objects beyond this are ignored. The orange zone on the distance bar shows your active trigger window.</div>
+        <div class="setting-card-range">Min Distance up to 1,000 cm</div>
+        <div class="setting-card-desc">The furthest configured range. Actual detection depends on the sensor, subject, and conditions. The highlighted zone on the distance bar shows the active trigger window.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Shot Interval</div>
-        <div class="setting-card-range">0.0 s to 30 s</div>
+        <div class="setting-card-range">0.0 s to 30 s; fresh-profile default 0</div>
         <div class="setting-card-desc">Minimum time between successive triggers. Set to <strong>0.0 s</strong> to fire on every sensor reading. Increase to limit how rapidly the camera fires when a subject lingers in the zone.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Delay Before Shot</div>
-        <div class="setting-card-range">0 s to 5 s</div>
+        <div class="setting-card-range">0 s to 5 s; fresh-profile default 0</div>
         <div class="setting-card-desc">Pauses this long between the detection event and the shutter firing. Use for subjects that are still approaching the ideal frame position when detected. 0 = instant.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Shots Per Trigger</div>
-        <div class="setting-card-range">1 to 10</div>
+        <div class="setting-card-range">1 to 10; fresh-profile default 1</div>
         <div class="setting-card-desc">How many photos are taken each time the trigger fires. <strong>1</strong> for single capture; increase for burst sequences.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Laser Alignment</div>
-        <div class="setting-card-range">On / off &mdash; auto-off after 5 min</div>
-        <div class="setting-card-desc">Fires the built-in alignment laser so you can see exactly where the sensor is aimed. Turns off automatically after 5 minutes, or tap the toggle again to stop it early.</div>
+        <div class="setting-card-range">On / off; turn off manually</div>
+        <div class="setting-card-desc">Turns on the alignment laser so you can see where the sensor is aimed. It remains on until you turn it off.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Status LED</div>
@@ -291,14 +307,24 @@
         <div class="setting-card-desc">Solid indicator that the Lazer Eye is powered on. Disable for stealth shooting or to minimise light pollution during long exposures.</div>
       </div>
     </div>
-    <p>All values are written to the device immediately when changed and are retained after power-off.</p>
+    <p>Trigger and sensor settings are sent to the Lazer Eye TX and retained by the device. The distance display unit is a phone preference. The fresh-profile defaults above apply only before connecting to a device with saved settings.</p>
     <p class="warn">Do not stare directly into the alignment laser beam.</p>
     <h3>Reading the distance monitor</h3>
     <ul class="bullets">
       <li>The large number at the top shows the live distance reading.</li>
-      <li>The <strong>orange zone</strong> on the bar marks your Min&ndash;Max trigger window. When the moving dot enters it the shutter fires and the display flashes <strong>TRIGGER</strong>.</li>
+      <li>The highlighted zone on the bar marks your Min&ndash;Max trigger window. A valid reading in this range is eligible to trigger, subject to the shot interval, and the display flashes <strong>TRIGGER</strong> when a trigger fires.</li>
       <li>Tap <strong>CM/M</strong> or <strong>FT/IN</strong> to switch the display unit.</li>
     </ul>
+
+    <h3>Direct-to-Camera controls</h3>
+    <p>Direct-to-Camera lets the phone connect to a supported camera separately from the Lazer Eye TX trigger output. If the section is hidden, open Settings → <strong>HARDWARE SETTINGS</strong> → <strong>EDIT HARDWARE SETUP</strong> and enable <strong>DIRECT-TO-CAMERA</strong>. Then open the Lazer Eye tab → <strong>OPTIONAL FEATURES → DIRECT CAMERA</strong> and switch on <strong>ENABLE DIRECT-TO-CAMERA</strong>.</p>
+    <ul class="bullets">
+      <li>Available phone-camera modes are <strong>Sony WiFi</strong>, <strong>Nikon BLE</strong>, <strong>Nikon WiFi</strong>, <strong>Canon CCAPI</strong>, and experimental <strong>Canon BLE</strong>.</li>
+      <li>For WiFi modes, enter the camera network name and password under <strong>CAMERA AP CREDENTIALS</strong>. Tap <strong>SAVE</strong> when disconnected or <strong>SAVE &amp; SEND</strong> when connected; then tap <strong>TEST CONNECTION</strong>.</li>
+      <li>For BLE modes, put the camera in pairing mode and tap <strong>PAIR CAMERA</strong>. Use <strong>FORGET</strong> to remove a saved BLE pairing.</li>
+      <li>Tap <strong>TEST SHOT</strong> to verify the selected mode. A connected Lazer Eye TX is required to send settings and test.</li>
+    </ul>
+    <p class="note">Phone camera settings are saved on the phone. WiFi camera modes pause the RX module while active; BLE camera modes can run alongside an RX. Turning Direct-to-Camera off leaves wired TX and paired RX outputs available. Advanced TX camera sources are separate; see Section 12.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 04 -->
@@ -326,7 +352,7 @@
         </tbody>
       </table>
     </div>
-    <p>When connected, a <strong>NEXT PULSE IN</strong> countdown appears at the bottom of the card showing when the next wake pulse will fire.</p>
+    <p>Wake Trigger is off in a fresh profile and uses a 30-second interval. When connected, a <strong>NEXT PULSE IN</strong> countdown appears at the bottom of the card showing when the next wake pulse will fire.</p>
     <p class="note">Set the wake interval slightly shorter than your camera&apos;s auto-off time. If the camera sleeps after 1 minute, use a 45-second interval.</p>
   </div>
 
@@ -370,62 +396,70 @@
 
     <h3>Enabling the monitor</h3>
     <ol class="steps">
-      <li>Tap the <strong>&#9881; gear icon</strong> in the Lazer Eye tab header to open Settings.</li>
-      <li>Find the <strong>BATTERY MONITOR</strong> row and toggle it on.</li>
+      <li>In the Lazer Eye tab, expand <strong>OPTIONAL FEATURES</strong> and open <strong>BATTERY MONITOR</strong>.</li>
+      <li>Turn on <strong>LOW BATTERY ALERTS</strong>.</li>
       <li>Set the <strong>ALERT THRESHOLD</strong> slider to the battery percentage at which you want to be notified. The range is 5&ndash;50%; the default is 20%.</li>
       <li>If the system asks for notification permission, grant it. The monitor cannot alert you without permission.</li>
     </ol>
-    <p>When the monitor is active a small <strong>MONITOR</strong> badge appears in the app header next to the battery icon.</p>
+    <p>The monitor setting and threshold are saved on the phone. Notification permission is required; the app explains how to enable it if permission is denied.</p>
 
     <h3>Alert behaviour</h3>
     <ul class="bullets">
-      <li>One alert fires per discharge cycle. Once the alert has fired, it will not repeat until the battery has been charged back above the threshold and drained again.</li>
-      <li>On <strong>iOS</strong> the app uses background fetch to check the battery level periodically (typically every 15 minutes). iOS schedules background fetch adaptively &mdash; the alert may arrive up to 15 minutes after the threshold is crossed.</li>
-      <li>On <strong>Android</strong> the monitor runs as a persistent foreground service with a status-bar notification so it can check the level continuously.</li>
+      <li>The app alerts once for each TX or RX battery per discharge cycle. It resets after that battery recovers to 5 percentage points above the threshold.</li>
+      <li>On <strong>iOS</strong>, BLE can wake the app for alerts. WiFi checks are periodic in the background; keep the app open for real-time WiFi alerts.</li>
+      <li>On <strong>Android</strong>, BLE and WiFi reconnect while monitoring and a persistent notification remains visible while the monitor is active.</li>
     </ul>
-    <p class="note">The monitor works over both Bluetooth and WiFi. It automatically uses silent reconnect after a brief disconnection so it does not interrupt your shoot.</p>
+    <p class="note">The threshold range is 5–50% in 5-point steps; a fresh profile starts at 20%. Low-battery alerts include both the Lazer Eye TX and a paired RX when their battery reports are available.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 07 -->
   <div class="section">
     <span id="section-7" class="section-anchor"></span>
     <div class="section-label">Section 07</div>
-    <h2>ESP-NOW Wireless Receiver &amp; Pairing</h2>
-    <p>The ESP-NOW WIRELESS RECEIVER card lets the Lazer Eye trigger a paired V2 receiver wirelessly, sending trigger and wake signals over 2.4&nbsp;GHz instead of a cable run to the camera.</p>
+    <h2>RX &amp; Advanced TX Links</h2>
+    <p>The <strong>RX CONNECTION</strong> section lets the Lazer Eye TX trigger up to four paired RX units wirelessly instead of running a cable to the camera. The RX is the receiving unit at the camera end; the TX remains the trigger decision-maker.</p>
 
-    <h3>Pairing a receiver</h3>
+    <h3>Pairing an RX</h3>
     <ol class="steps">
-      <li>Power on the wireless receiver and connect the Lazer Eye to the app (Bluetooth or WiFi).</li>
-      <li>In the Lazer Eye tab, find the <strong>ESP-NOW WIRELESS RECEIVER</strong> card and turn its toggle <strong>ON</strong>.</li>
-      <li>Expand the card. Tap the <strong>&#8635; refresh</strong> button next to <strong>RECEIVER MAC ADDRESS</strong> to read back the Lazer Eye&apos;s own wireless ID.</li>
-      <li>Find the MAC address printed on the receiver itself.</li>
-      <li>Enter it into the <strong>PAIR TRANSMITTER MAC</strong> field in the format <code>AA:BB:CC:DD:EE:FF</code>, then tap <strong>PAIR TRANSMITTER</strong>.</li>
-      <li>The receiver locks onto the first packet it gets and pairs automatically. The badge at the top of the card switches from <strong>NOT PAIRED</strong> to <strong>PAIRED</strong>.</li>
+      <li>Power on the RX and connect the Lazer Eye TX to the app (Bluetooth or WiFi).</li>
+      <li>In the Lazer Eye tab, expand <strong>RX CONNECTION</strong> and enable ESP-NOW.</li>
+      <li>Read the RX MAC from its label or Serial MAC command.</li>
+      <li>Enter the RX address in the app&apos;s <strong>PAIR TX MAC</strong> field and tap <strong>PAIR TX</strong>. Despite the field label, enter the receiver&apos;s MAC, not the Lazer Eye TX MAC.</li>
+      <li>The Lazer Eye registers the receiver and waits for it to receive a trigger or wake packet. Use <strong>ADD RX UNIT</strong> for each additional receiver, up to four total.</li>
     </ol>
-    <p class="note">Pairing is remembered by both devices. You do not need to re-pair after power-cycling either the Lazer Eye or the receiver.</p>
-    <p class="note">Up to four receivers can be paired to the same transmitter simultaneously. Tap <strong>ADD RECEIVER</strong> to register additional units (up to the 4-receiver limit).</p>
+    <p class="note">Pairing is remembered by both units and survives power cycles. The PAIRED state and RX details update when a receiver reports over ESP-NOW.</p>
 
     <h3>What appears after pairing</h3>
     <ul class="bullets">
-      <li><strong>RECEIVER TYPE</strong> &mdash; shows MINI RX V2 or FULL ESP32 RX V2 once the receiver identifies itself.</li>
-      <li><strong>RX FIRMWARE</strong> &mdash; the receiver&apos;s firmware version, once reported.</li>
-      <li><strong>TX battery icon</strong> &mdash; shows the receiver&apos;s battery level, updated whenever it reports a reading wirelessly.</li>
+      <li><strong>RX TYPE</strong> &mdash; shows RX (compact) or RX (full-size) once the unit identifies itself. The technical identifiers are retained in troubleshooting details.</li>
+      <li><strong>RX FIRMWARE</strong> &mdash; the receiving unit&apos;s firmware version, once reported.</li>
+      <li><strong>RX battery icon</strong> &mdash; shows the RX&apos;s battery level, updated whenever it reports a reading wirelessly.</li>
     </ul>
 
-    <h3>Resetting a receiver&apos;s pairing</h3>
-    <p>To pair a receiver to a different Lazer Eye, clear its stored pairing first:</p>
+    <h3>Resetting an RX&apos;s pairing</h3>
+    <p>To pair an RX to a different Lazer Eye TX, clear its stored pairing first:</p>
     <ol class="steps">
-      <li>Power off the receiver.</li>
+      <li>Power off the RX.</li>
       <li>Hold its <strong>BOOT button</strong> while applying power, and keep holding for <strong>3 seconds</strong>, then release.</li>
-      <li>The receiver clears its stored pairing and waits for a new first packet from whichever Lazer Eye pairs to it next.</li>
+      <li>The RX clears its stored pairing and waits for a new first packet from whichever TX pairs to it next.</li>
     </ol>
 
-    <h3>Updating bridge firmware from the app <span class="pi-badge">Pi TX</span></h3>
-    <p>When connected to a Pi TX, the <strong>BRIDGE FIRMWARE</strong> card appears in the Lazer Eye tab. It lets you update the ESP-NOW bridge co-processor on the Pi wirelessly &mdash; no USB cable or terminal access required.</p>
+    <h3>Linking the Lazer Eye TX to Advanced TX</h3>
+    <p>The <strong>ADVANCED TX LINK</strong> sends each Lazer Eye detection to the Advanced TX camera over ESP-NOW. It is a separate link from pairing an RX. The Advanced TX bridge is not a camera-end RX.</p>
     <ol class="steps">
-      <li>With the Pi TX connected, scroll to the <strong>BRIDGE FIRMWARE</strong> card.</li>
-      <li>Tap <strong>CHECK FOR UPDATES</strong>. The app fetches the latest bridge <code>.bin</code> from the firmware GitHub release.</li>
-      <li>If an update is available tap <strong>INSTALL UPDATE</strong>. The app sends an <code>OTA</code> command to the Pi, which generates a fresh per-session token and forwards it to the bridge co-processor.</li>
+      <li>Connect the Lazer Eye TX over Bluetooth and connect Advanced TX over WiFi at the same time.</li>
+      <li>Open the app&apos;s <strong>PI TX</strong> tab and expand <strong>ADVANCED TX LINK</strong>. The app fetches the bridge MAC and Lazer Eye TX MAC.</li>
+      <li>Tap <strong>PAIR</strong>. When linked, LiDAR triggers are sent to the Advanced TX camera. Confirm the Pi camera source is connected and ready.</li>
+      <li>Use <strong>TEST</strong> to send a real ESP-NOW trigger. Use <strong>UNLINK</strong> to remove the link.</li>
+    </ol>
+    <p class="note">The Lazer Eye TX and Advanced TX use their own saved settings and connections. See Sections 11–15 for the Advanced TX browser panel, camera, Drive, time-lapse, and astronomy controls.</p>
+
+    <h3>Updating bridge firmware from the app <span class="pi-badge">Advanced TX</span></h3>
+    <p>When Advanced TX is connected, the <strong>BRIDGE FIRMWARE</strong> card appears in the PI TX tab. It updates the ESP-NOW bridge co-processor on the Raspberry Pi wirelessly &mdash; no USB cable or terminal access required.</p>
+    <ol class="steps">
+      <li>With the Advanced TX connected, open the <strong>PI TX</strong> tab and expand <strong>BRIDGE FIRMWARE</strong>.</li>
+      <li>Tap <strong>CHECK FOR BRIDGE UPDATES</strong>. The app checks the latest bridge firmware release.</li>
+      <li>If an update is available, tap <strong>UPDATE BRIDGE FIRMWARE</strong>. The app sends an OTA request to the Pi, which creates a per-session token for the bridge upload.</li>
       <li>The bridge tears down ESP-NOW, raises a temporary WiFi access point (<code>LR-BRIDGE-OTA</code>), and the app joins it using the session token as the WPA2 password.</li>
       <li>The app uploads the new firmware. The bridge reboots after flashing and re-announces itself to the Pi &mdash; the ESP-NOW card updates within a few seconds.</li>
     </ol>
@@ -436,13 +470,13 @@
   <div class="section">
     <span id="section-8" class="section-anchor"></span>
     <div class="section-label">Section 08</div>
-    <h2>Direct Cable Trigger Cross-Link</h2>
+    <h2>Direct Cable Trigger Link</h2>
     <p>The <strong>DIRECT CABLE TRIGGER LINK</strong> card pairs the Lazer Eye directly with a Cable Trigger over ESP-NOW. Once paired, every accepted LiDAR detection fires the Cable Trigger wirelessly &mdash; even when your phone is put away or out of Bluetooth range.</p>
     <p class="note">This feature requires the Lazer Eye firmware v2.9.4 or later for confirmed-delivery status. Earlier firmware versions still send the signal but cannot confirm whether the Cable Trigger received it.</p>
 
     <h3>Pairing</h3>
     <ol class="steps">
-      <li>Connect the <strong>Cable Trigger</strong> to the app via Bluetooth.</li>
+      <li>Connect the <strong>Cable Trigger</strong> to the app over Bluetooth.</li>
       <li>Also connect the <strong>Lazer Eye</strong> via Bluetooth or WiFi.</li>
       <li>In the Lazer Eye tab, find the <strong>DIRECT CABLE TRIGGER LINK</strong> card and expand it.</li>
       <li>Under <strong>STEP 1 &mdash; GET CABLE TRIGGER MAC</strong>, tap <strong>GET MAC</strong>. The app reads the Cable Trigger&apos;s ESP-NOW hardware address over BLE and fills in the MAC display automatically.</li>
@@ -459,8 +493,8 @@
     </ul>
 
     <h3>Unpairing</h3>
-    <p>Tap <strong>UNPAIR</strong> to remove the cross-link. Both devices forget the association. The pairing must be re-done from scratch if you want to restore it.</p>
-    <p class="note">The cross-link is independent of your phone. Once paired you can pocket the phone &mdash; the Lazer Eye sends directly to the Cable Trigger over ESP-NOW with no relay required.</p>
+    <p>Tap <strong>UNPAIR</strong> to remove the stored link. The Lazer Eye TX stops sending direct triggers to that Cable Trigger. Pair it again from the app if you want to restore the link.</p>
+    <p class="note">The direct link is independent of your phone. Once paired you can pocket the phone &mdash; the Lazer Eye sends directly to the Cable Trigger over ESP-NOW with no relay required.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 09 -->
@@ -480,11 +514,11 @@
 
     <h3>Behaviour</h3>
     <ul class="bullets">
-      <li>Each relay uses the Cable Trigger&apos;s own <strong>Shots Per Trigger</strong> setting.</li>
+      <li>The Cable Trigger runs using its saved Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount.</li>
       <li>If the Cable Trigger is already mid-sequence when a trigger arrives, that event is <strong>skipped</strong> &mdash; not queued. Events are not buffered.</li>
       <li>The link stops automatically when either device disconnects. Toggle the switch again when both reconnect.</li>
     </ul>
-    <p class="note">For hands-free setups where you want the link to work even after putting the phone away, use the Direct Cable Trigger Cross-Link (Section 08) instead. The BLE link is best when you are actively monitoring both devices from the app simultaneously.</p>
+    <p class="note">For hands-free setups where you want the link to work after putting the phone away, use the Direct Cable Trigger Link (Section 08) instead. For Cable Trigger setup and configuration, see the <a href="cable-trigger-manual.html#section-9">Cable Trigger manual, Section 09</a>.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 10 -->
@@ -492,10 +526,10 @@
     <span id="section-10" class="section-anchor"></span>
     <div class="section-label">Section 10</div>
     <h2>TX &amp; RX Output Modes</h2>
-    <p>The <strong>TX OUTPUT</strong> card controls the Lazer Eye&apos;s own wake signal and autofocus behaviour. Once a receiver has been paired at least once, an <strong>RX OUTPUT</strong> card appears below it with the same controls for the receiver.</p>
+    <p><strong>TX OUTPUT</strong> controls the Lazer Eye TX&apos;s trigger and wake outputs. After an RX has been paired at least once, <strong>RX OUTPUT</strong> provides independent controls for the receiver.</p>
 
-    <h3>Wake signal</h3>
-    <p>Sets the signal level used on the wake/focus output.</p>
+    <h3>Trigger output and wake signal</h3>
+    <p>Choose the output mode separately for <strong>TRIGGER OUTPUT</strong> and <strong>WAKE SIGNAL</strong>. <strong>Dry Contact</strong> provides a ground closure and is the default; it works with most camera remote inputs.</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Mode</th><th>Use when</th></tr></thead>
@@ -506,24 +540,24 @@
           </tr>
           <tr>
             <td><strong>HOT 3.3V</strong></td>
-            <td>Only enable if your camera requires a positive voltage pulse on the focus pin rather than a ground closure. Most cameras (Sony multi-terminal, Canon N3, Nikon MC-DC2 compatible) use ground closure &mdash; check your camera&apos;s remote/shutter pinout before switching this on.</td>
+            <td>Only enable for a camera input that requires a 3.3 V signal. Check the camera&apos;s remote/shutter pinout before switching from Dry Contact.</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p class="warn">The app shows a confirmation warning the first time you switch either Wake Signal to HOT 3.3V, since it applies voltage instead of a simple contact closure.</p>
+    <p class="warn">HOT 3.3V applies voltage instead of a simple contact closure. Confirm your camera&apos;s electrical requirements before using it.</p>
 
     <h3>Autofocus pre-pulse</h3>
     <p>Holds the wake/focus pin for a set time <em>before</em> the shutter fires, giving your camera&apos;s autofocus a head start on moving subjects.</p>
     <ul class="bullets">
       <li>Toggle <strong>AUTOFOCUS PRE-PULSE</strong> (TX OUTPUT) or <strong>RX AUTOFOCUS PRE-PULSE</strong> (RX OUTPUT) on.</li>
-      <li>Set <strong>FOCUS HOLD TIME</strong> (TX: 50&ndash;2000 ms) or <strong>RX FOCUS HOLD TIME</strong> (RX: 50&ndash;5000 ms) to how long your camera needs to lock focus &mdash; typically 200&ndash;600 ms.</li>
+      <li>Set <strong>FOCUS HOLD TIME</strong> (TX: 50&ndash;2000 ms) or <strong>RX FOCUS HOLD TIME</strong> (RX: 50&ndash;5000 ms) to the time your camera needs to lock focus.</li>
       <li>The wake pin is held for that duration, then the shutter fires.</li>
     </ul>
 
     <h3>RX Output LEDs</h3>
-    <p>The RX OUTPUT card also has its own <strong>STATUS LED</strong> and <strong>POWER LED</strong> toggles for the receiver, independent of the Lazer Eye&apos;s own LED settings in the Configuration card.</p>
-    <p class="note">RX OUTPUT is greyed out until ESP-NOW is enabled and a receiver has been paired at least once. After that it stays editable even if the Lazer Eye is disconnected.</p>
+    <p>The RX OUTPUT card also has its own <strong>STATUS LED</strong> and <strong>POWER LED</strong> toggles for the RX, independent of the Lazer Eye TX&apos;s own LED settings in the Configuration card.</p>
+    <p class="note">RX OUTPUT is unavailable until an RX has been paired at least once. RX output choices are saved on the phone; TX output choices are stored by the Lazer Eye TX.</p>
     <p class="note">If a red <strong>&#8226; Command not confirmed &mdash; tap to retry</strong> banner appears after changing a Wake Signal mode, the Lazer Eye didn&apos;t confirm the change in time and the toggle reverted. Tap the banner to resend, or move closer to the device / switch from Bluetooth to WiFi.</p>
   </div>
 
@@ -531,27 +565,28 @@
   <div class="section">
     <span id="section-11" class="section-anchor"></span>
     <div class="section-label">Section 11</div>
-    <h2>Browser Panel <span class="pi-badge">Pi TX</span></h2>
-    <p>When the app is connected to a Pi TX, the Pi also serves a full control panel to any browser connected through the Pi TX hotspot or a trusted upstream LAN. It offers live telemetry, trigger and wake controls, ESP-NOW receiver pairing, camera settings, Google Drive uploads, time-lapse, and astronomical triggers &mdash; the same feature set as the phone app.</p>
+    <h2>Browser Panel <span class="pi-badge">Advanced TX</span></h2>
+    <p>The Advanced TX Raspberry Pi serves a browser control panel to devices on its hotspot or a trusted upstream LAN. It offers live telemetry, trigger and wake controls, ESP-NOW RX pairing, camera settings, Google Drive uploads, time-lapse, and astronomical triggers.</p>
     <p>The panel&apos;s <strong>Camera</strong> section mirrors the app&apos;s CAMERA card, including the three-way source selector (DSLR, Pi Camera, Webcam), the Pi Camera 3 focus and exposure controls, and the Pi Camera live preview (see Section 12). The live preview is particularly useful from a laptop &mdash; it updates at ~1&nbsp;fps and lets you check framing and focus without touching the phone.</p>
-      <p>This is useful for monitoring a long shoot from a laptop, controlling the system from a second device, or accessing settings when the phone is not handy. Join the Pi TX hotspot for local browser control without internet, then open <code>http://10.42.0.1</code>.</p>
+      <p>This is useful for monitoring a long shoot from a laptop, controlling the system from a second device, or accessing settings when the phone is not handy. Join the Advanced TX hotspot for local browser control without internet, then open <code>http://10.42.0.1</code>.</p>
 
     <h3>Opening the panel</h3>
     <ol class="steps">
-      <li>For offline field control, join the Pi TX network whose name begins with <code>PI_TX_</code>. On a trusted upstream LAN, connect your computer to the same private network as the Pi instead.</li>
-      <li>Open a browser and navigate to <strong>http://10.42.0.1</strong> from the Pi TX hotspot, or to <strong>http://pi-tx.local</strong> (mDNS) / <code>http://&lt;pi-ip-address&gt;</code> from a trusted upstream LAN.</li>
-      <li>The browser panel loads automatically. No login required.</li>
+      <li>For offline field control, join the Advanced TX network whose name begins with <code>PI_TX_</code>. On a trusted upstream LAN, connect your computer to the same private network as the Pi instead.</li>
+      <li>Open a browser and navigate to <strong>http://10.42.0.1</strong> from the Advanced TX hotspot, or to <strong>http://pi-tx.local</strong> (mDNS) / <code>http://&lt;pi-ip-address&gt;</code> from a trusted upstream LAN.</li>
+      <li>The browser panel loads without a login.</li>
     </ol>
     <p class="note">If <code>pi-tx.local</code> does not resolve, use the Pi&apos;s numeric IP address. On most home networks this is shown in your router&apos;s DHCP client list, or run <code>hostname -I</code> on the Pi.</p>
-    <p class="note">The browser panel and the phone app use the same protocol. Both can be open simultaneously. Changes made in one are reflected in the other within a few seconds.</p>
+    <p class="warn">The browser panel does not require login. Use it only on a trusted, private network; do not expose it to the public internet or an untrusted LAN.</p>
+    <p class="note">The browser panel and phone app can both connect to Advanced TX, but do not assume a change made in one appears immediately in the other. Check the displayed setting before starting a shoot.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 12 -->
   <div class="section">
     <span id="section-12" class="section-anchor"></span>
     <div class="section-label">Section 12</div>
-    <h2>Camera <span class="pi-badge">Pi TX</span></h2>
-    <p>When connected to a Pi TX, the <strong>CAMERA</strong> card appears in the Lazer Eye tab. It lets LiDAR triggers fire a camera attached directly to the Pi instead of the GPIO trigger pin. Three camera sources are supported, selected with the three-button source selector at the top of the card:</p>
+    <h2>Camera <span class="pi-badge">Advanced TX</span></h2>
+    <p>On the app&apos;s <strong>PI TX</strong> tab, the <strong>CAMERA</strong> card controls a camera attached to the Advanced TX Raspberry Pi. It is separate from the Lazer Eye TX&apos;s wired trigger and paired RX outputs. Choose one of three camera sources with the selector at the top of the card:</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>Source</th><th>Hardware</th><th>Best for</th></tr></thead>
@@ -574,7 +609,7 @@
         </tbody>
       </table>
     </div>
-    <p>Only one source is active at a time. Photos from every source are saved to the Pi&apos;s staging directory and can be uploaded to Google Drive (Section 13). All settings are remembered between sessions.</p>
+    <p>Only one source is active at a time. Photos from each source are saved to the Pi&apos;s staging directory and can be uploaded to Google Drive (Section 13). Advanced TX camera settings are stored on the Pi.</p>
 
     <h3>DSLR / Mirrorless via USB</h3>
     <p>Any gPhoto2-compatible camera will work. This includes the majority of:</p>
@@ -590,7 +625,7 @@
     <ol class="steps">
       <li>Set the camera to <strong>PTP</strong> (Picture Transfer Protocol) mode in its USB connection settings. This is usually called &ldquo;PC Remote&rdquo;, &ldquo;Tethered Shooting&rdquo;, or &ldquo;PTP&rdquo; depending on the brand.</li>
       <li>Connect the camera to the Pi with a USB cable.</li>
-      <li>In the app, expand the <strong>CAMERA</strong> card and tap the <strong>DSLR</strong> source button. Selecting the source activates it and starts searching for the camera.</li>
+      <li>On the <strong>PI TX</strong> tab, expand <strong>CAMERA</strong> and tap the <strong>DSLR</strong> source button. Selecting the source starts searching for the camera.</li>
       <li>The card switches to a searching state. Once the camera is detected, its model name and battery level appear.</li>
     </ol>
     <p>Use the left and right arrow pickers to step through the available values for each setting. The Pi reads the choices directly from the camera so only values the camera supports are shown.</p>
@@ -612,7 +647,7 @@
     <h3>Pi Camera (CSI ribbon)</h3>
     <p>A Raspberry Pi camera module plugged into the Pi&apos;s CSI ribbon connector can be triggered directly &mdash; no USB cable or external camera body needed. The camera must be connected before the Pi boots and enabled on the Pi (camera support is on by default in current Raspberry Pi OS; on older images enable it via <code>sudo raspi-config</code> &rarr; Interface Options).</p>
     <ol class="steps">
-      <li>In the <strong>CAMERA</strong> card, tap the <strong>PI CAMERA</strong> source button. Selecting the source activates it and searches for the camera module; a green dot on the button confirms it is connected.</li>
+      <li>In <strong>PI TX → CAMERA</strong>, tap the <strong>PI CAMERA</strong> source button. Selecting the source searches for the camera module; a green dot on the button confirms it is connected.</li>
       <li>Once detected, the module&apos;s sensor model appears (e.g. <code>imx708</code> for a Pi Camera 3).</li>
       <li>Choose a capture resolution with the <strong>RESOLUTION</strong> picker (1080p or 4K).</li>
     </ol>
@@ -674,7 +709,7 @@
     <p>Any standard UVC USB webcam can be used as a capture source. No drivers or configuration are needed on the Pi &mdash; the webcam is detected automatically.</p>
     <ol class="steps">
       <li>Plug the webcam into any of the Pi&apos;s USB ports.</li>
-      <li>In the <strong>CAMERA</strong> card, tap the <strong>WEBCAM</strong> source button. Selecting the source activates it and searches for the webcam.</li>
+      <li>In <strong>PI TX → CAMERA</strong>, tap the <strong>WEBCAM</strong> source button. Selecting the source searches for the webcam.</li>
       <li>Once detected, the webcam&apos;s model name appears.</li>
       <li>Choose a capture resolution with the <strong>RESOLUTION</strong> picker (720p or 1080p). If the webcam does not support the exact resolution, it captures at the closest mode it does support.</li>
     </ol>
@@ -685,8 +720,8 @@
   <div class="section">
     <span id="section-13" class="section-anchor"></span>
     <div class="section-label">Section 13</div>
-    <h2>Google Drive Upload <span class="pi-badge">Pi TX</span></h2>
-    <p>The <strong>GOOGLE DRIVE</strong> card lets the Pi TX upload photos captured by any camera source (DSLR, Pi Camera, or webcam) directly to your Google Drive. Authorization uses Google&apos;s device-flow, so no browser redirect to the Pi is needed &mdash; you approve access on any device.</p>
+    <h2>Google Drive Upload <span class="pi-badge">Advanced TX</span></h2>
+    <p>The <strong>GOOGLE DRIVE</strong> card lets the Advanced TX upload photos captured by any camera source (DSLR, Pi Camera, or webcam) directly to your Google Drive. Authorization uses Google&apos;s device-flow, so no browser redirect to the Raspberry Pi is needed &mdash; you approve access on any device.</p>
 
     <h3>Step 1 &mdash; Enter OAuth credentials</h3>
     <p>The Pi needs a Google OAuth 2.0 Client ID and Secret before it can request authorization. These are free to create:</p>
@@ -708,7 +743,7 @@
     <h3>Uploading photos</h3>
     <p>Once authorized, the upload controls appear:</p>
     <ul class="bullets">
-      <li><strong>FOLDER</strong> &mdash; type a folder name and tap SET. The Pi creates this folder in your Drive root if it does not exist. Defaults to &ldquo;Pi TX Photos&rdquo;.</li>
+      <li><strong>FOLDER</strong> &mdash; type a folder name and tap SET. The Advanced TX creates this folder in your Drive root if it does not exist. Defaults to &ldquo;Advanced TX Photos&rdquo;.</li>
       <li><strong>UPLOAD LAST 50</strong> &mdash; uploads the 50 most recently captured files from the Pi&apos;s staging directory.</li>
       <li><strong>UPLOAD ALL NEW</strong> &mdash; uploads every file in the staging directory that has not been uploaded before.</li>
     </ul>
@@ -719,8 +754,8 @@
   <div class="section">
     <span id="section-14" class="section-anchor"></span>
     <div class="section-label">Section 14</div>
-    <h2>Time-Lapse <span class="pi-badge">Pi TX</span></h2>
-    <p>The <strong>TIME-LAPSE</strong> card programs the Pi TX to fire the camera at a fixed interval for a set duration, automatically &mdash; no phone interaction required once started. The time-lapse engine uses all currently configured camera settings (ISO, aperture, shutter, burst).</p>
+    <h2>Time-Lapse <span class="pi-badge">Advanced TX</span></h2>
+    <p>The <strong>TIME-LAPSE</strong> card programs the Advanced TX to fire the camera at a fixed interval for a set duration, automatically &mdash; no phone interaction required once started. The time-lapse engine uses all currently configured camera settings (ISO, aperture, shutter, burst).</p>
 
     <h3>Configuring a sequence</h3>
     <div class="table-wrap">
@@ -746,8 +781,8 @@
   <div class="section">
     <span id="section-15" class="section-anchor"></span>
     <div class="section-label">Section 15</div>
-    <h2>Astronomical Triggers <span class="pi-badge">Pi TX</span></h2>
-    <p>The <strong>ASTRONOMICAL TRIGGERS</strong> card programs the Pi TX to start a time-lapse session automatically at a calculated solar or lunar event &mdash; sunrise, sunset, moonrise, moonset, golden hour, or blue hour. Triggers survive Pi reboots and run daily without any further phone interaction.</p>
+    <h2>Astronomical Triggers <span class="pi-badge">Advanced TX</span></h2>
+    <p>The <strong>ASTRONOMICAL TRIGGERS</strong> card programs the Advanced TX to start a time-lapse session automatically at a calculated solar or lunar event &mdash; sunrise, sunset, moonrise, moonset, golden hour, or blue hour. Triggers survive Raspberry Pi reboots and run daily without any further phone interaction.</p>
 
     <h3>Step 1 &mdash; Set the Pi&apos;s location</h3>
     <p>Astronomical times are calculated for a specific latitude and longitude. Enter the coordinates manually or use the phone&apos;s GPS:</p>
@@ -797,33 +832,33 @@
   <div class="section">
     <span id="section-16" class="section-anchor"></span>
     <div class="section-label">Section 16</div>
-    <h2>Advanced Settings</h2>
-    <p>Tap the <strong>ADVANCED</strong> row to expand these controls. Most users can leave them at their defaults.</p>
+    <h2>Advanced Sensor Adjustments</h2>
+    <p>On the Lazer Eye TX tab, expand <strong>ADVANCED</strong>. Most users can leave these controls at their fresh-profile defaults; connected devices can have different saved values.</p>
     <div class="screenshot-wrap">
       <div class="screenshot-item">
-        <img src="screenshots/lazer-eye-full.jpg" alt="Full Lazer Eye tab showing the ADVANCED row collapsed at the bottom of the screen">
-        <div class="screenshot-caption">ADVANCED row &mdash; tap to expand</div>
+        <img src="screenshots/lazer-eye-full.jpg" alt="Lazer Eye tab showing the Advanced Sensor Adjustments section">
+        <div class="screenshot-caption">ADVANCED &mdash; tap to expand sensor controls</div>
       </div>
     </div>
     <div class="setting-grid">
       <div class="setting-card">
         <div class="setting-card-name">Scan Rate</div>
-        <div class="setting-card-range">10&ndash;500 Hz, default 100 Hz</div>
+        <div class="setting-card-range">10&ndash;500 Hz, fresh-profile default 300 Hz</div>
         <div class="setting-card-desc">How many distance readings per second the sensor takes. Higher values make the system more responsive to fast-moving subjects but draw more power.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Pulse Speed</div>
-        <div class="setting-card-range">50&ndash;2000 ms, default 300 ms</div>
+        <div class="setting-card-range">50&ndash;2000 ms, fresh-profile default 250 ms</div>
         <div class="setting-card-desc">How long the trigger output is held active per shot. Increase if the camera misses short triggers.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Smoothing</div>
-        <div class="setting-card-range">1&ndash;10</div>
+        <div class="setting-card-range">1&ndash;10, fresh-profile default 4</div>
         <div class="setting-card-desc">Averages recent readings before evaluating the trigger. Higher values smooth out readings over longer distances and reduce false triggers, at the cost of slightly more latency.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Flux Gate</div>
-        <div class="setting-card-range">Off, or 5&ndash;200</div>
+        <div class="setting-card-range">Off or 5&ndash;200, fresh-profile default 10</div>
         <div class="setting-card-desc">Rejects low-confidence readings (weak signal returns), which filters phantom distance spikes from fast-moving subjects crossing the beam edge or reflective surfaces. Increase if you see false triggers; lower it or turn it off if the sensor stops detecting low-reflectivity subjects (e.g. dark clothing).</div>
       </div>
     </div>
@@ -843,22 +878,22 @@
           <tr>
             <td><strong>Status LED</strong></td>
             <td>Single blink</td>
-            <td>A trigger or wake pulse just fired. Toggle in Configuration &rarr; Status LED.</td>
+            <td>A trigger or wake pulse just fired. Toggle STATUS LED in the Lazer Eye TX configuration.</td>
           </tr>
           <tr>
             <td><strong>Power LED</strong></td>
             <td>Solid on</td>
-            <td>Device is powered on and running. Toggle in Configuration &rarr; Power LED.</td>
+            <td>Device is powered on and running. Toggle POWER LED in the Lazer Eye TX configuration.</td>
           </tr>
         </tbody>
       </table>
     </div>
 
-    <h3>V2 Receiver LEDs</h3>
-    <p>Both the LR Mini RX V2 and LR Full ESP32 RX V2 use the same LED behaviour, controlled independently from the Lazer Eye&apos;s own LEDs via the RX OUTPUT card&apos;s Status LED and Power LED toggles.</p>
+    <h3>RX LEDs</h3>
+    <p>RX STATUS LED and POWER LED are controlled independently in the <strong>RX OUTPUT</strong> section after a receiver has been paired. These choices are saved on the phone; the Lazer Eye TX&apos;s LED choices are stored on the TX.</p>
 
     <h3>Battery</h3>
-    <p>The Lazer Eye&apos;s battery percentage appears as a battery icon in the app header when connected. Once a receiver is paired and reporting, its battery level appears next to the <strong>TX</strong> battery icon in the ESP-NOW card.</p>
+    <p>The Lazer Eye TX&apos;s battery percentage appears as a battery icon in the app header when connected. Once an RX is paired and reporting, its battery level appears next to the <strong>TX</strong> battery icon in the ESP-NOW card.</p>
     <p>Charge devices via their USB-C ports using any standard 5&nbsp;V USB charger.</p>
   </div>
 
@@ -870,7 +905,7 @@
 
     <div class="trouble-row">
       <div class="trouble-symptom">False triggers when nothing is in frame</div>
-      <div class="trouble-fix">Increase the <strong>Flux Gate</strong> value in Advanced &mdash; start at 20 and increase until false triggers stop. The sensor is catching low-confidence reflections from a background or shiny surface.</div>
+      <div class="trouble-fix">Increase <strong>FLUX GATE</strong> gradually under <strong>ADVANCED</strong>; a fresh profile starts at 10. The sensor may be catching weak or mixed reflections from a background or shiny surface.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Sensor stops detecting subjects</div>
@@ -886,7 +921,7 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Camera misses short triggers</div>
-      <div class="trouble-fix">Increase <strong>Pulse Speed</strong> in Advanced. Some camera bodies require a longer signal to reliably register a shutter command.</div>
+      <div class="trouble-fix">Increase <strong>PULSE SPEED</strong> under <strong>ADVANCED</strong>. Some camera bodies require a longer signal to reliably register a shutter command.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Camera doesn&apos;t focus in time before the shot</div>
@@ -897,36 +932,40 @@
       <div class="trouble-fix">The command was sent but the device did not confirm it in time &mdash; the toggle reverted to the last known good state. Tap the banner to resend. If it reappears repeatedly, move closer to the device or switch from Bluetooth to WiFi.</div>
     </div>
     <div class="trouble-row">
-      <div class="trouble-symptom">Receiver type or firmware shows blank after pairing</div>
-      <div class="trouble-fix">Power-cycle the receiver. On boot it reports its type and firmware version to the Lazer Eye; the app displays the correct values within a few seconds of the receiver coming online.</div>
+      <div class="trouble-symptom">RX type or firmware shows blank after pairing</div>
+      <div class="trouble-fix">Power-cycle the RX. On boot it reports its type and firmware version to the Lazer Eye TX; the app displays the correct values within a few seconds of the RX coming online.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">ESP-NOW shows NOT PAIRED</div>
-      <div class="trouble-fix">Make sure the receiver is powered on and the ESP-NOW toggle is on. Re-enter the receiver&apos;s MAC address in PAIR TRANSMITTER MAC and tap PAIR TRANSMITTER again. If it was previously paired to a different Lazer Eye, reset its pairing first (see Section 07).</div>
+      <div class="trouble-fix">Make sure the RX is powered on and the ESP-NOW toggle is on. Re-enter the RX&apos;s MAC address in PAIR TX MAC and tap PAIR TX again. If it was previously paired to a different TX, reset its pairing first (see Section 07).</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Can&apos;t connect via Bluetooth</div>
-      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Lazer Eye. On iOS: Settings &rarr; Privacy &rarr; Bluetooth &rarr; confirm the SHP Asset Manager app has permission. The Lazer Eye appears as <code>LASER_EYE_V2</code> in the scan list.</div>
+      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Lazer Eye TX. Confirm Bluetooth permission for SHP Asset Manager in the phone&apos;s app settings. On Android, allow the nearby-device permissions on Android 12+ or Location permission on Android 10–11. The scan list uses the device&apos;s current name, which may have been changed in Settings.</div>
     </div>
     <div class="trouble-row">
-      <div class="trouble-symptom">Pi TX not found / pi-tx.local does not resolve</div>
-      <div class="trouble-fix">For offline control, confirm the phone is joined to the Pi TX network whose name begins with <code>PI_TX_</code> and retry <code>10.42.0.1</code>. On a trusted upstream LAN, confirm the Pi and phone are on the same private network. If mDNS is unavailable on that LAN (some mesh routers block it), use the Pi&apos;s numeric IP address instead. Find it by running <code>hostname -I</code> on the Pi, or check the router&apos;s DHCP client list.</div>
+      <div class="trouble-symptom">Advanced TX not found / pi-tx.local does not resolve</div>
+      <div class="trouble-fix">For offline control, confirm the phone is joined to the Advanced TX network whose name begins with <code>PI_TX_</code> and retry <code>10.42.0.1</code>. On a trusted upstream LAN, confirm the Raspberry Pi and phone are on the same private network. If mDNS is unavailable on that LAN (some mesh routers block it), use the Pi&apos;s numeric IP address instead. Find it by running <code>hostname -I</code> on the Pi, or check the router&apos;s DHCP client list.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Trigger Schedule is blocking shots unexpectedly</div>
-      <div class="trouble-fix">Check that the phone&apos;s time is correct &mdash; the schedule uses the device clock. If an overnight window is not working as expected (e.g. 22:00&ndash;06:00), confirm that the start time is later than the end time so the window is treated as crossing midnight.</div>
+      <div class="trouble-fix">Check the phone&apos;s local time, then reconnect so the app can sync time to the Lazer Eye TX. For an overnight window such as 22:00–06:00, the start time must be later than the end time.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Battery Monitor alert never arrives</div>
-      <div class="trouble-fix">Confirm notification permission is granted in OS Settings for the SHP Asset Manager app. On iOS, background fetch is rate-limited by the OS &mdash; alerts may arrive up to 15 minutes after the threshold is crossed. On Android, ensure the app is not being killed by battery optimisation; add it to the battery optimisation exceptions list.</div>
+      <div class="trouble-fix">Confirm notification permission is granted and the monitor is enabled under OPTIONAL FEATURES → BATTERY MONITOR. On iOS, BLE can wake the app; WiFi alerts are periodic in the background, so keep the app open for real-time WiFi alerts. On Android, keep the monitor&apos;s persistent notification active.</div>
     </div>
     <div class="trouble-row">
-      <div class="trouble-symptom">Direct Cable Trigger Cross-Link shows "delivery not confirmed"</div>
-      <div class="trouble-fix">Update the Lazer Eye firmware to v2.9.4 or later (Settings &rarr; Hardware Settings &rarr; Check For Updates). Older firmware still transmits the trigger but cannot confirm receipt. Also verify the Cable Trigger is within ESP-NOW range (typically up to 50&nbsp;m line-of-sight).</div>
+      <div class="trouble-symptom">Direct Camera cannot find or reconnect to the camera</div>
+      <div class="trouble-fix">For WiFi, confirm the camera is in the selected WiFi mode, the phone is on the camera&apos;s network, and the saved SSID/password are correct. For BLE, put the camera in pairing mode and tap PAIR CAMERA; if it still fails, use FORGET and pair again. Reopen DIRECT CAMERA to check the connection status.</div>
+    </div>
+    <div class="trouble-row">
+      <div class="trouble-symptom">Direct Cable Trigger Link shows "delivery not confirmed"</div>
+      <div class="trouble-fix">Update the Lazer Eye TX to firmware v2.9.4 or later for receipt confirmation. Older firmware may send the trigger without confirming delivery. Check that ESP-NOW is enabled, both devices are powered, and they are within reliable radio range; walls and interference can reduce range.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">BLE Cable Trigger Link fires inconsistently</div>
-      <div class="trouble-fix">Both the Lazer Eye and Cable Trigger must remain connected via BLE or WiFi simultaneously. Events are not queued &mdash; if the Cable Trigger is mid-sequence when a trigger arrives, that event is skipped. For a hands-free setup that works when the phone is away, use the Direct Cable Trigger Cross-Link (Section 08) instead.</div>
+      <div class="trouble-fix">Both the Lazer Eye TX and Cable Trigger must remain connected to the app simultaneously. Events are not queued &mdash; if the Cable Trigger is mid-sequence when a trigger arrives, that event is skipped. For a hands-free setup that works when the phone is away, use the Direct Cable Trigger Link (Section 08) instead.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">DSLR / mirrorless not detected after plugging in</div>
@@ -958,28 +997,29 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Bridge firmware update fails or hangs mid-transfer</div>
-      <div class="trouble-fix">If the transfer stalls, power-cycle the bridge co-processor &mdash; it boots back to normal operation automatically. Then retry from the BRIDGE FIRMWARE card. Ensure the phone stays on the <code>LR-BRIDGE-OTA</code> WiFi network for the entire upload; switching networks mid-transfer will break it.</div>
+      <div class="trouble-fix">If the transfer stalls, power-cycle the bridge co-processor and retry from <strong>BRIDGE FIRMWARE</strong>. Keep the phone connected to the temporary <code>LR-BRIDGE-OTA</code> network until upload completes; switching networks interrupts the transfer.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">An update is slow or failing</div>
-      <div class="trouble-fix">Switch to a WiFi connection &mdash; updates over WiFi are dramatically faster than Bluetooth. Settings &rarr; Hardware Settings &rarr; Check For Updates.</div>
+      <div class="trouble-fix">Use WiFi for a faster transfer. In the app open Settings → HARDWARE SETTINGS → FIRMWARE UPDATE (OTA), then tap CHECK FOR UPDATES or use DOWNLOAD FOR WIFI and INSTALL VIA WIFI — INSTANT. The device hotspot itself has no internet, so download the release before joining it.</div>
     </div>
 
     <h3>Updating firmware</h3>
     <ol class="steps">
       <li>Connect to the Lazer Eye in the app.</li>
-      <li>Tap the <strong>&#9881; gear icon</strong> in the header to open Settings.</li>
-      <li>Scroll to <strong>Hardware Settings</strong> and tap <strong>CHECK FOR UPDATES</strong>.</li>
-      <li>If an update is available, tap <strong>INSTALL UPDATE</strong>. The device reboots and the app reconnects automatically.</li>
+      <li>Open Settings → <strong>HARDWARE SETTINGS</strong> → <strong>FIRMWARE UPDATE (OTA)</strong>.</li>
+      <li>Tap <strong>CHECK FOR UPDATES</strong>. If a release is available, download it with <strong>DOWNLOAD FOR WIFI</strong> if needed.</li>
+      <li>Install over Bluetooth, or join the device hotspot and choose <strong>INSTALL VIA WIFI — INSTANT</strong>. You can also install a local firmware file with <strong>PICK .BIN FILE</strong>.</li>
+      <li>Keep power connected and do not interrupt the transfer. The TX reboots and the app attempts to reconnect after a successful update.</li>
     </ol>
   </div>
 
   <div class="footer">
     <div>SHP Asset Manager &nbsp;&middot;&nbsp; Lazer Eye User Manual &nbsp;&middot;&nbsp; V2 Hardware</div>
     <div style="margin-top:8px;">
-      <a href="build-guide.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
+      <a href="https://raw.githack.com/scthendersonphotography/SHPassetmanager/main/build-guide%20%281%29.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
       &nbsp;&middot;&nbsp;
-      <a href="install-guide.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
+      <a href="https://raw.githack.com/scthendersonphotography/SHPassetmanager/main/install-guide%20%281%29.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
       &nbsp;&middot;&nbsp;
       <a href="cable-trigger-manual.html" style="color:#F27D26;text-decoration:none;">Cable Trigger Manual</a>
     </div>
