@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cable Trigger — User Manual</title>
+<title>Little Black Box (LBB) — Cable Trigger User Manual</title>
 <style>
   :root {
     --orange: #F27D26;
@@ -116,8 +116,8 @@
 
   <div class="cover">
     <div class="cover-eyebrow">SHP Asset Manager</div>
-    <div class="cover-title">Cable Trigger</div>
-    <div class="cover-sub">User Manual</div>
+    <div class="cover-title">Little Black Box (LBB)</div>
+    <div class="cover-sub">Cable Trigger · User Manual</div>
     <div class="cover-divider"></div>
     <div class="cover-meta">scotthendersonphotography.net &nbsp;&middot;&nbsp; Updated November 2026</div>
   </div>
@@ -132,7 +132,7 @@
       <li><a href="#section-5"><span class="toc-num">05</span> Presets</a></li>
       <li><a href="#section-6"><span class="toc-num">06</span> Shutter Calibration</a></li>
       <li><a href="#section-7"><span class="toc-num">07</span> Remote Trigger Mode</a></li>
-      <li><a href="#section-8"><span class="toc-num">08</span> Longevity Test</a></li>
+      <li><a href="#section-8"><span class="toc-num">08</span> Longevity Test Availability</a></li>
       <li><a href="#section-9"><span class="toc-num">09</span> Linking to a Lazer Eye</a></li>
       <li><a href="#section-10"><span class="toc-num">10</span> Troubleshooting</a></li>
     </ol>
@@ -143,8 +143,8 @@
     <span id="section-1" class="section-anchor"></span>
     <div class="section-label">Section 01</div>
     <h2>Hardware Overview</h2>
-    <p>The <strong>Cable Trigger</strong> is a servo-driven shutter release that physically actuates your camera's cable-release port. A small servo arm presses the plunger to a position you dial in through the app — no radio frequency tricks, no electronic handshakes — just a mechanical press of the cable release your camera already knows and trusts.</p>
-    <p>Because it works at the mechanical level it is compatible with cameras that do not expose an electronic remote-trigger port, and it produces the same signal your camera's built-in shutter button produces.</p>
+    <p><strong>Little Black Box (LBB)</strong> is SHP Asset Manager's servo-driven <strong>Cable Trigger</strong>. Its servo arm presses your camera's cable-release plunger to the engagement amount set in the app. It is a mechanical release, not a wireless camera trigger.</p>
+    <p>It works with cameras that have a compatible cable-release port. The LBB presses the attached cable release; it does not reproduce every function of the camera's built-in shutter button.</p>
 
     <h3>What the app controls</h3>
     <div class="table-wrap">
@@ -168,10 +168,10 @@
     </div>
 
     <h3>Connectivity</h3>
-    <p>The Cable Trigger communicates with the SHP Asset Manager app over <strong>Bluetooth Low Energy (BLE)</strong> and over a <strong>WiFi hotspot</strong> it creates itself. Both modes provide full, real-time control of all settings.</p>
+    <p>The LBB (Cable Trigger) connects to SHP Asset Manager over <strong>Bluetooth Low Energy (BLE)</strong> or its own <strong>WiFi hotspot</strong>. Both provide control of its settings.</p>
 
     <h3>System status</h3>
-    <p>The large status display at the top of the Cable Trigger tab shows the current state of the device and a COUNTDOWN timer. States you will see:</p>
+    <p>The status card on the LBB tab shows the device state and countdown timer. States include:</p>
     <div class="table-wrap">
       <table>
         <thead><tr><th>State</th><th>What the device is doing</th></tr></thead>
@@ -213,24 +213,24 @@
     <ol class="steps">
       <li>Power on the Cable Trigger.</li>
       <li>Ensure Bluetooth is enabled on your phone.</li>
-      <li>Open the app and tap the <strong>CABLE TRIGGER</strong> tab at the bottom of the screen.</li>
-      <li>Tap <strong>&#9889; CONNECT DEVICE</strong> in the header and select your device from the scan list.</li>
-      <li>Settings sync automatically. The dot in the header turns orange when connected.</li>
+      <li>Open the <strong>LBB</strong> tab (Cable Trigger).</li>
+      <li>Tap <strong>CONNECT LBB</strong>, choose <strong>Cable Trigger Bluetooth</strong>, then select the device from the scan list.</li>
+      <li>The connection card shows READY when the device is connected. Its saved settings sync automatically.</li>
     </ol>
-    <p class="note">The app remembers your device. On subsequent launches it reconnects silently if the Cable Trigger is in range. Tapping CONNECT DEVICE when a device is already saved gives you the option to reconnect to it, scan for a new device, or connect via WiFi.</p>
+    <p class="note">The app remembers the selected device and may reconnect silently when it is in range. The connect card opens choices to reconnect, forget the saved device, scan for another device, or connect over WiFi.</p>
 
     <h3>WiFi</h3>
     <p>The Cable Trigger creates its own WiFi hotspot. WiFi is recommended when installing firmware updates &mdash; it is significantly faster than Bluetooth.</p>
     <ol class="steps">
       <li>Power on the Cable Trigger.</li>
       <li>On your phone, join the Cable Trigger's network in your OS WiFi settings. Its hotspot password is <strong>12345678</strong>; the app Security PIN does not change this password.</li>
-      <li>Return to the app. Tap <strong>&#9889; CONNECT DEVICE</strong> &rarr; <em>Connect via WiFi</em>.</li>
+      <li>Return to the app. Tap <strong>CONNECT LBB</strong> &rarr; <em>Cable Trigger WiFi</em>.</li>
       <li>Enter IP <strong>192.168.4.1</strong> and port <strong>80</strong>, then tap CONNECT.</li>
       <li>Settings sync automatically once connected.</li>
     </ol>
 
     <h3>Using Cable Trigger with Advanced TX</h3>
-    <p><strong>Advanced TX</strong> is the Raspberry Pi camera/control unit. Its PI TX tab and browser panel control the Pi&apos;s own camera, trigger output, wake output, and paired RX units; they do not operate the Cable Trigger&apos;s servo or change its settings. Connect to the Cable Trigger in the Cable Trigger tab for those controls. To have Lazer Eye detections fire both devices, pair the Lazer Eye TX with the Cable Trigger using the <strong>DIRECT CABLE TRIGGER LINK</strong>, and separately link the Lazer Eye TX to Advanced TX using the <strong>ADVANCED TX LINK</strong>. See the <a href="lazer-eye-manual.html#section-7">Lazer Eye manual, Section 07</a> for RX and Advanced TX pairing, and <a href="lazer-eye-manual.html#section-8">Section 08</a> for the Cable Trigger link.</p>
+    <p><strong>Advanced TX</strong> is the Raspberry Pi camera/control unit. Its PI TX tab and browser panel control the Pi&apos;s own camera, trigger output, wake output, and paired RX units; they do not operate the LBB&apos;s servo or change its settings. Connect to the Little Black Box (Cable Trigger) from the LBB tab for those controls. To have Lazer Eye detections fire both devices, pair the Lazer Eye TX with the LBB using the <strong>DIRECT CABLE TRIGGER LINK</strong>, and separately link the Lazer Eye TX to Advanced TX using the <strong>ADVANCED TX LINK</strong>. See the <a href="lazer-eye-manual.html#section-7">Lazer Eye manual, Section 07</a> for RX and Advanced TX pairing, and <a href="lazer-eye-manual.html#section-8">Section 08</a> for the LBB link.</p>
     <p class="warn">The Advanced TX browser panel requires a trusted network. It does not require login, so do not expose it to a public or untrusted network.</p>
 
     <h3>Settings</h3>
@@ -242,25 +242,25 @@
     <span id="section-3" class="section-anchor"></span>
     <div class="section-label">Section 03</div>
     <h2>Configuration Settings</h2>
-    <p>The <strong>CONFIGURATION</strong> card is the main control panel for the Cable Trigger. Tap its header to expand or collapse it. All values are written to the device immediately when changed and are retained after power-off.</p>
+    <p>The <strong>CONFIGURATION</strong> card is the main control panel on the LBB tab. Tap its header to expand or collapse it. Delay, exposure, and engagement changes are sent to the device and retained after power-off. Presets and calibration profiles are stored on the phone.</p>
 
     <div class="setting-grid">
       <div class="setting-card">
         <div class="setting-card-name">Pre-Trigger Delay</div>
         <div class="setting-card-range">0 s to 18,000 s</div>
-        <div class="setting-card-desc">Time between the trigger command leaving the app and the servo starting to move. Increase to give yourself time to step back from the camera. Small values step in 1-second increments; above 60 s they step in 1-minute increments; above 1 hour they step in 10-minute increments.</div>
+        <div class="setting-card-desc">Time between the trigger command and servo movement. Increase it to give yourself time to move away from the camera. Values below 60 s step by 1 second; from 60 s to under 1 hour, by 1 minute; from 1 hour onward, by 10 minutes.</div>
       </div>
       <div class="setting-card">
         <div class="setting-card-name">Exposure Time</div>
         <div class="setting-card-range">0 s to 18,000 s</div>
-        <div class="setting-card-desc">How long the servo holds the cable release depressed. For a standard shot, set this slightly longer than your camera's minimum registration time. For bulb exposures, set it to the full exposure length. Follows the same step increments as Pre-Trigger Delay. Setting this to 0 still sends a brief minimum pulse to the firmware so the servo completes a full actuation cycle.</div>
+        <div class="setting-card-desc">How long the servo holds the cable release depressed. For a standard shot, set it long enough for the camera to register a press; for bulb exposures, set it to the exposure length. Below 1 s, it displays milliseconds and steps by 1 ms; from 1 s onward, it uses the Pre-Trigger Delay step sizes. Setting it to 0 sends a 500 ms actuation.</div>
       </div>
     </div>
 
     <p>The compact summary line at the top of the collapsed CONFIGURATION card shows current values at a glance: <code>DELAY · EXP · ENG</code>.</p>
 
     <h3>Triggering</h3>
-    <p>Tap the <strong>TRIGGER SEQUENCE</strong> button at the bottom of the status card to fire the shutter immediately. The button is only active when the device is IDLE and connected (or in simulation mode).</p>
+    <p>Tap <strong>TRIGGER SEQUENCE</strong> on the status card to start a shot. It is available when the device is connected and IDLE (or in simulation mode).</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 04 -->
@@ -269,12 +269,12 @@
     <div class="section-label">Section 04</div>
     <h2>Trigger Engagement Amount</h2>
     <p>Every cable release has a pre-travel zone — a short distance the plunger moves before it actually trips the shutter. <strong>Trigger Engagement Amount</strong> sets how far the servo travels (as a percentage of its full range) to engage the release. This is the single control that determines servo rotation depth.</p>
-    <p>Tap the <strong>TRIGGER ENGAGEMENT AMOUNT</strong> row inside the CONFIGURATION card to expand it. A <code>ParamControl</code> slider with +/&minus; buttons lets you set the value from <strong>1% to 100%</strong>.</p>
+    <p>Expand <strong>TRIGGER ENGAGEMENT AMOUNT</strong> inside CONFIGURATION. The slider and +/&minus; controls set it from <strong>1% to 100%</strong>.</p>
     <p>The arc gauge in the status card animates in real time as you adjust the value, giving live visual feedback of where the servo will travel to.</p>
 
     <h3>Finding the right engagement amount</h3>
     <ol class="steps">
-      <li>Attach the cable release to your camera and mount the Cable Trigger.</li>
+      <li>Attach the cable release to your camera and mount the LBB so its servo presses the release plunger squarely.</li>
       <li>Set Pre-Trigger Delay to <code>0 s</code> and Exposure Time to a comfortable value (e.g. <code>0.5 s</code>).</li>
       <li>Start with a low Trigger Engagement Amount (e.g. 20%) and tap <strong>TRIGGER SEQUENCE</strong>.</li>
       <li>Gradually increase the percentage until the shutter fires reliably on every press.</li>
@@ -314,7 +314,7 @@
     <div class="section-label">Section 06</div>
     <h2>Shutter Calibration</h2>
     <p><strong>Shutter Calibration</strong> uses your phone's microphone to record the shutter sound and estimate an Exposure Time offset for a specific camera. It does not change the Cable Trigger automatically.</p>
-    <p>The SHUTTER CALIBRATION card is a separate collapsible section below the CONFIGURATION card. Tap its header to expand it.</p>
+    <p>The SHUTTER CALIBRATION card is a separate section below CONFIGURATION. Tap its header to expand it.</p>
 
     <h3>Running a calibration test</h3>
     <ol class="steps">
@@ -322,24 +322,24 @@
       <li>Enter a name for this calibration (e.g. your camera body or lens) in the <strong>LENS / SHUTTER NAME</strong> field at the top of the section.</li>
       <li>Hold your phone close to the camera (within 15&ndash;20 cm), microphone facing the camera body where the shutter sound is loudest.</li>
       <li>Make sure the area is quiet &mdash; ambient noise reduces detection accuracy.</li>
-      <li>Tap <strong>TEST SHUTTER</strong>. The app counts down, fires one shot, and records audio during the cycle.</li>
-      <li>After a brief analysis phase, the EXPECTED / DETECTED / OFFSET metrics appear, with a waveform showing the open and close click peaks.</li>
-      <li>Review the offset. A positive offset means the firmware held longer than the shutter was open; a negative offset means it closed before the hold ended.</li>
-      <li>Tap <strong>SAVE PROFILE</strong> to store the result under the name you entered.</li>
+      <li>Choose a test hold: 17, 33, 50, 250, 500, or 1,000 ms. Tap <strong>TEST SHUTTER × 3</strong>; the app fires three cycles and records audio for each.</li>
+      <li>After each of the first two cycles, recock the camera shutter manually and tap <strong>RECOCKED — CONTINUE</strong>.</li>
+      <li>Review EXPECTED, AUDIO, OFFSET, and the three-cycle repeatability spread. The waveform shows detected opening and closing sounds.</li>
+      <li>Save the profile only if the readings are consistent. The app enables <strong>SAVE PROFILE</strong> when the repeatability check passes.</li>
     </ol>
 
     <h3>Applying a saved profile</h3>
-    <p>Saved profiles appear in the <strong>SAVED PROFILES</strong> list at the bottom of the Shutter Calibration section. Each row shows the profile name, the date it was tested, and its offset in milliseconds.</p>
-    <p>Tap <strong>APPLY</strong> on any profile to send the current Exposure Time plus the saved offset to the device for this connection. The app does not overwrite the stored Exposure Time.</p>
+    <p>Saved profiles appear in <strong>SAVED PROFILES</strong>. Each row shows the profile name, test date, offset, and whether the current motion settings match. The action is <strong>APPLY</strong> for a matching profile, <strong>RECALIBRATE</strong> when settings differ, or <strong>CONNECT</strong> when the device is disconnected.</p>
+    <p>A profile records the engagement amount, servo travel and return settings, and firmware identity used during calibration. The app only allows APPLY when those settings match the connected device; if they have changed, recalibrate before using the correction.</p>
+    <p>Tap <strong>APPLY</strong> on a matching profile to send the current Exposure Time plus the saved offset for this connection. The app does not overwrite the stored Exposure Time.</p>
     <p class="note">Applied calibration lasts until you disconnect or change Exposure Time. It is temporary; saved profiles stay on the phone. Apply the profile again when needed.</p>
-    <p class="warn">Grant microphone permission when prompted. Without it the app cannot record audio and TEST SHUTTER will fail with a permission error.</p>
+    <p class="note">The default firmware minimum hold is 100 ms. Tests below 100 ms need an imported custom device profile with a lower minimum on supported firmware; readings below 100 ms have not been physically validated. The app analyzes audio in 0.5 ms windows, so calibration results are acoustic estimates, not a guarantee of camera timing. Grant microphone permission when prompted.</p>
 
     <h3>When to recalibrate</h3>
     <ul class="bullets">
       <li>When you switch to a different camera body.</li>
       <li>When you change the cable release mechanism.</li>
       <li>When you find the shutter is consistently held too short or too long after a firmware update.</li>
-      <li>When shooting in new temperature conditions (thermal expansion can shift the actuation point slightly).</li>
     </ul>
   </div>
 
@@ -348,59 +348,41 @@
     <span id="section-7" class="section-anchor"></span>
     <div class="section-label">Section 07</div>
     <h2>Remote Trigger Mode</h2>
-    <p><strong>Remote Trigger Mode</strong> lets you fire the camera without tapping the on-screen TRIGGER SEQUENCE button. The toggle is at the bottom of the CONFIGURATION card, below the Longevity Test row.</p>
-    <p class="note">The screen stays on automatically while Remote Trigger Mode is active, so the phone does not sleep between shots. All shot settings (Pre-Trigger Delay, Exposure Time, Trigger Engagement Amount) still apply when firing remotely.</p>
+    <p><strong>REMOTE TRIGGER MODE</strong> lets you fire without tapping TRIGGER SEQUENCE. Its switch is at the bottom of the CONFIGURATION card.</p>
+    <p class="note">The screen stays on while Remote Trigger Mode is active. Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount still apply.</p>
 
-    <h3>Android &mdash; volume buttons</h3>
-    <p>While Remote Trigger Mode is on, pressing the physical <strong>Volume Up</strong> or <strong>Volume Down</strong> buttons on your Android phone fires the shutter. This lets you hold the phone in one hand and trigger with a thumb, keeping your other hand free to steady the camera.</p>
-
-    <h3>iOS &mdash; Bluetooth clicker</h3>
-    <p>On iOS, pair a Bluetooth shutter remote (a BLE clicker, such as the kind sold for selfies or remote presentations) with your phone. While Remote Trigger Mode is on, pressing the clicker fires the Cable Trigger. The clicker can be held in one hand or placed on a surface nearby.</p>
+    <h3>Android and iOS &mdash; volume buttons</h3>
+    <p>While Remote Trigger Mode is on, pressing <strong>Volume Up</strong> or <strong>Volume Down</strong> on the phone fires the shutter. The app temporarily changes media volume to detect each press, then restores its previous level when the mode is turned off.</p>
 
     <h3>Web &mdash; keyboard</h3>
-    <p>When using the web app, keep the Cable Trigger page active and press <strong>Space</strong>, <strong>Enter</strong>, or <strong>Up Arrow</strong> to fire. The web keyboard shortcut is only available while the page is active.</p>
+    <p>With the LBB page active, press <strong>Space</strong>, <strong>Enter</strong>, or <strong>Up Arrow</strong> to fire.</p>
 
     <div class="table-wrap">
       <table>
         <thead><tr><th>Platform</th><th>Remote input</th><th>How to activate</th></tr></thead>
         <tbody>
           <tr>
-            <td><strong>Android</strong></td>
+            <td><strong>Android and iOS</strong></td>
             <td>Volume Up or Volume Down (hardware buttons)</td>
-            <td>Enable the Remote Trigger Mode toggle inside the CONFIGURATION card. No additional hardware required.</td>
-          </tr>
-          <tr>
-            <td><strong>iOS</strong></td>
-            <td>BLE shutter clicker (paired in iOS Bluetooth settings)</td>
-            <td>Pair the clicker via iOS Settings &rarr; Bluetooth, then enable the Remote Trigger Mode toggle in the app.</td>
+            <td>Enable REMOTE TRIGGER MODE in the CONFIGURATION card.</td>
           </tr>
           <tr>
             <td><strong>Web</strong></td>
             <td>Space, Enter, or Up Arrow</td>
-            <td>Keep the Cable Trigger page active and enable Remote Trigger Mode.</td>
+            <td>Keep the LBB page active and enable Remote Trigger Mode.</td>
           </tr>
         </tbody>
       </table>
     </div>
-    <p class="note">Disable Remote Trigger Mode when you are done. The app keeps the screen awake while it is active and restores the previous Android volume after the mode is turned off.</p>
+    <p class="note">Disable Remote Trigger Mode when you are done. The app keeps the screen awake while it is active and restores the phone's previous media volume when the mode is turned off.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 08 -->
   <div class="section">
     <span id="section-8" class="section-anchor"></span>
     <div class="section-label">Section 08</div>
-    <h2>Longevity Test</h2>
-    <p>The <strong>LONGEVITY TEST</strong> runs the Cable Trigger through a set number of actuation cycles autonomously, using your current Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount settings. Use it to burn in a new cable release mechanism, verify reliability under repeated use, or simulate a long shoot.</p>
-    <p>Expand the LONGEVITY TEST row inside the CONFIGURATION card.</p>
-
-    <h3>Running a longevity test</h3>
-    <ol class="steps">
-      <li>Set the number of <strong>CYCLES</strong> using the +/&minus; buttons or type directly into the counter field (1 to 9,999 cycles; initial count 10).</li>
-      <li>Tap <strong>START TEST</strong>. The device begins firing immediately, repeating the full trigger sequence for the requested number of cycles.</li>
-      <li>The progress display shows cycles remaining. The test continues even if you disconnect the phone.</li>
-      <li>Tap <strong>STOP TEST</strong> at any time to abort.</li>
-    </ol>
-    <p class="note">The longevity test runs autonomously on the device — it is safe to disconnect the phone once it has started. The test uses your current delay, exposure, and engagement settings, so dial those in before starting.</p>
+    <h2>Longevity Test Availability</h2>
+    <p>The firmware supports an automated LONGEVITY TEST, but its controls are currently hidden in the app. The test cannot be started or stopped from the current LBB interface.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 09 -->
@@ -408,16 +390,16 @@
     <span id="section-9" class="section-anchor"></span>
     <div class="section-label">Section 09</div>
     <h2>Linking to a Lazer Eye</h2>
-    <p>The Cable Trigger can be triggered automatically by a <strong>Lazer Eye</strong> LiDAR sensor in two ways. Both are configured from the <strong>LAZER EYE tab</strong> of the SHP Asset Manager app.</p>
+    <p>The Little Black Box (Cable Trigger) can be triggered automatically by a <strong>Lazer Eye</strong> LiDAR sensor in two ways. Both are configured from the <strong>LAZER EYE tab</strong> of the SHP Asset Manager app.</p>
 
     <h3>Direct Cable Trigger Link (ESP-NOW)</h3>
     <p>The Lazer Eye sends a wireless trigger packet directly to the Cable Trigger over <strong>ESP-NOW</strong> every time the LiDAR detects a subject. Once paired, this link operates autonomously &mdash; no phone needs to be connected after setup. The Cable Trigger fires using whatever Pre-Trigger Delay, Exposure Time, and Trigger Engagement Amount settings are currently stored on it.</p>
     <p class="note">Lazer Eye firmware <strong>v2.9.4 or later</strong> is required for confirmed-delivery status. Older firmware sends the packet but cannot confirm the Cable Trigger received it.</p>
 
     <ol class="steps">
-      <li>Connect the <strong>Cable Trigger</strong> to the app via BLE (the orange dot in the Cable Trigger tab header confirms the connection).</li>
+      <li>Connect the <strong>Cable Trigger</strong> over Bluetooth from the LBB tab. The connection card shows READY when connected.</li>
       <li>Open the <strong>LAZER EYE tab</strong> and connect the Lazer Eye TX by WiFi or BLE.</li>
-      <li>Expand <strong>DIRECT CABLE TRIGGER LINK</strong>. Tap <strong>GET MAC</strong> — the app reads the Cable Trigger's ESP-NOW MAC over BLE and displays it.</li>
+      <li>Expand <strong>DIRECT CABLE TRIGGER LINK</strong>. Tap <strong>GET MAC</strong> — the app reads the Cable Trigger's ESP-NOW MAC over Bluetooth and displays it.</li>
       <li>Tap <strong>PAIR</strong>. The Lazer Eye stores the Cable Trigger's MAC address and begins firing it on every accepted LiDAR detection.</li>
       <li>Tap <strong>TEST LINK</strong> to send a test packet. Listen for a shutter click from the Cable Trigger. If delivery is confirmed you will see a green "Delivery confirmed" message; on older Lazer Eye firmware you will see a yellow "Sent (delivery not confirmed)" message.</li>
     </ol>
@@ -482,19 +464,19 @@
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Volume buttons don't trigger on Android</div>
-      <div class="trouble-fix">Confirm the remote trigger switch is on and the Cable Trigger screen is active. If another app has captured the hardware button events, close it and try again.</div>
+      <div class="trouble-fix">Confirm Remote Trigger Mode is on and the app is open. If another app is using the volume controls, close it and try again.</div>
     </div>
     <div class="trouble-row">
-      <div class="trouble-symptom">BLE clicker doesn't fire on iOS</div>
-      <div class="trouble-fix">Confirm the clicker is paired in iOS Settings → Bluetooth and shows as connected. Then confirm the remote trigger switch is on and the Cable Trigger screen is active.</div>
+      <div class="trouble-symptom">Volume buttons don't trigger on iOS</div>
+      <div class="trouble-fix">Confirm Remote Trigger Mode is on and the app is open. If media volume does not change when you press a button, close another app that may be using the volume controls and try again.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Can't connect via Bluetooth</div>
-      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the Cable Trigger. Allow Bluetooth access for SHP Asset Manager in phone Settings. On Android, allow nearby-device permission on Android 12+ or Location permission on Android 10–11. The scan list uses the device&apos;s current name, which can be changed in Settings.</div>
+      <div class="trouble-fix">Toggle Bluetooth off and on and power-cycle the LBB. Allow Bluetooth access for SHP Asset Manager in phone Settings. On Android, allow nearby-device permission on Android 12+ or Location permission on Android 10–11. The scan list uses the device&apos;s current name, which can be changed in Settings.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">Settings revert after reconnecting</div>
-      <div class="trouble-fix">Settings are written to the device immediately while connected. Ensure the device is connected (orange dot in header) when you make changes. The Shutter Calibration APPLY correction is session-only and must be re-applied each connection if needed permanently.</div>
+      <div class="trouble-fix">Settings are written to the device immediately while connected. Check that the LBB connection card shows READY when you make changes. The Shutter Calibration APPLY correction is temporary and must be reapplied after reconnecting if needed.</div>
     </div>
     <div class="trouble-row">
       <div class="trouble-symptom">A firmware update is slow or failing</div>
@@ -519,16 +501,16 @@
 
     <h3>Updating firmware</h3>
     <ol class="steps">
-      <li>Connect to the Cable Trigger in the app.</li>
+      <li>Connect to the Little Black Box (Cable Trigger) in the app.</li>
       <li>Open Settings → <strong>HARDWARE SETTINGS</strong> → <strong>FIRMWARE UPDATE (OTA)</strong>.</li>
       <li>Tap <strong>CHECK FOR UPDATES</strong>, or use <strong>PICK .BIN FILE</strong> for firmware already on the phone.</li>
-      <li>Install over Bluetooth, or download the release first, join the Cable Trigger hotspot, and use <strong>INSTALL VIA WIFI — INSTANT</strong>.</li>
+      <li>Install over Bluetooth, or download the release first, join the LBB hotspot, and use <strong>INSTALL VIA WIFI — INSTANT</strong>.</li>
       <li>Keep power connected and do not interrupt the transfer. The device reboots and the app attempts to reconnect after a successful update.</li>
     </ol>
   </div>
 
   <div class="footer">
-    <div>SHP Asset Manager &nbsp;&middot;&nbsp; Cable Trigger User Manual</div>
+    <div>SHP Asset Manager &nbsp;&middot;&nbsp; Little Black Box (LBB) Cable Trigger User Manual</div>
     <div style="margin-top:8px;">
       <a href="https://raw.githack.com/scthendersonphotography/SHPassetmanager/main/build-guide%20%281%29.html" style="color:#F27D26;text-decoration:none;">Hardware Build Guide</a>
       &nbsp;&middot;&nbsp;

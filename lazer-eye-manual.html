@@ -216,29 +216,22 @@
     <div class="section-label">Section 02</div>
     <h2>Connecting to the App</h2>
     <p>The SHP Asset Manager app connects to a Lazer Eye TX over <strong>Bluetooth</strong> or <strong>WiFi</strong>. <strong>Advanced TX</strong> is a separate Raspberry Pi camera/control unit with its own PI TX tab; it is not another Lazer Eye connection type.</p>
-    <div class="screenshot-wrap">
-      <div class="screenshot-item">
-        <img src="screenshots/lazer-eye-main.jpg" alt="Lazer Eye tab with CONNECT DEVICE button in the header">
-        <div class="screenshot-caption">Tap &#9889; CONNECT DEVICE to start pairing</div>
-      </div>
-    </div>
-
     <h3>Bluetooth</h3>
     <ol class="steps">
       <li>Power on the Lazer Eye.</li>
       <li>Ensure Bluetooth is enabled on your phone.</li>
       <li>Open the app and tap the <strong>LAZER EYE</strong> tab.</li>
-      <li>Tap <strong>CONNECT DEVICE</strong>, choose Bluetooth, and select the Lazer Eye TX from the scan list.</li>
+      <li>Tap <strong>CONNECT LAZER EYE</strong>, choose Bluetooth, and select the Lazer Eye TX from the scan list.</li>
       <li>Settings sync automatically. The dot in the header turns orange when connected.</li>
     </ol>
     <p class="note">The app remembers the selected device and may reconnect silently when it is in range. Android 12 and later ask for nearby-device scan/connect permission; Android 10–11 may ask for Location permission for Bluetooth scanning. Allow the requested permissions. The scan list shows the device&apos;s advertised name, which can be changed in Settings.</p>
 
     <h3>WiFi</h3>
-    <p>The Lazer Eye creates its own WiFi hotspot. WiFi is recommended when installing app or firmware updates &mdash; it is significantly faster than Bluetooth.</p>
+    <p>The Lazer Eye creates its own WiFi hotspot. WiFi is recommended for firmware updates because it is significantly faster than Bluetooth.</p>
     <ol class="steps">
       <li>Power on the Lazer Eye.</li>
       <li>Join the Lazer Eye&apos;s hotspot in phone WiFi settings. If a Security PIN of 8 or more characters is set, use it as the hotspot password; without one, the hotspot is open. The network name follows the device name.</li>
-      <li>Return to the app, tap <strong>CONNECT DEVICE</strong>, choose the Lazer Eye WiFi option, and enter the device&apos;s address.</li>
+      <li>Return to the app, tap <strong>CONNECT LAZER EYE</strong>, choose the Lazer Eye WiFi option, and enter the device&apos;s address.</li>
       <li>The usual address is <strong>192.168.4.1</strong>, port <strong>80</strong>. Tap CONNECT to sync settings.</li>
       <li>Settings sync automatically once connected.</li>
     </ol>
@@ -259,12 +252,6 @@
     <div class="section-label">Section 03</div>
     <h2>Configuration Settings</h2>
     <p>The <strong>CONFIGURATION</strong> card contains the trigger zone, shot timing, alignment laser, TX LED switches, wake trigger, and advanced sensor controls. A fresh app profile starts in imperial units with a 30 cm minimum and 366 cm maximum; connected hardware may already have different saved values, which are loaded by the app.</p>
-    <div class="screenshot-wrap">
-      <div class="screenshot-item">
-        <img src="screenshots/lazer-eye-config.jpg" alt="Lazer Eye tab showing the configuration card with Min Distance, Max Distance, Shot Interval and Shots Per Trigger">
-        <div class="screenshot-caption">Configuration card &mdash; Min/Max Distance, Shot Interval, Shots Per Trigger</div>
-      </div>
-    </div>
     <div class="setting-grid">
       <div class="setting-card">
         <div class="setting-card-name">Min Distance</div>
@@ -437,12 +424,22 @@
     </ul>
 
     <h3>Resetting an RX&apos;s pairing</h3>
-    <p>To pair an RX to a different Lazer Eye TX, clear its stored pairing first:</p>
+    <p>To pair an RX to a different Lazer Eye TX, clear its stored pairing first. Use the reset method for your receiver size:</p>
+    <ul class="bullets">
+      <li><strong>RX (compact):</strong> Hold the dedicated PAIR/CLEAR button while powering on; keep holding for 3 seconds, then release.</li>
+      <li><strong>RX (full-size):</strong> Hold the BOOT button while powering on; keep holding for 3 seconds, then release.</li>
+    </ul>
+    <p>The RX clears its stored pairing and waits for a new first packet from whichever TX pairs to it next.</p>
+
+    <h3>Updating compact RX firmware</h3>
+    <p>The app can update an <strong>RX (compact)</strong> wirelessly. In Settings → <strong>HARDWARE SETTINGS</strong>, expand <strong>RX (COMPACT) FIRMWARE</strong> (shown when your hardware setup includes an RX unit). Check for updates and tap <strong>DOWNLOAD &amp; INSTALL</strong> when a release is available. The app downloads the firmware before you switch to the RX update network.</p>
     <ol class="steps">
-      <li>Power off the RX.</li>
-      <li>Hold its <strong>BOOT button</strong> while applying power, and keep holding for <strong>3 seconds</strong>, then release.</li>
-      <li>The RX clears its stored pairing and waits for a new first packet from whichever TX pairs to it next.</li>
+      <li>When prompted, hold the compact RX <strong>PAIR/CLEAR</strong> button for 3 seconds while the RX is running, until its LED fast-blinks.</li>
+      <li>In phone WiFi settings, join <code>LR-MINI-RX-OTA</code> with password <code>lrmini123</code>.</li>
+      <li>Return to the app and tap <strong>CONTINUE — CHECK &amp; UPLOAD</strong>. Review the installed and available versions, then tap <strong>INSTALL UPDATE</strong>.</li>
+      <li>Wait for the upload and reboot to finish, then reconnect your phone to its usual WiFi network.</li>
     </ol>
+    <p class="note">The compact RX uses the PAIR/CLEAR button for both pairing reset and runtime OTA mode; the full-size RX uses its BOOT button for pairing reset and is not updated through this compact-RX workflow.</p>
 
     <h3>Linking the Lazer Eye TX to Advanced TX</h3>
     <p>The <strong>ADVANCED TX LINK</strong> sends each Lazer Eye detection to the Advanced TX camera over ESP-NOW. It is a separate link from pairing an RX. The Advanced TX bridge is not a camera-end RX.</p>
@@ -471,16 +468,16 @@
     <span id="section-8" class="section-anchor"></span>
     <div class="section-label">Section 08</div>
     <h2>Direct Cable Trigger Link</h2>
-    <p>The <strong>DIRECT CABLE TRIGGER LINK</strong> card pairs the Lazer Eye directly with a Cable Trigger over ESP-NOW. Once paired, every accepted LiDAR detection fires the Cable Trigger wirelessly &mdash; even when your phone is put away or out of Bluetooth range.</p>
+    <p>The <strong>DIRECT CABLE TRIGGER LINK</strong> card pairs the Lazer Eye directly with the Little Black Box (LBB), a Cable Trigger, over ESP-NOW. Once paired, every accepted LiDAR detection fires the LBB wirelessly &mdash; even when your phone is put away or out of Bluetooth range.</p>
     <p class="note">This feature requires the Lazer Eye firmware v2.9.4 or later for confirmed-delivery status. Earlier firmware versions still send the signal but cannot confirm whether the Cable Trigger received it.</p>
 
     <h3>Pairing</h3>
     <ol class="steps">
-      <li>Connect the <strong>Cable Trigger</strong> to the app over Bluetooth.</li>
+      <li>Connect the <strong>Little Black Box (Cable Trigger)</strong> to the app over Bluetooth.</li>
       <li>Also connect the <strong>Lazer Eye</strong> via Bluetooth or WiFi.</li>
       <li>In the Lazer Eye tab, find the <strong>DIRECT CABLE TRIGGER LINK</strong> card and expand it.</li>
-      <li>Under <strong>STEP 1 &mdash; GET CABLE TRIGGER MAC</strong>, tap <strong>GET MAC</strong>. The app reads the Cable Trigger&apos;s ESP-NOW hardware address over BLE and fills in the MAC display automatically.</li>
-      <li>Tap <strong>PAIR</strong> under STEP 2. The Lazer Eye stores the Cable Trigger&apos;s MAC and begins sending wireless triggers on every detection.</li>
+      <li>Under <strong>STEP 1 &mdash; GET CABLE TRIGGER MAC</strong>, tap <strong>GET MAC</strong>. The app reads the LBB&apos;s ESP-NOW hardware address over Bluetooth and fills in the MAC display automatically.</li>
+      <li>Tap <strong>PAIR</strong> under STEP 2. The Lazer Eye stores the LBB&apos;s MAC and begins sending wireless triggers on every detection.</li>
       <li>The card badge switches to <strong>PAIRED</strong> and shows the stored MAC address.</li>
     </ol>
 
@@ -502,7 +499,7 @@
     <span id="section-9" class="section-anchor"></span>
     <div class="section-label">Section 09</div>
     <h2>BLE Cable Trigger Link</h2>
-    <p>The <strong>CABLE TRIGGER LINK</strong> card provides a BLE-mediated link between the Lazer Eye and the Cable Trigger. When enabled, every accepted LiDAR detection also fires the Cable Trigger via the phone&apos;s active BLE connection &mdash; no ESP-NOW pairing required, but both devices must stay connected simultaneously.</p>
+    <p>The <strong>CABLE TRIGGER LINK</strong> card provides a BLE-mediated link between the Lazer Eye and the Little Black Box (LBB) Cable Trigger. When enabled, every accepted LiDAR detection also fires the LBB via the phone&apos;s active connection &mdash; no ESP-NOW pairing required, but both devices must stay connected simultaneously.</p>
 
     <h3>Enabling the link</h3>
     <ol class="steps">
@@ -518,7 +515,7 @@
       <li>If the Cable Trigger is already mid-sequence when a trigger arrives, that event is <strong>skipped</strong> &mdash; not queued. Events are not buffered.</li>
       <li>The link stops automatically when either device disconnects. Toggle the switch again when both reconnect.</li>
     </ul>
-    <p class="note">For hands-free setups where you want the link to work after putting the phone away, use the Direct Cable Trigger Link (Section 08) instead. For Cable Trigger setup and configuration, see the <a href="cable-trigger-manual.html#section-9">Cable Trigger manual, Section 09</a>.</p>
+    <p class="note">For hands-free setups where you want the link to work after putting the phone away, use the Direct Cable Trigger Link (Section 08) instead. For LBB (Cable Trigger) setup and configuration, see the <a href="cable-trigger-manual.html#section-9">Little Black Box manual, Section 09</a>.</p>
   </div>
 
   <!-- ═══════════════════════════════════════════════ SECTION 10 -->
@@ -834,12 +831,6 @@
     <div class="section-label">Section 16</div>
     <h2>Advanced Sensor Adjustments</h2>
     <p>On the Lazer Eye TX tab, expand <strong>ADVANCED</strong>. Most users can leave these controls at their fresh-profile defaults; connected devices can have different saved values.</p>
-    <div class="screenshot-wrap">
-      <div class="screenshot-item">
-        <img src="screenshots/lazer-eye-full.jpg" alt="Lazer Eye tab showing the Advanced Sensor Adjustments section">
-        <div class="screenshot-caption">ADVANCED &mdash; tap to expand sensor controls</div>
-      </div>
-    </div>
     <div class="setting-grid">
       <div class="setting-card">
         <div class="setting-card-name">Scan Rate</div>
@@ -1021,7 +1012,7 @@
       &nbsp;&middot;&nbsp;
       <a href="https://raw.githack.com/scthendersonphotography/SHPassetmanager/main/install-guide%20%281%29.html" style="color:#F27D26;text-decoration:none;">Firmware &amp; Software Install</a>
       &nbsp;&middot;&nbsp;
-      <a href="cable-trigger-manual.html" style="color:#F27D26;text-decoration:none;">Cable Trigger Manual</a>
+      <a href="cable-trigger-manual.html" style="color:#F27D26;text-decoration:none;">Little Black Box (Cable Trigger) Manual</a>
     </div>
     <div><a href="https://scotthendersonphotography.net" style="color:#F27D26;text-decoration:none;">scotthendersonphotography.net</a></div>
   </div>
